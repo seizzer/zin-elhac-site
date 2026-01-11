@@ -1,125 +1,163 @@
-// Vercel Serverless Function: /api/lead
-// Receives form data and sends a WhatsApp template message via Meta WhatsApp Cloud API.
+/**
+ * Vercel Serverless Function: /api/lead
+ * - GET  -> returns {ok:true, message:"lead ok"} (so opening in browser won't crash)
+ * - POST -> validates payload and sends WhatsApp template message
+ *
+ * Required env vars:
+ *   WHATSAPP_TOKEN
+ *   WHATSAPP_PHONE_NUMBER_ID
+ *   WHATSAPP_TEMPLATE_NAME
+ *   WHATSAPP_TEMPLATE_LANG     (e.g. "tr" for Turkish, "en_US" for hello_world)
+ *
+ * Optional:
+ *   WHATSAPP_DEBUG=1
+ */
 
-function json(res, status, body){
+function json(res, status, obj) {
   res.statusCode = status;
-  res.setHeader('Content-Type','application/json; charset=utf-8');
-  res.end(JSON.stringify(body));
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.end(JSON.stringify(obj));
 }
 
-function onlyDigits(s){ return (s||'').replace(/\D/g,''); }
-
-function toE164(dialCode, local){
-  const dc = (dialCode||'').trim();
-  const l = onlyDigits(local);
-  if(!dc.startsWith('+')) return null;
-  if(!l) return null;
-  return dc + l;
+function pick(obj, keys) {
+  const out = {};
+  for (const k of keys) out[k] = obj?.[k];
+  return out;
 }
 
-// Summarize selections for template variable
-function summarizeSelections(sessions, packages){
-  const parts = [];
-  (sessions||[]).forEach(s => parts.push(s));
-  (packages||[]).forEach(p => parts.push(p));
-  return parts.join(', ');
+function safeStr(v, max = 200) {
+  if (v == null) return "";
+  const s = String(v).trim();
+  return s.length > max ? s.slice(0, max) : s;
 }
 
-export default async function handler(req, res){
-  if(req.method !== 'POST'){
-    return json(res, 405, {error: 'Method not allowed'});
-  }
+function normalizeE164(cc, local) {
+  // cc: like "+90" or "90"
+  // local: "546..." (may contain spaces)
+  const c = String(cc || "").replace(/[^\d+]/g, "");
+  const l = String(local || "").replace(/\D/g, "");
+  const ccDigits = c.startsWith("+") ? c.slice(1) : c;
+  if (!ccDigits || !l) return "";
+  return ccDigits + l; // WhatsApp API accepts without '+'
+}
 
-  let body = req.body;
-  // Vercel may not parse JSON automatically in some cases
-  if(typeof body === 'string'){
-    try { body = JSON.parse(body); } catch(e){ body = null; }
-  }
-  if(!body) return json(res, 400, {error:'Geçersiz JSON'});
+async function readJsonBody(req) {
+  return await new Promise((resolve, reject) => {
+    let data = "";
+    req.on("data", chunk => { data += chunk; if (data.length > 2_000_000) reject(new Error("Body too large")); });
+    req.on("end", () => {
+      if (!data) return resolve({});
+      try { resolve(JSON.parse(data)); }
+      catch (e) { reject(new Error("Invalid JSON")); }
+    });
+    req.on("error", reject);
+  });
+}
 
-  const {
-    firstName, lastName, email, country,
-    dialCode, phoneLocal, message,
-    optin, sessions, packages
-  } = body;
-
-  // Validate required fields (message is optional)
-  const errs = [];
-  if(!firstName) errs.push('Ad gerekli');
-  if(!lastName) errs.push('Soyad gerekli');
-  if(!email) errs.push('Email gerekli');
-  if(!country) errs.push('Ülke gerekli');
-  if(!dialCode) errs.push('Ülke kodu gerekli');
-  if(!phoneLocal) errs.push('Telefon gerekli');
-  if(!optin) errs.push('WhatsApp opt-in gerekli');
-  const countSel = (sessions?.length||0) + (packages?.length||0);
-  if(countSel < 1) errs.push('En az bir seans veya paket seçilmeli');
-
-  if(errs.length) return json(res, 400, {error: errs.join(' | ')});
-
-  const to = toE164(dialCode, phoneLocal);
-  if(!to) return json(res, 400, {error:'Telefon formatı hatalı'});
-
-  // ENV
-  const token = process.env.WHATSAPP_TOKEN;
-  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-  const templateName = process.env.WHATSAPP_TEMPLATE_NAME;
-  const langCode = process.env.WHATSAPP_TEMPLATE_LANG || 'tr';
-
-  if(!token || !phoneNumberId || !templateName){
-    return json(res, 500, {error:'Sunucu ayarları eksik (ENV)'}); 
-  }
-
-  // IMPORTANT:
-  // - Business-initiated messages require an APPROVED template.
-  // - Keep this message short; ask user to reply (e.g., "DEVAM") to open the 24h customer service window.
-  const selectionSummary = summarizeSelections(sessions, packages);
-
-  // Template variables: adapt to your template structure.
-  // Here we assume Body has 2 variables: {{1}}=FirstName, {{2}}=Selections
-  // If your template has different variables, update this.
-  const payload = {
-    messaging_product: "whatsapp",
-    to,
-    type: "template",
-    template: {
-      name: templateName,
-      language: { code: langCode },
-      components: [
-        {
-          type: "body",
-          parameters: [
-            { type: "text", text: String(firstName) },
-            { type: "text", text: selectionSummary || "-" }
-          ]
-        }
-      ]
+module.exports = async (req, res) => {
+  try {
+    if (req.method === "GET") {
+      return json(res, 200, { ok: true, message: "lead ok (POST JSON to send template)" });
     }
-  };
 
-  const url = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
+    if (req.method !== "POST") {
+      return json(res, 405, { ok: false, error: "Method not allowed. Use POST." });
+    }
 
-  try{
-    const r = await fetch(url, {
-      method: 'POST',
+    const needed = ["WHATSAPP_TOKEN", "WHATSAPP_PHONE_NUMBER_ID", "WHATSAPP_TEMPLATE_NAME", "WHATSAPP_TEMPLATE_LANG"];
+    const missing = needed.filter(k => !process.env[k] || String(process.env[k]).trim() === "");
+    if (missing.length) {
+      return json(res, 400, { ok: false, error: "Missing env vars", need: missing });
+    }
+
+    const body = await readJsonBody(req);
+
+    // Minimal validation
+    const firstName = safeStr(body.firstName, 80);
+    const lastName  = safeStr(body.lastName, 80);
+    const email     = safeStr(body.email, 160);
+    const country   = safeStr(body.country, 80);
+    const cc        = safeStr(body.countryCode, 8) || safeStr(body.cc, 8);
+    const phoneLocal= safeStr(body.phone, 32);
+    const note      = safeStr(body.message, 500);
+
+    const sessions  = Array.isArray(body.sessions) ? body.sessions.map(x => safeStr(x, 40)).filter(Boolean) : [];
+    const packages  = Array.isArray(body.packages) ? body.packages.map(x => safeStr(x, 40)).filter(Boolean) : [];
+
+    const optin1 = !!body.optinWhatsapp;
+    const optin2 = !!body.optinStop;
+
+    if (!firstName || !lastName || !email || !country || !cc || !phoneLocal) {
+      return json(res, 400, { ok: false, error: "Missing required fields" });
+    }
+    if (!optin1 || !optin2) {
+      return json(res, 400, { ok: false, error: "Consent required" });
+    }
+    if (sessions.length === 0 && packages.length === 0) {
+      return json(res, 400, { ok: false, error: "Select at least one session or package" });
+    }
+
+    const to = normalizeE164(cc, phoneLocal);
+    if (!to || to.length < 8) {
+      return json(res, 400, { ok: false, error: "Invalid phone number" });
+    }
+
+    // Build template variables (body has {{1}} {{2}} in your demo template)
+    const selectionText = [
+      sessions.length ? `Seçilen seanslar: ${sessions.join(", ")}` : "",
+      packages.length ? `Seçilen paketler: ${packages.join(", ")}` : ""
+    ].filter(Boolean).join(" | ");
+
+    const totalText = safeStr(body.total || body.totalText || "", 120);
+
+    const templatePayload = {
+      messaging_product: "whatsapp",
+      to,
+      type: "template",
+      template: {
+        name: process.env.WHATSAPP_TEMPLATE_NAME,
+        language: { code: process.env.WHATSAPP_TEMPLATE_LANG },
+        components: [
+          {
+            type: "body",
+            parameters: [
+              { type: "text", text: selectionText || "—" },
+              { type: "text", text: totalText || "—" }
+            ]
+          }
+        ]
+      }
+    };
+
+    // Send
+    const url = `https://graph.facebook.com/v22.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`;
+    const resp = await fetch(url, {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        "Authorization": `Bearer ${process.env.WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(templatePayload)
     });
 
-    const data = await r.json().catch(()=>({}));
+    const data = await resp.json().catch(() => ({}));
 
-    if(!r.ok){
-      // Forward Meta error (trim)
-      const metaErr = (data && data.error && data.error.message) ? data.error.message : 'Meta API error';
-      return json(res, 502, {error: metaErr, details: data});
+    if (!resp.ok) {
+      return json(res, resp.status, {
+        ok: false,
+        status: resp.status,
+        error: "WhatsApp API error",
+        details: data
+      });
     }
 
-    // Here you could also log the lead to a database / Google Sheet
-    return json(res, 200, {ok:true, to, meta:data});
-  }catch(e){
-    return json(res, 500, {error: 'Sunucu hatası: ' + (e?.message || e)});
+    return json(res, 200, { ok: true, status: resp.status, data });
+
+  } catch (err) {
+    return json(res, 500, {
+      ok: false,
+      error: "FUNCTION_CRASH",
+      message: err?.message || String(err)
+    });
   }
-}
+};
