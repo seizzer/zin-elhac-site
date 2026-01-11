@@ -1114,53 +1114,7 @@
         return;
       }
 
-      // Send to backend (Vercel Serverless Function) which triggers WhatsApp template.
-      const payload = {
-        firstName: firstName.value.trim(),
-        lastName: lastName.value.trim(),
-        country: countrySelect.value,
-        phone_prefix: phonePrefix.value,
-        phone: phoneNumber.value.trim(),
-        email: email.value.trim(),
-        message: message.value.trim(),
-        sessions: Array.from(document.querySelectorAll('input[name="sessions"]:checked')).map(x => x.value),
-        packages: Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x => x.value),
-        consent_whatsapp: !!consentWhatsApp.checked,
-        consent_stop: !!consentStop.checked
-      };
-
-      const originalLabel = submitBtn.textContent;
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Gönderiliyor…";
-
-      try{
-        const res = await fetch("/api/lead", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        let data = {};
-        try { data = await res.json(); } catch(_e) {}
-
-        if(res.ok && data && data.ok){
-          showToast("Gönderildi. WhatsApp mesajını kontrol edin.");
-          form.reset();
-          updateSubmit();
-          closeModal();
-        }else{
-          const msg =
-            (data && (data.error || data.message)) ? (data.error || data.message)
-            : ("Gönderilemedi. (" + res.status + ")");
-          showToast(msg);
-        }
-      }catch(err){
-        showToast("Gönderilemedi. Lütfen tekrar deneyin.");
-      }finally{
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalLabel;
-        updateSubmit();
-      }
+      closeModal();
     });
 
     // UX: disable submit until consent is checked
