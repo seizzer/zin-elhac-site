@@ -1,0 +1,8 @@
+{
+  "name": "zin-elhac-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx vercel dev"
+  }
+}

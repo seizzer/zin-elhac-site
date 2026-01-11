@@ -1,0 +1,1275 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zîn Elhac</title>
+  <meta name="description" content="Zîn Elhac — yaşam koçluğu seans ve paketleri" />
+
+  <!-- Web font (no PC install needed) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      /* ONLY THESE 6 HEX COLORS (as you requested) */
+      --c1:#f5f0eb; /* warm off-white */
+      --c2:#b36932; /* copper (accent only, not body text) */
+      --c3:#626a48; /* olive (main ink) */
+      --c4:#faf7f5; /* near-white */
+      --c5:#e7dbd0; /* beige */
+      --c6:#c65c75; /* rose */
+
+      --ink: var(--c3);
+      --inkSoft: color-mix(in srgb, var(--c3) 70%, transparent);
+      --veil: color-mix(in srgb, var(--c4) 86%, transparent);
+
+      --headerH:70px;
+      --footerH:64px;
+      --max:1260px;
+      --ease: cubic-bezier(.16,.92,.18,1);
+      --bgShift: 0px;
+    }
+
+    *{box-sizing:border-box;}
+    html,body{height:100%;}
+    html{scroll-behavior:smooth;}
+    body{
+      margin:0;
+      color:var(--ink);
+      background: var(--c4);
+      font-family: "Noto Kufi Arabic", Arial, sans-serif;
+      font-weight: 300; /* lighter overall */
+      overflow-x:hidden;
+    }
+    a{color:inherit; text-decoration:none;}
+    button{font-family:inherit; color:inherit;}
+    ::selection{background: color-mix(in srgb, var(--c6) 20%, transparent);}
+
+    /* Fixed background image (put background.jpg next to this HTML file) */
+    .bg-fixed{
+      position:fixed;
+      inset:-6vh -6vw;
+      z-index:-2;
+      background-image:url('background.jpg');
+      background-size:cover;
+      background-position:center;
+      background-repeat:no-repeat;
+      transform: translateY(var(--bgShift)) scale(1.08);
+      will-change: transform;
+    }
+
+    /* Light veil / glass layer (palette-only) */
+    .bg-veil{
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      background:
+        radial-gradient(1200px 720px at 18% 16%, color-mix(in srgb, var(--c2) 16%, transparent), transparent 62%),
+        radial-gradient(1200px 720px at 82% 18%, color-mix(in srgb, var(--c6) 12%, transparent), transparent 66%),
+        linear-gradient(180deg,
+          color-mix(in srgb, var(--c4) 86%, transparent),
+          color-mix(in srgb, var(--c1) 62%, transparent)
+        );
+      backdrop-filter: blur(10px);
+    }
+
+    header{
+      position:fixed; inset:0 0 auto 0;
+      height:var(--headerH);
+      z-index:50;
+      background: color-mix(in srgb, var(--c4) 14%, transparent); /* lighter */
+      backdrop-filter: blur(16px);
+      border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+    }
+    .header-inner{
+      height:100%;
+      width:min(var(--max), calc(100% - 40px));
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+    }
+
+    nav{
+      display:flex;
+      gap:22px;
+      align-items:center;
+      justify-content:center;
+      flex:1;
+    }
+    .nav-item{
+      position:relative;
+      padding:12px 2px;
+      font-weight:400; /* lighter */
+      font-size:14px;
+      letter-spacing:.01em;
+      color: color-mix(in srgb, var(--c3) 78%, transparent);
+      transition:color 180ms var(--ease), transform 180ms var(--ease), opacity 180ms var(--ease);
+      outline:none;
+      opacity:.95;
+    }
+    .nav-item::after{
+      content:"";
+      position:absolute;
+      left:0; right:0; bottom:3px;
+      height:2px;
+      background:linear-gradient(90deg,
+        transparent,
+        color-mix(in srgb, var(--c6) 55%, transparent),
+        transparent
+      );
+      transform:scaleX(0);
+      transform-origin:center;
+      transition:transform 260ms var(--ease);
+    }
+    .nav-item:hover{color: var(--c3); transform:translateY(-1px); opacity:1;}
+    .nav-item:hover::after{transform:scaleX(1);}
+    .nav-item:focus-visible{box-shadow:0 0 0 4px color-mix(in srgb, var(--c5) 55%, transparent); border-radius:12px;}
+
+    .nameblock{
+      min-width:190px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      line-height:1.05;
+      text-align:center;
+    }
+    .name-top{font-weight:400; font-size:15px; letter-spacing:.01em;}
+    .name-sep{
+      width:124px; height:1px;
+      background:linear-gradient(90deg, transparent, color-mix(in srgb, var(--c3) 46%, transparent), transparent);
+    }
+    .name-ar{
+      font-weight:400;
+      font-size:14px;
+      color: color-mix(in srgb, var(--c3) 76%, transparent);
+      direction:rtl;
+      margin-top:-1px;
+    }
+
+    footer{
+      position:fixed; inset:auto 0 0 0;
+      height:var(--footerH);
+      z-index:50;
+      background: color-mix(in srgb, var(--c4) 18%, transparent);
+      backdrop-filter: blur(16px);
+      border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+    }
+    .footer-inner{
+      height:100%;
+      width:min(var(--max), calc(100% - 40px));
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .footer-col{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+    .social{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      line-height:0;
+    }
+    .icon-btn{
+      width:26px; height:26px;
+      padding:0;
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      opacity:.9;
+      transition:opacity 180ms var(--ease), transform 180ms var(--ease), filter 180ms var(--ease);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      vertical-align:middle;
+      color: color-mix(in srgb, var(--c3) 84%, transparent);
+    }
+    .icon-btn:hover{opacity:1; transform:translateY(-1px); color: color-mix(in srgb, var(--c6) 55%, var(--c3));}
+    .icon-btn:focus-visible{outline:none; box-shadow:0 0 0 4px color-mix(in srgb, var(--c5) 55%, transparent); border-radius:12px;}
+    .icon{
+      width:22px; height:22px;
+      display:block;
+      fill:currentColor;
+    }
+    .footer-text{
+      font-size:11.5px;
+      font-weight:300;
+      color: color-mix(in srgb, var(--c3) 72%, transparent);
+      letter-spacing:.02em;
+      text-align:center;
+      line-height:1.1;
+    }
+
+    main{
+      min-height:100vh;
+      padding-top:var(--headerH);
+      padding-bottom:var(--footerH);
+    }
+
+    /* Strong motion BUT with better tolerance (less "instant blur") */
+    section{
+      min-height:calc(100vh - var(--headerH) - var(--footerH));
+      display:flex;
+      align-items:stretch;
+      justify-content:center;
+      padding:0;
+      position:relative;
+
+      opacity:0.30;
+      transform:translateY(18px) scale(0.990);
+      filter: blur(2.6px);
+      transition:opacity 120ms linear, transform 120ms linear, filter 120ms linear;
+      will-change:opacity, transform, filter;
+    }
+
+    /* Tonal separation using palette (lighter overall) */
+    #ben-kimim{ background: color-mix(in srgb, var(--c4) 18%, transparent); }
+    #tekli-seanslar{ background: color-mix(in srgb, var(--c1) 22%, transparent); }
+    #paketler{ background: color-mix(in srgb, var(--c5) 22%, transparent); }
+
+    .wrap{
+      width:min(var(--max), calc(100% - 40px));
+      margin:0 auto;
+      padding:0;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      flex:1;
+    }
+
+    .section-head{
+      display:flex;
+      align-items:baseline;
+      justify-content:flex-start;
+      gap:16px;
+      margin:0 0 18px;
+      padding:28px 0 0;
+    }
+    .section-head h2{
+      margin:0;
+      font-size:30px;
+      letter-spacing:.01em;
+      font-weight:400;
+      color: color-mix(in srgb, var(--c3) 92%, transparent);
+    }
+
+    /* ABOUT */
+    .about{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:0;
+      align-items:stretch;
+      min-height:calc(100vh - var(--headerH) - var(--footerH) - 64px);
+      padding-bottom:24px;
+    }
+    .hero-photo{
+      min-height:100%;
+      border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      border-right:none;
+      position:relative;
+      overflow:hidden;
+      background:
+        linear-gradient(135deg,
+          color-mix(in srgb, var(--c2) 10%, transparent),
+          color-mix(in srgb, var(--c5) 22%, transparent)
+        ),
+        radial-gradient(360px 220px at 22% 28%, color-mix(in srgb, var(--c6) 10%, transparent), transparent 72%),
+        radial-gradient(360px 220px at 78% 44%, color-mix(in srgb, var(--c3) 10%, transparent), transparent 76%);
+    }
+    .hero-photo.placeholder::after{
+      content:"PHOTO PLACEHOLDER";
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:400;
+      font-size:12px;
+      letter-spacing:.18em;
+      color: color-mix(in srgb, var(--c3) 70%, transparent);
+    }
+
+    .hero-text{
+      background: color-mix(in srgb, var(--c4) 62%, transparent);
+      border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      padding:22px 22px 20px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+    .hero-text p{
+      margin:0 0 12px;
+      font-size:16px;
+      line-height:1.85;
+      color: var(--inkSoft);
+      font-weight:300;
+    }
+    .hero-cta{
+      margin-top:16px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    
+    .btn{
+      border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      background: color-mix(in srgb, var(--c4) 18%, transparent); /* subtle, not solid */
+      padding:13px 16px;
+      font-weight:400;
+      font-size:13px;
+      cursor:pointer;
+      letter-spacing:.01em;
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--c6) 20%, transparent);
+      transition:
+        transform 180ms var(--ease),
+        background 220ms var(--ease),
+        border-color 220ms var(--ease),
+        box-shadow 220ms var(--ease),
+        opacity 220ms var(--ease);
+      opacity:.95;
+    }
+    .btn:hover{
+      transform:translateY(-2px);
+      opacity:1;
+      background: color-mix(in srgb, var(--c4) 34%, transparent);
+      border-color: color-mix(in srgb, var(--c6) 26%, var(--c5));
+      box-shadow: 0 0 0 6px color-mix(in srgb, var(--c5) 45%, transparent);
+    }
+    .btn:active{transform:translateY(-1px) scale(.99);}
+    .btn:focus-visible{
+      outline:none;
+      box-shadow: 0 0 0 6px color-mix(in srgb, var(--c5) 55%, transparent);
+    }
+
+    /* Primary becomes a "ghost-accent" (not solid) */
+    .btn.primary{
+      background: color-mix(in srgb, var(--c6) 14%, transparent);
+      border-color: color-mix(in srgb, var(--c6) 32%, var(--c5));
+      color: color-mix(in srgb, var(--c3) 92%, transparent);
+    }
+    .btn.primary:hover{
+      background: color-mix(in srgb, var(--c6) 22%, transparent);
+      border-color: color-mix(in srgb, var(--c6) 42%, var(--c5));
+      box-shadow: 0 0 0 6px color-mix(in srgb, var(--c6) 16%, transparent);
+    }
+
+/* CARDS (more interactive on hover) */
+    .cards-block{
+      background: color-mix(in srgb, var(--c4) 56%, transparent);
+      border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      padding:0;
+      margin:0 0 24px;
+    }
+    .cards-grid{display:grid; gap:0;}
+    .cards-grid.cols-3{grid-template-columns:repeat(3, 1fr);}
+    .cards-grid.cols-4{grid-template-columns:repeat(4, 1fr);}
+
+    .card{
+      min-height:320px;
+      border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      display:flex;
+      flex-direction:column;
+      background: color-mix(in srgb, var(--c1) 18%, transparent);
+      transition: transform 240ms var(--ease), background 240ms var(--ease), filter 240ms var(--ease);
+      will-change: transform, filter;
+    }
+    .card:last-child{border-right:none;}
+    .cards-grid:hover .card{filter: brightness(0.99);}
+    .card:hover{
+      transform: translateY(-6px) scale(1.01);
+      background: color-mix(in srgb, var(--c4) 66%, transparent);
+      filter: brightness(1.035);
+      z-index:2;
+    }
+    .card-media{
+      height:190px;
+      border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      position:relative;
+      background:
+        radial-gradient(280px 150px at 28% 30%, color-mix(in srgb, var(--c2) 14%, transparent), transparent 74%),
+        radial-gradient(280px 150px at 72% 40%, color-mix(in srgb, var(--c6) 12%, transparent), transparent 74%),
+        linear-gradient(135deg, color-mix(in srgb, var(--c5) 18%, transparent), transparent 74%);
+    }
+    .card-media.placeholder::after{
+      content:"IMAGE";
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:400;
+      font-size:12px;
+      letter-spacing:.22em;
+      color: color-mix(in srgb, var(--c3) 70%, transparent);
+    }
+    .card-body{
+      padding:16px 16px 18px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      flex:1;
+    }
+    .card-title{
+      margin:0;
+      font-size:16px;
+      font-weight:400;
+      letter-spacing:.01em;
+      color: color-mix(in srgb, var(--c3) 92%, transparent);
+    }
+    .card-link{
+      margin-top:auto;
+      align-self:flex-start;
+      background:transparent;
+      border:none;
+      padding:0;
+      cursor:pointer;
+      font-weight:400;
+      font-size:13.5px;
+      color: color-mix(in srgb, var(--c3) 84%, transparent);
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      transition:transform 180ms var(--ease), color 180ms var(--ease), opacity 180ms var(--ease);
+      opacity:.95;
+    }
+    .card-link:hover{transform:translateX(3px); color: color-mix(in srgb, var(--c6) 45%, var(--c3)); opacity:1;}
+    .chev{font-size:15px; transform:translateY(-.5px); color: color-mix(in srgb, var(--c6) 58%, transparent);}
+
+    /* Detail panel */
+    .detail-wrap{
+      border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      background: color-mix(in srgb, var(--c4) 62%, transparent);
+      overflow:hidden;
+      max-height:0;
+      opacity:0;
+      transform:translateY(-10px);
+      transition:max-height 640ms var(--ease), opacity 320ms var(--ease), transform 640ms var(--ease);
+    }
+    .detail-wrap.open{
+      max-height:340px;
+      opacity:1;
+      transform:translateY(0);
+    }
+    .detail-inner{
+      padding:16px 16px 18px;
+      display:flex;
+      gap:16px;
+      align-items:flex-start;
+      justify-content:space-between;
+    }
+    .detail-text{
+      font-size:15px;
+      line-height:1.75;
+      color: var(--inkSoft);
+      overflow:auto;
+      max-height:240px;
+      flex:1;
+      font-weight:300;
+    }
+    .detail-actions{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:flex-end;
+      flex:0 0 auto;
+    }
+    .xbtn{
+      width:36px; height:36px;
+      border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      background: color-mix(in srgb, var(--c4) 78%, transparent);
+      cursor:pointer;
+      font-weight:300;
+      font-size:16px;
+      line-height:1;
+      transition:transform 180ms var(--ease), background 180ms var(--ease);
+    }
+    .xbtn:hover{transform:translateY(-2px); background: color-mix(in srgb, var(--c4) 92%, transparent);}
+    .link-cta{
+      font-weight:400;
+      font-size:13.5px;
+      cursor:pointer;
+      color: var(--c3);
+      border-bottom:2px solid color-mix(in srgb, var(--c6) 55%, transparent);
+      padding-bottom:2px;
+    }
+    .link-cta:hover{border-bottom-color: color-mix(in srgb, var(--c2) 55%, transparent);}
+
+    /* Modal with smooth open animation */
+    .modal{
+      position:fixed; inset:0;
+      background: color-mix(in srgb, var(--c3) 22%, transparent);
+      backdrop-filter:blur(16px);
+      display:flex;
+      align-items:center; justify-content:center;
+      z-index:100;
+      padding:18px;
+
+      opacity:0;
+      pointer-events:none;
+      transition: opacity 260ms var(--ease);
+    }
+    .modal-card{
+      width:min(980px, 100%);
+      max-height:min(82vh, 860px);
+      border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      background: color-mix(in srgb, var(--c4) 92%, transparent);
+      box-shadow:0 28px 84px color-mix(in srgb, var(--c3) 20%, transparent);
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+
+      transform: translateY(12px) scale(0.985);
+      opacity:0;
+      transition: transform 360ms var(--ease), opacity 260ms var(--ease);
+    }
+    .modal.open{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .modal.open .modal-card{
+      transform: translateY(0) scale(1);
+      opacity:1;
+    }
+
+    .modal-head{
+      padding:14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+    }
+    .modal-head strong{font-size:14px; font-weight:400; letter-spacing:.01em;}
+    .modal-body{padding:14px 16px; overflow:auto;}
+    .grid-form{display:grid; grid-template-columns:repeat(12, 1fr); gap:12px;}
+    .field{grid-column:span 12;}
+    .field.half{grid-column:span 6;}
+    .field.third{grid-column:span 4;}
+    label{
+      display:block;
+      font-weight:400;
+      font-size:12px;
+      letter-spacing:.01em;
+      color: var(--inkSoft);
+      margin-bottom:6px;
+    }
+    input, select, textarea{
+      width:100%;
+      border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      padding:12px 12px;
+      font-size:14px;
+      background: color-mix(in srgb, var(--c4) 86%, transparent);
+      outline:none;
+      transition:box-shadow 180ms var(--ease), border-color 180ms var(--ease), background 180ms var(--ease);
+      font-weight:300;
+      color: var(--c3);
+    }
+    input:focus, select:focus, textarea:focus{
+      border-color: color-mix(in srgb, var(--c6) 38%, transparent);
+      background: color-mix(in srgb, var(--c4) 96%, transparent);
+      box-shadow:0 0 0 4px color-mix(in srgb, var(--c5) 55%, transparent);
+    }
+    textarea{min-height:110px; resize:vertical;}
+    .row{display:flex; gap:10px; align-items:center;}
+    .row>*{flex:1;}
+    .prefix{flex:0 0 260px;}
+    .helper{margin-top:6px; font-size:12.5px; color:var(--inkSoft); line-height:1.45; font-weight:300;}
+    .counter{margin-top:6px; display:flex; justify-content:space-between; gap:10px; font-size:12px; color:color-mix(in srgb, var(--c3) 70%, transparent); font-weight:300;}
+
+    .pick-title{margin:10px 0 6px; font-weight:400; font-size:12.5px; letter-spacing:.01em; color:var(--inkSoft);}
+    .pick-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+    .pick-box{
+      border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      background: color-mix(in srgb, var(--c1) 22%, transparent);
+      padding:10px 12px;
+    }
+    .check{display:flex; align-items:flex-start; gap:10px; padding:8px 6px;}
+    .check:hover{background: color-mix(in srgb, var(--c4) 34%, transparent);}
+    .check input{width:18px; height:18px; margin-top:2px; accent-color: var(--c6);}
+    .check span{font-weight:300; font-size:13.5px; color:var(--inkSoft); line-height:1.35;}
+
+    .consent-box{
+      border:1px dashed color-mix(in srgb, var(--c6) 40%, transparent);
+      background: color-mix(in srgb, var(--c5) 28%, transparent);
+      padding:10px 12px;
+      margin-top:10px;
+    }
+    .consent-note{margin-top:6px; font-size:12.5px; color:var(--inkSoft); line-height:1.45; font-weight:300;}
+
+    .modal-foot{
+      padding:12px 16px;
+      border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+    .foot-note{font-size:12.5px; color:var(--inkSoft); font-weight:300; max-width:62ch;}
+    .submit{
+      border:1px solid color-mix(in srgb, var(--c6) 35%, transparent);
+      background: color-mix(in srgb, var(--c6) 72%, transparent);
+      color: var(--c4);
+      padding:12px 16px;
+      font-weight:400; font-size:13px;
+      cursor:pointer;
+      transition:transform 180ms var(--ease), background 180ms var(--ease), opacity 180ms var(--ease);
+    }
+    .submit:hover{transform:translateY(-2px); background: color-mix(in srgb, var(--c6) 84%, transparent);}
+    .submit:disabled{opacity:.55; cursor:not-allowed; transform:none;}
+
+    .toast{
+      position:fixed;
+      left:50%; transform:translateX(-50%);
+      bottom:calc(var(--footerH) + 12px);
+      background: color-mix(in srgb, var(--c4) 92%, transparent);
+      border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      padding:10px 14px;
+      font-weight:400;
+      font-size:13px;
+      color:var(--inkSoft);
+      box-shadow:0 18px 44px color-mix(in srgb, var(--c3) 14%, transparent);
+      display:none;
+      z-index:120;
+      max-width:min(92vw, 760px);
+      text-align:center;
+    }
+    .toast.show{display:block;}
+
+    @media (max-width: 980px){
+      :root{--headerH:64px; --footerH:58px;}
+      .nameblock{display:none;}
+      nav{justify-content:flex-start; gap:14px;}
+      .section-head{padding-top:22px;}
+      .section-head h2{font-size:26px;}
+      .about{grid-template-columns:1fr; min-height:auto; padding-bottom:18px;}
+      .hero-photo{border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); border-bottom:none; min-height:320px;}
+      .hero-text{padding:18px;}
+      .cards-grid.cols-4{grid-template-columns:repeat(2, 1fr);}
+      .cards-grid.cols-3{grid-template-columns:1fr;}
+      .card{border-right:none; border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent); min-height:300px;}
+      .card:last-child{border-bottom:none;}
+      .pick-grid{grid-template-columns:1fr;}
+      .field.half, .field.third{grid-column:span 12;}
+      .prefix{flex-basis: 180px;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-fixed" aria-hidden="true"></div>
+  <div class="bg-veil" aria-hidden="true"></div>
+
+  <header>
+    <div class="header-inner">
+      <nav aria-label="Ana Menü">
+        <a class="nav-item" href="#ben-kimim" data-scroll>Ben kimim</a>
+        <a class="nav-item" href="#tekli-seanslar" data-scroll>Tekli seanslar</a>
+        <a class="nav-item" href="#paketler" data-scroll>Paketler</a>
+        <a class="nav-item" href="#iletisim" id="navContact">İletişim</a>
+      </nav>
+
+      <div class="nameblock" title="Zîn Elhac">
+        <div class="name-top">Zîn Elhac</div>
+        <div class="name-sep"></div>
+        <div class="name-ar">زين إلحق</div>
+      </div>
+    </div>
+  </header>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-col">
+        <div class="social" aria-label="Sosyal Medya">
+          <button class="icon-btn" type="button" aria-label="Instagram (placeholder)" title="Instagram (placeholder)">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Z"/>
+              <path d="M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/>
+              <path d="M17.5 6.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/>
+            </svg>
+          </button>
+
+          <button class="icon-btn" type="button" aria-label="TikTok (placeholder)" title="TikTok (placeholder)">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14 3v10.3a4.7 4.7 0 1 1-4.1-4.63v2.18a2.7 2.7 0 1 0 2.1 2.63V3h2Z"/>
+              <path d="M14 3c.9 2.9 3.4 5 7 5v2c-2.9 0-5.4-1.2-7-3V3Z"/>
+            </svg>
+          </button>
+
+          <button class="icon-btn" type="button" aria-label="LinkedIn (placeholder)" title="LinkedIn (placeholder)">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6.5 6.2a1.8 1.8 0 1 1 0-3.6 1.8 1.8 0 0 1 0 3.6ZM5 9h3v13H5V9Zm5.2 0H13v1.8c.6-1.1 1.9-2.2 4-2.2 3.2 0 4.8 2.1 4.8 5.6V22h-3v-7c0-1.9-.7-3.2-2.6-3.2-1.4 0-2.2 1-2.5 1.9-.1.3-.1.7-.1 1.1V22h-3V9Z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="footer-text">Zin Diary - 2026</div>
+      </div>
+    </div>
+  </footer>
+
+  <main id="main">
+    <section id="ben-kimim" data-section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Ben kimim</h2>
+        </div>
+
+        <div class="about">
+          <div class="hero-photo placeholder" aria-label="Kadın fotoğrafı placeholder"></div>
+
+          <div class="hero-text">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
+            <p>Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi.</p>
+            <p>Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.</p>
+
+            <div class="hero-cta">
+              <button class="btn primary" type="button" data-open-contact>Benimle iletişime geç</button>
+</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tekli-seanslar" data-section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Tekli seanslar</h2>
+        </div>
+
+        <div class="cards-block">
+          <div class="cards-grid cols-3" id="sessionCards">
+            <article class="card">
+              <div class="card-media placeholder" aria-label="Seans 1 görsel placeholder"></div>
+              <div class="card-body">
+                <h3 class="card-title">Seans 1</h3>
+                <button class="card-link" type="button" data-detail="session" data-id="1">Detaylı bilgi <span class="chev">›</span></button>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-media placeholder" aria-label="Seans 2 görsel placeholder"></div>
+              <div class="card-body">
+                <h3 class="card-title">Seans 2</h3>
+                <button class="card-link" type="button" data-detail="session" data-id="2">Detaylı bilgi <span class="chev">›</span></button>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-media placeholder" aria-label="Seans 3 görsel placeholder"></div>
+              <div class="card-body">
+                <h3 class="card-title">Seans 3</h3>
+                <button class="card-link" type="button" data-detail="session" data-id="3">Detaylı bilgi <span class="chev">›</span></button>
+              </div>
+            </article>
+          </div>
+
+          <div class="detail-wrap" id="sessionDetailWrap" aria-live="polite">
+            <div class="detail-inner">
+              <div class="detail-text">
+                <div style="font-weight:400; margin-bottom:8px;" id="sessionDetailTitle">Seans Detayı</div>
+                <div id="sessionDetailText">Lorem ipsum dolor sit amet, consectetur adipiscing elit. (Detay alanı)</div>
+              </div>
+
+              <div class="detail-actions">
+                <button class="xbtn" type="button" id="closeSessionDetail" aria-label="Kapat">×</button>
+                <span class="link-cta" data-open-contact>Benimle iletişime geç</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="paketler" data-section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Paketler</h2>
+        </div>
+
+        <div class="cards-block">
+          <div class="cards-grid cols-4" id="packageCards">
+            <article class="card">
+              <div class="card-media placeholder" aria-label="Paket 1 görsel placeholder"></div>
+              <div class="card-body">
+                <h3 class="card-title">Paket 1</h3>
+                <button class="card-link" type="button" data-detail="package" data-id="1">Detaylı bilgi <span class="chev">›</span></button>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-media placeholder" aria-label="Paket 2 görsel placeholder"></div>
+              <div class="card-body">
+                <h3 class="card-title">Paket 2</h3>
+                <button class="card-link" type="button" data-detail="package" data-id="2">Detaylı bilgi <span class="chev">›</span></button>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-media placeholder" aria-label="Paket 3 görsel placeholder"></div>
+              <div class="card-body">
+                <h3 class="card-title">Paket 3</h3>
+                <button class="card-link" type="button" data-detail="package" data-id="3">Detaylı bilgi <span class="chev">›</span></button>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-media placeholder" aria-label="Paket 4 görsel placeholder"></div>
+              <div class="card-body">
+                <h3 class="card-title">Paket 4</h3>
+                <button class="card-link" type="button" data-detail="package" data-id="4">Detaylı bilgi <span class="chev">›</span></button>
+              </div>
+            </article>
+          </div>
+
+          <div class="detail-wrap" id="packageDetailWrap" aria-live="polite">
+            <div class="detail-inner">
+              <div class="detail-text">
+                <div style="font-weight:400; margin-bottom:8px;" id="packageDetailTitle">Paket Detayı</div>
+                <div id="packageDetailText">Lorem ipsum dolor sit amet, consectetur adipiscing elit. (Detay alanı)</div>
+              </div>
+
+              <div class="detail-actions">
+                <button class="xbtn" type="button" id="closePackageDetail" aria-label="Kapat">×</button>
+                <span class="link-cta" data-open-contact>Benimle iletişime geç</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="iletisim" data-section aria-hidden="true" style="min-height:1px; padding:0;"><div class="wrap" style="padding:0;"></div></section>
+  </main>
+
+  <div class="modal" id="contactModal" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <strong id="contactTitle">İletişim</strong>
+        <button class="xbtn" type="button" id="closeModal" aria-label="Kapat">×</button>
+      </div>
+
+      <div class="modal-body">
+        <form id="contactForm">
+          <div class="grid-form">
+            <div class="field half">
+              <label for="firstName">Ad</label>
+              <input id="firstName" name="firstName" type="text" placeholder="Lorem" required />
+            </div>
+
+            <div class="field half">
+              <label for="lastName">Soyad</label>
+              <input id="lastName" name="lastName" type="text" placeholder="Ipsum" required />
+            </div>
+
+            <div class="field third">
+              <label for="country">Ülke</label>
+              <select id="country" name="country" required>
+                <option value="" selected disabled>Seçiniz</option>
+              </select>
+            </div>
+
+            <div class="field" style="grid-column: span 9;">
+              <label for="phone">Telefon numarası</label>
+              <div class="row">
+                <select class="prefix" id="phonePrefix" name="phonePrefix" required>
+                  <option value="" selected disabled>Ülke kodu seçiniz</option>
+                </select>
+                <input id="phone" name="phone" type="tel" inputmode="tel" placeholder="5xx xxx xx xx" required />
+              </div>
+              <div class="helper">Telefon numaranızın doğru olması önemli — böylece WhatsApp üzerinden hızlıca size dönüş yapabilirim.</div>
+            </div>
+
+            <div class="field half">
+              <label for="email">Email adresi</label>
+              <input id="email" name="email" type="email" placeholder="lorem@ipsum.com" required />
+            </div>
+
+            <div class="field half">
+              <label for="message">Mesaj (maks. 500 karakter)</label>
+              <textarea id="message" name="message" maxlength="500" placeholder="Lorem ipsum..."></textarea>
+              <div class="counter">
+                <span>500 karakter sınırı</span>
+                <span id="msgCount">0 / 500</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="pick-title">Katılmak istediğiniz seans ya da paketleri seçiniz</div>
+              <div class="pick-grid">
+                <div class="pick-box">
+                  <div class="pick-title" style="margin:0 0 6px;">Seanslar</div>
+                  <label class="check"><input type="checkbox" name="sessions" value="Seans 1" /><span>Seans 1</span></label>
+                  <label class="check"><input type="checkbox" name="sessions" value="Seans 2" /><span>Seans 2</span></label>
+                  <label class="check"><input type="checkbox" name="sessions" value="Seans 3" /><span>Seans 3</span></label>
+                </div>
+
+                <div class="pick-box">
+                  <div class="pick-title" style="margin:0 0 6px;">Paketler</div>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 1" /><span>Paket 1</span></label>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 2" /><span>Paket 2</span></label>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 3" /><span>Paket 3</span></label>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 4" /><span>Paket 4</span></label>
+                </div>
+              </div>
+
+              <div class="consent-box" role="group" aria-label="WhatsApp onayı">
+                <label class="check" style="padding:6px 4px;">
+                  <input id="consentWhatsApp" type="checkbox" required />
+                  <span>WhatsApp üzerinden bilgilendirme mesajı almayı kabul ediyorum.</span>
+                </label>
+
+                <label class="check" style="padding:6px 4px;">
+                  <input id="consentStop" type="checkbox" />
+                  <span>İstediğim zaman “STOP” yazarak iptal edebileceğimi biliyorum.</span>
+                </label>
+
+                <div class="consent-note">Gönder’e bastığınızda, WhatsApp Business üzerinden size bir bilgilendirme mesajı iletebilmem için bu onay gereklidir.</div>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-foot">
+        <div class="foot-note"></div>
+        <button class="submit" type="submit" form="contactForm" id="submitBtn">Gönder</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Hazır</div>
+
+  <script>
+    // Country calling codes dataset (loaded live)
+    // Source: GitHub gist raw countries.json (name, iso2, dial_code). citeturn2view0
+    const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
+
+    function fastScrollTo(el){
+      const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--headerH')) || 70;
+      const y = el.getBoundingClientRect().top + window.pageYOffset - headerH;
+      const start = window.pageYOffset;
+      const dist = y - start;
+      const dur = Math.min(640, Math.max(300, Math.abs(dist) * 0.32));
+      const t0 = performance.now();
+      const ease = (t) => 1 - Math.pow(1 - t, 3);
+
+      function step(now){
+        const p = Math.min(1, (now - t0) / dur);
+        window.scrollTo(0, start + dist * ease(p));
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    document.querySelectorAll('[data-scroll]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) fastScrollTo(target);
+      });
+    });
+    document.querySelectorAll('[data-fast-scroll]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = document.querySelector(btn.getAttribute('data-fast-scroll'));
+        if (target) fastScrollTo(target);
+      });
+    });
+
+    const sections = Array.from(document.querySelectorAll('[data-section]'));
+    let ticking = false;
+
+    function clamp(v, a, b){ return Math.min(b, Math.max(a, v)); }
+
+    function updateMotion(){
+      ticking = false;
+
+      const vh = window.innerHeight || 1;
+      const center = vh * 0.52;
+
+      sections.forEach((sec) => {
+        const r = sec.getBoundingClientRect();
+        const secCenter = r.top + r.height / 2;
+        const d = Math.abs(secCenter - center);
+
+        // Larger radius -> more tolerance
+        const t = 1 - clamp(d / (vh * 1.15), 0, 1);
+
+        const opacity = 0.30 + (t * 0.70);   // 0.30..1
+        const y = 18 - (t * 18);             // 18..0
+        const scale = 0.990 + (t * 0.010);   // 0.99..1
+        const blur = 2.6 - (t * 2.6);        // 2.6..0
+
+        sec.style.opacity = opacity.toFixed(3);
+        sec.style.transform = `translateY(${y.toFixed(1)}px) scale(${scale.toFixed(4)})`;
+        sec.style.filter = `blur(${blur.toFixed(2)}px)`;
+      });
+
+      const s = window.scrollY || 0;
+      const shift = Math.max(-95, Math.min(95, -s * 0.07));
+      document.documentElement.style.setProperty('--bgShift', shift.toFixed(2) + 'px');
+    }
+
+    function onScroll(){
+      if (!ticking){
+        ticking = true;
+        requestAnimationFrame(updateMotion);
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive:true });
+    window.addEventListener('resize', onScroll);
+    updateMotion();
+
+    // Contact modal
+    const modal = document.getElementById('contactModal');
+    const openContactButtons = document.querySelectorAll('[data-open-contact]');
+    const navContact = document.getElementById('navContact');
+    const closeModalBtn = document.getElementById('closeModal');
+
+    function openModal(){
+      modal.classList.add('open');
+      setTimeout(() => document.getElementById('firstName')?.focus(), 140);
+    }
+    function closeModal(){ modal.classList.remove('open'); }
+
+    openContactButtons.forEach(b => b.addEventListener('click', openModal));
+    navContact.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+    closeModalBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+
+    // Detail data
+    const sessionData = {
+      1: { title: "Seans 1", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet." },
+      2: { title: "Seans 2", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras elementum ultrices diam. Maecenas ligula massa, varius a." },
+      3: { title: "Seans 3", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi." }
+    };
+    const packageData = {
+      1: { title: "Paket 1", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat volutpat. Nam dui mi, tincidunt quis." },
+      2: { title: "Paket 2", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus." },
+      3: { title: "Paket 3", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer malesuada. In in enim a arcu imperdiet malesuada." },
+      4: { title: "Paket 4", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel lectus. Donec odio tempus molestie, porttitor ut." }
+    };
+
+    const sessionWrap = document.getElementById('sessionDetailWrap');
+    const sessionTitle = document.getElementById('sessionDetailTitle');
+    const sessionText  = document.getElementById('sessionDetailText');
+    const closeSession = document.getElementById('closeSessionDetail');
+
+    const packageWrap = document.getElementById('packageDetailWrap');
+    const packageTitle = document.getElementById('packageDetailTitle');
+    const packageText  = document.getElementById('packageDetailText');
+    const closePackage = document.getElementById('closePackageDetail');
+
+    function openDetail(kind, id){
+      if (kind === 'session'){
+        const d = sessionData[id];
+        sessionTitle.textContent = d.title + " • Detay";
+        sessionText.textContent  = d.text;
+        sessionWrap.classList.add('open');
+        sessionWrap.scrollIntoView({ behavior:'smooth', block:'nearest' });
+      } else {
+        const d = packageData[id];
+        packageTitle.textContent = d.title + " • Detay";
+        packageText.textContent  = d.text;
+        packageWrap.classList.add('open');
+        packageWrap.scrollIntoView({ behavior:'smooth', block:'nearest' });
+      }
+    }
+    function closeDetail(kind){
+      if (kind === 'session') sessionWrap.classList.remove('open');
+      else packageWrap.classList.remove('open');
+    }
+
+    document.querySelectorAll('[data-detail="session"]').forEach(btn => btn.addEventListener('click', () => openDetail('session', btn.getAttribute('data-id'))));
+    document.querySelectorAll('[data-detail="package"]').forEach(btn => btn.addEventListener('click', () => openDetail('package', btn.getAttribute('data-id'))));
+    closeSession.addEventListener('click', () => closeDetail('session'));
+    closePackage.addEventListener('click', () => closeDetail('package'));
+
+    // Message counter
+    const messageEl = document.getElementById('message');
+    const msgCount = document.getElementById('msgCount');
+    messageEl.addEventListener('input', () => { msgCount.textContent = `${messageEl.value.length} / 500`; });
+
+    // Toast
+    const toast = document.getElementById('toast');
+    let toastTimer = null;
+    function showToast(text){
+      toast.textContent = text;
+      toast.classList.add('show');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 1700);
+    }
+
+    // Demo submit
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const requiredOk =
+        document.getElementById('firstName').value.trim() &&
+        document.getElementById('lastName').value.trim() &&
+        document.getElementById('country').value &&
+        document.getElementById('phonePrefix').value &&
+        document.getElementById('phone').value.trim() &&
+        document.getElementById('email').value.trim() &&
+        document.getElementById('consentWhatsApp').checked;
+
+      const picked = document.querySelectorAll('input[name="sessions"]:checked, input[name="packages"]:checked').length;
+
+
+      if (!requiredOk){
+        showToast("Lütfen zorunlu alanları doldurun ve WhatsApp onayını işaretleyin.");
+        return;
+      }
+
+      if (picked < 1){
+        showToast("Lütfen en az 1 seans veya paket seçin.");
+        return;
+      }
+
+      showToast("Demo: Backend’de template gönderilecek (sonunda ‘DEVAM’ istenir).");
+      closeModal();
+    });
+
+    // UX: disable submit until consent is checked
+    const consentWhatsApp = document.getElementById('consentWhatsApp');
+    const submitBtn = document.getElementById('submitBtn');
+    function syncSubmit(){ submitBtn.disabled = !consentWhatsApp.checked; }
+    consentWhatsApp.addEventListener('change', syncSubmit);
+    syncSubmit();
+
+    // Populate countries + dial code list
+    async function loadCountries(){
+      const countrySelect = document.getElementById('country');
+      const prefixSelect = document.getElementById('phonePrefix');
+
+      function addOption(sel, value, label){
+        const opt = document.createElement('option');
+        opt.value = value;
+        opt.textContent = label;
+        sel.appendChild(opt);
+      }
+
+      try{
+        const res = await fetch(COUNTRIES_URL, { cache: "force-cache" });
+        const list = await res.json();
+
+        // Sort by name (stable, simple)
+        list.sort((a,b) => (a.name||"").localeCompare(b.name||"", "en"));
+
+        list.forEach(c => {
+          const name = c.name || "";
+          const code = c.code || "";
+          const dial = c.dial_code || "";
+          if (!name || !code || !dial) return;
+
+          addOption(countrySelect, code, name);
+          addOption(prefixSelect, dial, `${dial} — ${name}`);
+        });
+
+        // reasonable defaults
+        countrySelect.value = "TR";
+        prefixSelect.value = "+90";
+      } catch(err){
+        // Fallback minimal list if fetch blocked/offline
+        const fallback = [
+          {name:"Turkey", code:"TR", dial:"+90"},
+          {name:"United Arab Emirates", code:"AE", dial:"+971"},
+          {name:"Saudi Arabia", code:"SA", dial:"+966"},
+          {name:"United States", code:"US", dial:"+1"},
+          {name:"United Kingdom", code:"GB", dial:"+44"},
+        ];
+        fallback.forEach(c => {
+          addOption(countrySelect, c.code, c.name);
+          addOption(prefixSelect, c.dial, `${c.dial} — ${c.name}`);
+        });
+        countrySelect.value = "TR";
+        prefixSelect.value = "+90";
+      }
+    }
+    loadCountries();
+  </script>
+
+<script>
+/*__API_SUBMIT__*/
+(function(){
+  const form = document.getElementById('contactForm');
+  if(!form) return;
+
+  async function postLead(payload){
+    const res = await fetch('/api/lead', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(()=>({}));
+    if(!res.ok) {
+      throw new Error(data && data.error ? data.error : ('HTTP ' + res.status));
+    }
+    return data;
+  }
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+
+    // collect values (match ids in v8)
+    const firstName = (document.getElementById('firstName')||{}).value?.trim() || '';
+    const lastName  = (document.getElementById('lastName')||{}).value?.trim() || '';
+    const email     = (document.getElementById('email')||{}).value?.trim() || '';
+    const country   = (document.getElementById('country')||{}).value || '';
+    const dialCode  = (document.getElementById('dialCode')||{}).value || '';
+    const phoneLocal= (document.getElementById('phone')||{}).value?.trim() || '';
+    const message   = (document.getElementById('message')||{}).value?.trim() || '';
+
+    const optin = !!(document.getElementById('waOptin')||{}).checked;
+
+    const sessionChecks = Array.from(document.querySelectorAll('input[name="sessions"]:checked')).map(x=>x.value);
+    const packageChecks = Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x=>x.value);
+
+    // Basic client-side validation (server will re-validate)
+    const errors = [];
+    if(!firstName) errors.push('Ad gerekli.');
+    if(!lastName) errors.push('Soyad gerekli.');
+    if(!country) errors.push('Ülke gerekli.');
+    if(!dialCode) errors.push('Ülke kodu gerekli.');
+    if(!phoneLocal) errors.push('Telefon gerekli.');
+    if(!email) errors.push('Email gerekli.');
+    if(!optin) errors.push('WhatsApp onayı gerekli.');
+    if(sessionChecks.length + packageChecks.length < 1) errors.push('En az bir seans veya paket seçmelisin.');
+
+    if(errors.length){
+      alert(errors.join('
+'));
+      return;
+    }
+
+    const payload = {
+      firstName, lastName, email, country,
+      dialCode, phoneLocal, message,
+      optin,
+      sessions: sessionChecks,
+      packages: packageChecks
+    };
+
+    const btn = form.querySelector('button[type="submit"]');
+    const oldText = btn ? btn.textContent : '';
+    if(btn){ btn.disabled = true; btn.textContent = 'Gönderiliyor…'; }
+
+    try{
+      await postLead(payload);
+      alert('Talebin alındı. WhatsApp mesajı birazdan gelecek.');
+      form.reset();
+    }catch(err){
+      alert('Gönderim başarısız: ' + (err && err.message ? err.message : err));
+    }finally{
+      if(btn){ btn.disabled = false; btn.textContent = oldText || 'Gönder'; }
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
