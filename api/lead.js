@@ -1,140 +1,112 @@
-// api/lead.js  ✅ (ESM)  ✅ raw body parse  ✅ GET never crashes
-// Works when package.json contains: { "type": "module" }
-
-const sendJson = (res, status, obj) => {
-  res.statusCode = status;
-  res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.end(JSON.stringify(obj));
-};
-
-const readRawBody = (req) =>
-  new Promise((resolve, reject) => {
-    let data = "";
-    req.on("data", (chunk) => (data += chunk));
-    req.on("end", () => resolve(data));
-    req.on("error", reject);
-  });
-
-const safeParseJson = (raw) => {
-  if (!raw) return {};
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
-};
+// api/lead.js  (ESM uyumlu)
 
 export default async function handler(req, res) {
-  // Always respond to GET so you can sanity-check deployment in browser
-  if (req.method === "GET") {
-    return sendJson(res, 200, {
-      ok: true,
-      message: "lead endpoint is alive. POST JSON to send WhatsApp template.",
-      now: new Date().toISOString(),
-    });
-  }
-
-  if (req.method === "OPTIONS") {
-    res.statusCode = 204;
-    return res.end();
-  }
-
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "GET, POST, OPTIONS");
-    return sendJson(res, 405, { ok: false, error: "Method not allowed" });
-  }
-
   try {
-    // --- ENV CHECK (do not crash, return a clear JSON) ---
-    const requiredEnv = [
-      "WHATSAPP_TOKEN",
-      "WHATSAPP_PHONE_NUMBER_ID",
-      "WHATSAPP_TEMPLATE_NAME",
-      "WHATSAPP_TEMPLATE_LANG",
-      "WHATSAPP_TEST_TO",
-    ];
-    const missing = requiredEnv.filter(
-      (k) => !process.env[k] || String(process.env[k]).trim() === ""
-    );
+    // CORS (same-origin ise sorun olmaz ama koymak iyi)
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS,GET");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-    if (missing.length) {
-      return sendJson(res, 500, {
-        ok: false,
-        error: "Missing env vars",
-        need: missing,
+    if (req.method === "OPTIONS") return res.status(200).end();
+
+    // GET ile açınca "alive" dönsün (senin gördüğün gibi)
+    if (req.method === "GET") {
+      return res.status(200).json({
+        ok: true,
+        message: "lead endpoint is alive. POST JSON to send WhatsApp template.",
+        now: new Date().toISOString(),
       });
     }
 
-    // --- BODY (raw) ---
-    const raw = await readRawBody(req);
-    const body = safeParseJson(raw);
-
-    if (body === null) {
-      return sendJson(res, 400, {
-        ok: false,
-        error: "Invalid JSON body",
-        hint: "Send Content-Type: application/json with a JSON payload.",
-      });
+    if (req.method !== "POST") {
+      return res.status(405).json({ ok: false, error: "Method not allowed" });
     }
 
-    // --- Minimal validation (front-end also validates, but keep server safe) ---
-    const sessions = Array.isArray(body.sessions) ? body.sessions : [];
-    const packages = Array.isArray(body.packages) ? body.packages : [];
-
-    const p1 = sessions.length ? sessions.join(", ") : "-";
-    const p2 = packages.length ? packages.join(", ") : "-";
-
-    // --- WhatsApp Cloud API request ---
+    // ENV
+    const token = process.env.WHATSAPP_TOKEN;
     const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-    const url = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
+    const templateName = process.env.WHATSAPP_TEMPLATE_NAME;
+    const templateLang = process.env.WHATSAPP_TEMPLATE_LANG || "en_US";
+    const fallbackTo = process.env.WHATSAPP_TEST_TO; // formdan to gelmezse test numarasına gider
+
+    const missing = [];
+    if (!token) missing.push("WHATSAPP_TOKEN");
+    if (!phoneNumberId) missing.push("WHATSAPP_PHONE_NUMBER_ID");
+    if (!templateName) missing.push("WHATSAPP_TEMPLATE_NAME");
+    if (!templateLang) missing.push("WHATSAPP_TEMPLATE_LANG");
+    if (missing.length) {
+      return res.status(500).json({ ok: false, error: "Missing env vars", need: missing });
+    }
+
+    // Body parse (Vercel çoğu zaman req.body'yi hazır verir; yine de garanti alalım)
+    const body =
+      typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
+
+    // Formdan gelebilecek alanlar
+    const toRaw = (body.to || body.phone || body.wa || "").toString().trim();
+    const to = (toRaw || fallbackTo || "").replace(/\D/g, ""); // sadece rakam
+    if (!to) {
+      return res.status(400).json({ ok: false, error: "Missing 'to' (phone number)" });
+    }
+
+    // WhatsApp Cloud API endpoint
+    const url = `https://graph.facebook.com/v20.0/${phoneNumberId}/messages`;
+
+    // ✅ hello_world = parametresiz gönder
+    // ✅ zin_booking_summary_v1 (approve olunca) = parametreli göndereceğiz
+    let components = [];
+
+    if (templateName !== "hello_world") {
+      // Bu blok, parametreli template’ler için.
+      // Şimdilik senin gerçek template onaylanana kadar devreye girmeyecek.
+      const firstName = (body.firstName || body.first_name || "").toString().trim() || "—";
+      const sessions = Array.isArray(body.sessions) ? body.sessions : [];
+      const packages = Array.isArray(body.packages) ? body.packages : [];
+
+      // örnek: 2 parametre gönderme (template’in gerçekten 2 parametre beklemesi şart)
+      components = [
+        {
+          type: "body",
+          parameters: [
+            { type: "text", text: firstName },
+            { type: "text", text: `Seanslar: ${sessions.join(", ") || "—"} / Paketler: ${packages.join(", ") || "—"}` },
+          ],
+        },
+      ];
+    }
 
     const payload = {
       messaging_product: "whatsapp",
-      to: String(process.env.WHATSAPP_TEST_TO).replace(/\D/g, ""), // digits only
+      to,
       type: "template",
       template: {
-        name: process.env.WHATSAPP_TEMPLATE_NAME,
-        language: { code: process.env.WHATSAPP_TEMPLATE_LANG },
-        // If your template has NO variables, remove components entirely.
-        components: [
-          {
-            type: "body",
-            parameters: [
-              { type: "text", text: String(p1) },
-              { type: "text", text: String(p2) },
-            ],
-          },
-        ],
+        name: templateName,
+        language: { code: templateLang },
+        ...(components.length ? { components } : {}),
       },
     };
 
-    const r = await fetch(url, {
+    const resp = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     });
 
-    const data = await r.json().catch(() => ({}));
+    const data = await resp.json();
 
-    if (!r.ok) {
-      // Return WhatsApp API error details to help debugging
-      return sendJson(res, r.status || 500, {
+    if (!resp.ok) {
+      return res.status(400).json({
         ok: false,
-        status: r.status,
+        status: resp.status,
         whatsapp_error: data,
       });
     }
 
-    return sendJson(res, 200, { ok: true, status: 200, data });
-  } catch (err) {
-    // Never crash without explanation
-    return sendJson(res, 500, {
-      ok: false,
-      error: "Server exception",
-      message: String(err?.message || err),
-    });
+    return res.status(200).json({ ok: true, status: resp.status, data });
+  } catch (e) {
+    return res.status(500).json({ ok: false, error: e?.message || "Server error" });
   }
 }
