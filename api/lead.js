@@ -2,6 +2,16 @@ if (req.method !== 'POST') {
   return res.status(405).json({ ok: false, error: 'Method not allowed. Use POST.' });
 }
 
+const body = req.body || {};
+const {
+  name,
+  countryCode,
+  phone,
+  selectedSessions,
+  selectedPackages,
+  totalText
+} = body;
+
 async function sendTemplate({ token, phoneNumberId, to, name, lang }) {
   const url = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
 
