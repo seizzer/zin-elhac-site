@@ -1,4 +1,4 @@
-// api/lead.js  (ESM uyumlu)
+// api/lead.js (ESM) - Vercel Node Serverless uyumlu, raw body parse eder
 
 const json = (res, status, obj) => {
   res.statusCode = status;
@@ -6,14 +6,21 @@ const json = (res, status, obj) => {
   res.end(JSON.stringify(obj));
 };
 
-const pick = (obj, keys) => {
-  const out = {};
-  for (const k of keys) out[k] = obj?.[k];
-  return out;
-};
+const readRawBody = (req) =>
+  new Promise((resolve, reject) => {
+    let data = "";
+    req.on("data", (chunk) => (data += chunk));
+    req.on("end", () => resolve(data));
+    req.on("error", reject);
+  });
 
 export default async function handler(req, res) {
-  // Sadece POST kabul edelim (tarayıcıdan açınca GET olur, 405 dönmeli)
+  // CORS gerekmez (aynı domain) ama preflight gelirse bozulmasın:
+  if (req.method === "OPTIONS") {
+    res.statusCode = 204;
+    return res.end();
+  }
+
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return json(res, 405, { ok: false, error: "Use POST /api/lead" });
@@ -32,38 +39,40 @@ export default async function handler(req, res) {
       return json(res, 400, { ok: false, error: "Missing env vars", need: missing });
     }
 
-    // Frontend formundan gelecek alanlar
-    // (req.body Vercel’de bazen string gelir; güvenli parse edelim)
-    const body =
-      typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
+    // --- BODY PARSE (kritik) ---
+    const raw = await readRawBody(req);
+    let body = {};
+    try {
+      body = raw ? JSON.parse(raw) : {};
+    } catch {
+      return json(res, 400, { ok: false, error: "Invalid JSON body" });
+    }
 
     // Zorunlu alanlar (mesaj hariç)
     const required = ["firstName", "lastName", "country", "phone", "email"];
-    const missingFields = required.filter((k) => !String(body[k] ?? "").trim());
+    const missingFields = required.filter((k) => !String(body?.[k] ?? "").trim());
     if (missingFields.length) {
       return json(res, 400, { ok: false, error: "Missing fields", need: missingFields });
     }
 
-    // Checkbox: en az birini seçsin
+    // Checkbox: en az biri seçili
     const optin1 = !!body.optin_whatsapp;
     const optin2 = !!body.optin_stop;
     if (!optin1 && !optin2) {
       return json(res, 400, { ok: false, error: "At least one opt-in checkbox must be selected" });
     }
 
-    // Seans/paket seçimi en az 1 tane olmalı (istersen bunu kapatabiliriz)
+    // Seans/paket seçimi
     const sessions = Array.isArray(body.sessions) ? body.sessions : [];
     const packages = Array.isArray(body.packages) ? body.packages : [];
     if (sessions.length === 0 && packages.length === 0) {
       return json(res, 400, { ok: false, error: "Select at least one session or package" });
     }
 
-    // Template parametreleri: {{1}} seanslar, {{2}} paketler
     const p1 = sessions.join(", ") || "-";
     const p2 = packages.join(", ") || "-";
 
-    const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-    const url = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
+    const url = `https://graph.facebook.com/v22.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`;
 
     const payload = {
       messaging_product: "whatsapp",
@@ -71,7 +80,7 @@ export default async function handler(req, res) {
       type: "template",
       template: {
         name: process.env.WHATSAPP_TEMPLATE_NAME,
-        language: { code: process.env.WHATSAPP_TEMPLATE_LANG }, // ör: "tr" veya "en_US"
+        language: { code: process.env.WHATSAPP_TEMPLATE_LANG }, // ör: "tr"
         components: [
           {
             type: "body",
@@ -96,22 +105,15 @@ export default async function handler(req, res) {
     const data = await r.json().catch(() => ({}));
 
     if (!r.ok) {
-      return json(res, r.status, { ok: false, status: r.status, data });
+      return json(res, r.status, {
+        ok: false,
+        status: r.status,
+        data,
+        debug: { lang: process.env.WHATSAPP_TEMPLATE_LANG, name: process.env.WHATSAPP_TEMPLATE_NAME },
+      });
     }
 
-    // Frontend'e "tamam gönderildi" cevabı
-    return json(res, 200, {
-      ok: true,
-      status: 200,
-      sent: true,
-      debug: {
-        // loglamak için küçük özet
-        template: process.env.WHATSAPP_TEMPLATE_NAME,
-        lang: process.env.WHATSAPP_TEMPLATE_LANG,
-        to: process.env.WHATSAPP_TEST_TO,
-      },
-      data,
-    });
+    return json(res, 200, { ok: true, status: 200, data });
   } catch (e) {
     return json(res, 500, { ok: false, error: "Server error", message: String(e?.message || e) });
   }
