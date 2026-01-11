@@ -1018,6 +1018,23 @@
       setTimeout(() => document.getElementById('firstName')?.focus(), 140);
     }
     function closeModal(){ modal.classList.remove('open'); }
+    function resetContactForm(){
+      const f = document.getElementById('contactForm');
+      if (f) f.reset();
+
+      document.querySelectorAll('input[name="sessions"], input[name="packages"]').forEach(cb => cb.checked = false);
+
+      // keep selects consistent (country -> prefix)
+      const countrySel = document.getElementById('country');
+      if (countrySel && !countrySel.value) countrySel.value = "TR";
+      syncCountryToPrefix();
+
+      const msg = document.getElementById('message');
+      const counter = document.getElementById('msgCount');
+      if (msg) msg.value = "";
+      if (counter) counter.textContent = "0 / 500";
+    }
+
 
     openContactButtons.forEach(b => b.addEventListener('click', openModal));
     navContact.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
@@ -1089,7 +1106,7 @@
     }
 
     // Demo submit
-    document.getElementById('contactForm').addEventListener('submit', (e) => {
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const requiredOk =
@@ -1103,7 +1120,6 @@
 
       const picked = document.querySelectorAll('input[name="sessions"]:checked, input[name="packages"]:checked').length;
 
-
       if (!requiredOk){
         showToast("Lütfen zorunlu alanları doldurun ve WhatsApp onayını işaretleyin.");
         return;
@@ -1114,9 +1130,51 @@
         return;
       }
 
-      closeModal();
-    });
+      const btn = document.getElementById('submitBtn');
+      const oldText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = "Gönderiliyor…";
 
+      try{
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName  = document.getElementById('lastName').value.trim();
+        const country   = document.getElementById('country').value;
+        const phonePrefix = document.getElementById('phonePrefix').value;
+        const phoneRaw  = document.getElementById('phone').value.trim();
+        const email     = document.getElementById('email').value.trim();
+        const message   = (document.getElementById('message').value || "").trim();
+
+        const to = (phonePrefix + phoneRaw).replace(/\D/g,'');
+
+        const sessions = Array.from(document.querySelectorAll('input[name="sessions"]:checked')).map(x => x.value);
+        const packages = Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x => x.value);
+
+        const payload = { firstName, lastName, country, phonePrefix, phoneRaw, to, email, message, sessions, packages };
+
+        const r = await fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await r.json().catch(() => ({}));
+
+        if (!r.ok || !data.ok){
+          const msg = data?.error || data?.message || "Gönderim başarısız. Lütfen tekrar deneyin.";
+          showToast(msg);
+          return;
+        }
+
+        showToast("Talebiniz alındı. WhatsApp üzerinden mesaj gönderdik.");
+        resetContactForm();
+        closeModal();
+      }catch(err){
+        showToast("Sunucuya bağlanırken hata oluştu. Tekrar deneyin.");
+      }finally{
+        btn.disabled = false;
+        btn.textContent = oldText;
+      }
+    });
     // UX: disable submit until consent is checked
     const consentWhatsApp = document.getElementById('consentWhatsApp');
     const submitBtn = document.getElementById('submitBtn');
