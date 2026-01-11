@@ -1,163 +1,118 @@
-/**
- * Vercel Serverless Function: /api/lead
- * - GET  -> returns {ok:true, message:"lead ok"} (so opening in browser won't crash)
- * - POST -> validates payload and sends WhatsApp template message
- *
- * Required env vars:
- *   WHATSAPP_TOKEN
- *   WHATSAPP_PHONE_NUMBER_ID
- *   WHATSAPP_TEMPLATE_NAME
- *   WHATSAPP_TEMPLATE_LANG     (e.g. "tr" for Turkish, "en_US" for hello_world)
- *
- * Optional:
- *   WHATSAPP_DEBUG=1
- */
+// api/lead.js  (ESM uyumlu)
 
-function json(res, status, obj) {
+const json = (res, status, obj) => {
   res.statusCode = status;
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.end(JSON.stringify(obj));
-}
+};
 
-function pick(obj, keys) {
+const pick = (obj, keys) => {
   const out = {};
   for (const k of keys) out[k] = obj?.[k];
   return out;
-}
+};
 
-function safeStr(v, max = 200) {
-  if (v == null) return "";
-  const s = String(v).trim();
-  return s.length > max ? s.slice(0, max) : s;
-}
+export default async function handler(req, res) {
+  // Sadece POST kabul edelim (tarayıcıdan açınca GET olur, 405 dönmeli)
+  if (req.method !== "POST") {
+    res.setHeader("Allow", "POST");
+    return json(res, 405, { ok: false, error: "Use POST /api/lead" });
+  }
 
-function normalizeE164(cc, local) {
-  // cc: like "+90" or "90"
-  // local: "546..." (may contain spaces)
-  const c = String(cc || "").replace(/[^\d+]/g, "");
-  const l = String(local || "").replace(/\D/g, "");
-  const ccDigits = c.startsWith("+") ? c.slice(1) : c;
-  if (!ccDigits || !l) return "";
-  return ccDigits + l; // WhatsApp API accepts without '+'
-}
-
-async function readJsonBody(req) {
-  return await new Promise((resolve, reject) => {
-    let data = "";
-    req.on("data", chunk => { data += chunk; if (data.length > 2_000_000) reject(new Error("Body too large")); });
-    req.on("end", () => {
-      if (!data) return resolve({});
-      try { resolve(JSON.parse(data)); }
-      catch (e) { reject(new Error("Invalid JSON")); }
-    });
-    req.on("error", reject);
-  });
-}
-
-module.exports = async (req, res) => {
   try {
-    if (req.method === "GET") {
-      return json(res, 200, { ok: true, message: "lead ok (POST JSON to send template)" });
-    }
-
-    if (req.method !== "POST") {
-      return json(res, 405, { ok: false, error: "Method not allowed. Use POST." });
-    }
-
-    const needed = ["WHATSAPP_TOKEN", "WHATSAPP_PHONE_NUMBER_ID", "WHATSAPP_TEMPLATE_NAME", "WHATSAPP_TEMPLATE_LANG"];
-    const missing = needed.filter(k => !process.env[k] || String(process.env[k]).trim() === "");
+    const needEnv = [
+      "WHATSAPP_TOKEN",
+      "WHATSAPP_PHONE_NUMBER_ID",
+      "WHATSAPP_TEST_TO",
+      "WHATSAPP_TEMPLATE_NAME",
+      "WHATSAPP_TEMPLATE_LANG",
+    ];
+    const missing = needEnv.filter((k) => !process.env[k]);
     if (missing.length) {
       return json(res, 400, { ok: false, error: "Missing env vars", need: missing });
     }
 
-    const body = await readJsonBody(req);
+    // Frontend formundan gelecek alanlar
+    // (req.body Vercel’de bazen string gelir; güvenli parse edelim)
+    const body =
+      typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
 
-    // Minimal validation
-    const firstName = safeStr(body.firstName, 80);
-    const lastName  = safeStr(body.lastName, 80);
-    const email     = safeStr(body.email, 160);
-    const country   = safeStr(body.country, 80);
-    const cc        = safeStr(body.countryCode, 8) || safeStr(body.cc, 8);
-    const phoneLocal= safeStr(body.phone, 32);
-    const note      = safeStr(body.message, 500);
-
-    const sessions  = Array.isArray(body.sessions) ? body.sessions.map(x => safeStr(x, 40)).filter(Boolean) : [];
-    const packages  = Array.isArray(body.packages) ? body.packages.map(x => safeStr(x, 40)).filter(Boolean) : [];
-
-    const optin1 = !!body.optinWhatsapp;
-    const optin2 = !!body.optinStop;
-
-    if (!firstName || !lastName || !email || !country || !cc || !phoneLocal) {
-      return json(res, 400, { ok: false, error: "Missing required fields" });
+    // Zorunlu alanlar (mesaj hariç)
+    const required = ["firstName", "lastName", "country", "phone", "email"];
+    const missingFields = required.filter((k) => !String(body[k] ?? "").trim());
+    if (missingFields.length) {
+      return json(res, 400, { ok: false, error: "Missing fields", need: missingFields });
     }
-    if (!optin1 || !optin2) {
-      return json(res, 400, { ok: false, error: "Consent required" });
+
+    // Checkbox: en az birini seçsin
+    const optin1 = !!body.optin_whatsapp;
+    const optin2 = !!body.optin_stop;
+    if (!optin1 && !optin2) {
+      return json(res, 400, { ok: false, error: "At least one opt-in checkbox must be selected" });
     }
+
+    // Seans/paket seçimi en az 1 tane olmalı (istersen bunu kapatabiliriz)
+    const sessions = Array.isArray(body.sessions) ? body.sessions : [];
+    const packages = Array.isArray(body.packages) ? body.packages : [];
     if (sessions.length === 0 && packages.length === 0) {
       return json(res, 400, { ok: false, error: "Select at least one session or package" });
     }
 
-    const to = normalizeE164(cc, phoneLocal);
-    if (!to || to.length < 8) {
-      return json(res, 400, { ok: false, error: "Invalid phone number" });
-    }
+    // Template parametreleri: {{1}} seanslar, {{2}} paketler
+    const p1 = sessions.join(", ") || "-";
+    const p2 = packages.join(", ") || "-";
 
-    // Build template variables (body has {{1}} {{2}} in your demo template)
-    const selectionText = [
-      sessions.length ? `Seçilen seanslar: ${sessions.join(", ")}` : "",
-      packages.length ? `Seçilen paketler: ${packages.join(", ")}` : ""
-    ].filter(Boolean).join(" | ");
+    const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+    const url = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
 
-    const totalText = safeStr(body.total || body.totalText || "", 120);
-
-    const templatePayload = {
+    const payload = {
       messaging_product: "whatsapp",
-      to,
+      to: process.env.WHATSAPP_TEST_TO,
       type: "template",
       template: {
         name: process.env.WHATSAPP_TEMPLATE_NAME,
-        language: { code: process.env.WHATSAPP_TEMPLATE_LANG },
+        language: { code: process.env.WHATSAPP_TEMPLATE_LANG }, // ör: "tr" veya "en_US"
         components: [
           {
             type: "body",
             parameters: [
-              { type: "text", text: selectionText || "—" },
-              { type: "text", text: totalText || "—" }
-            ]
-          }
-        ]
-      }
+              { type: "text", text: p1 },
+              { type: "text", text: p2 },
+            ],
+          },
+        ],
+      },
     };
 
-    // Send
-    const url = `https://graph.facebook.com/v22.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`;
-    const resp = await fetch(url, {
+    const r = await fetch(url, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.WHATSAPP_TOKEN}`,
-        "Content-Type": "application/json"
+        Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(templatePayload)
+      body: JSON.stringify(payload),
     });
 
-    const data = await resp.json().catch(() => ({}));
+    const data = await r.json().catch(() => ({}));
 
-    if (!resp.ok) {
-      return json(res, resp.status, {
-        ok: false,
-        status: resp.status,
-        error: "WhatsApp API error",
-        details: data
-      });
+    if (!r.ok) {
+      return json(res, r.status, { ok: false, status: r.status, data });
     }
 
-    return json(res, 200, { ok: true, status: resp.status, data });
-
-  } catch (err) {
-    return json(res, 500, {
-      ok: false,
-      error: "FUNCTION_CRASH",
-      message: err?.message || String(err)
+    // Frontend'e "tamam gönderildi" cevabı
+    return json(res, 200, {
+      ok: true,
+      status: 200,
+      sent: true,
+      debug: {
+        // loglamak için küçük özet
+        template: process.env.WHATSAPP_TEMPLATE_NAME,
+        lang: process.env.WHATSAPP_TEMPLATE_LANG,
+        to: process.env.WHATSAPP_TEST_TO,
+      },
+      data,
     });
+  } catch (e) {
+    return json(res, 500, { ok: false, error: "Server error", message: String(e?.message || e) });
   }
-};
+}
