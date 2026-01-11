@@ -12,6 +12,8 @@ const {
   totalText
 } = body;
 
+const to = `${countryCode || ''}${(phone || '').replace(/\D/g, '')}`.replace(/^\+/, '');
+
 async function sendTemplate({ token, phoneNumberId, to, name, lang }) {
   const url = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
 
