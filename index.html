@@ -1107,74 +1107,97 @@
 
     // Demo submit
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
+  e.preventDefault();
 
-      const requiredOk =
-        document.getElementById('firstName').value.trim() &&
-        document.getElementById('lastName').value.trim() &&
-        document.getElementById('country').value &&
-        document.getElementById('phonePrefix').value &&
-        document.getElementById('phone').value.trim() &&
-        document.getElementById('email').value.trim() &&
-        document.getElementById('consentWhatsApp').checked;
+  // Basic required checks (message optional)
+  const requiredOk =
+    document.getElementById('firstName').value.trim() &&
+    document.getElementById('lastName').value.trim() &&
+    document.getElementById('country').value &&
+    document.getElementById('phonePrefix').value &&
+    document.getElementById('phone').value.trim() &&
+    document.getElementById('email').value.trim() &&
+    document.getElementById('consentWhatsApp').checked;
 
-      const picked = document.querySelectorAll('input[name="sessions"]:checked, input[name="packages"]:checked').length;
+  const picked = document.querySelectorAll('input[name="sessions"]:checked, input[name="packages"]:checked').length;
 
-      if (!requiredOk){
-        showToast("Lütfen zorunlu alanları doldurun ve WhatsApp onayını işaretleyin.");
-        return;
-      }
+  if (!requiredOk) {
+    showToast("Lütfen zorunlu alanları doldurun ve WhatsApp onayını işaretleyin.");
+    return;
+  }
+  if (picked < 1) {
+    showToast("Lütfen en az 1 seans veya paket seçin.");
+    return;
+  }
 
-      if (picked < 1){
-        showToast("Lütfen en az 1 seans veya paket seçin.");
-        return;
-      }
+  const btn = document.getElementById('submitBtn');
+  const oldText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "Gönderiliyor…";
 
-      const btn = document.getElementById('submitBtn');
-      const oldText = btn.textContent;
-      btn.disabled = true;
-      btn.textContent = "Gönderiliyor…";
+  try {
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    const country   = document.getElementById('country').value;
+    const phonePrefix = document.getElementById('phonePrefix').value;
+    const phoneRaw  = document.getElementById('phone').value.trim();
+    const email     = document.getElementById('email').value.trim();
+    const message   = (document.getElementById('message').value || "").trim();
 
-      try{
-        const firstName = document.getElementById('firstName').value.trim();
-        const lastName  = document.getElementById('lastName').value.trim();
-        const country   = document.getElementById('country').value;
-        const phonePrefix = document.getElementById('phonePrefix').value;
-        const phoneRaw  = document.getElementById('phone').value.trim();
-        const email     = document.getElementById('email').value.trim();
-        const message   = (document.getElementById('message').value || "").trim();
+    const consentStop = !!document.getElementById('consentStop')?.checked;
 
-        const to = (phonePrefix + phoneRaw).replace(/\D/g,'');
+    // e164-ish digits (backend also normalizes)
+    const to = (phonePrefix + phoneRaw).replace(/\D/g,'');
 
-        const sessions = Array.from(document.querySelectorAll('input[name="sessions"]:checked')).map(x => x.value);
-        const packages = Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x => x.value);
+    const sessions = Array.from(document.querySelectorAll('input[name="sessions"]:checked')).map(x => x.value);
+    const packages = Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x => x.value);
 
-        const payload = { firstName, lastName, country, phonePrefix, phoneRaw, to, email, message, sessions, packages };
+    const payload = {
+      firstName, lastName, country,
+      phonePrefix, phoneRaw,
+      to,
+      email, message,
+      optin: true,
+      stopInfo: consentStop,
+      sessions, packages
+    };
 
-        const r = await fetch('/api/lead', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await r.json().catch(() => ({}));
-
-        if (!r.ok || !data.ok){
-          const msg = data?.error || data?.message || "Gönderim başarısız. Lütfen tekrar deneyin.";
-          showToast(msg);
-          return;
-        }
-
-        showToast("Talebiniz alındı. WhatsApp üzerinden mesaj gönderdik.");
-        resetContactForm();
-        closeModal();
-      }catch(err){
-        showToast("Sunucuya bağlanırken hata oluştu. Tekrar deneyin.");
-      }finally{
-        btn.disabled = false;
-        btn.textContent = oldText;
-      }
+    const r = await fetch('/api/lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
+
+    // Safe JSON parse
+    let data = null;
+    try { data = await r.json(); } catch { data = null; }
+
+    // SUCCESS: accept either {ok:true} or {status:200}
+    if (r.ok && (data?.ok === true || data?.status === 200 || data?.data?.messages?.[0]?.message_status === "accepted")) {
+      showToast("Talebiniz alındı. WhatsApp üzerinden mesaj gönderdik.");
+      resetContactForm();
+      closeModal();
+      return;
+    }
+
+    // Failure
+    const msg =
+      data?.error ||
+      data?.message ||
+      data?.whatsapp_error?.error?.message ||
+      data?.whatsapp_error?.error?.error_data?.details ||
+      `Gönderim başarısız. (HTTP ${r.status})`;
+
+    showToast(msg);
+    // On failure: keep modal open so user can fix & retry.
+  } catch (err) {
+    console.error(err);
+    showToast("Sunucuya bağlanırken hata oluştu. Tekrar deneyin.");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = oldText;
+  }
+});
     // UX: disable submit until consent is checked
     const consentWhatsApp = document.getElementById('consentWhatsApp');
     const submitBtn = document.getElementById('submitBtn');
