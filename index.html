@@ -28,9 +28,8 @@
       --headerH:70px;
       --footerH:64px;
       --max:1260px;
-      --ease: cubic-bezier(.16,.92,.18,1);
-      --bgShift: 0px;
-    }
+      --ease: cubic-bezier(.16,.92,.18,1); 
+}
 
     *{box-sizing:border-box;}
     html,body{height:100%;}
@@ -46,19 +45,6 @@
     a{color:inherit; text-decoration:none;}
     button{font-family:inherit; color:inherit;}
     ::selection{background: color-mix(in srgb, var(--c6) 20%, transparent);}
-
-    /* Fixed background image (put background.jpg next to this HTML file) */
-    .bg-fixed{
-      position:fixed;
-      inset:-6vh -6vw;
-      z-index:-2;
-      background-image:url('background.jpg');
-      background-size:cover;
-      background-position:center;
-      background-repeat:no-repeat;
-      transform: translateY(var(--bgShift)) scale(1.08);
-      will-change: transform;
-    }
 
     /* Light veil / glass layer (palette-only) */
     .bg-veil{
@@ -116,11 +102,7 @@
       position:absolute;
       left:0; right:0; bottom:3px;
       height:2px;
-      background:linear-gradient(90deg,
-        transparent,
-        color-mix(in srgb, var(--c6) 55%, transparent),
-        transparent
-      );
+      background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);
       transform:scaleX(0);
       transform-origin:center;
       transition:transform 260ms var(--ease);
@@ -142,7 +124,8 @@
     .name-top{font-weight:400; font-size:15px; letter-spacing:.01em;}
     .name-sep{
       width:124px; height:1px;
-      background:linear-gradient(90deg, transparent, color-mix(in srgb, var(--c3) 46%, transparent), transparent);
+      background: linear-gradient(90deg, #e7dbd0 0%, #626a48 50%, #e7dbd0 100%);
+      opacity: .8;
     }
     .name-ar{
       font-weight:400;
@@ -280,13 +263,7 @@
       border-right:none;
       position:relative;
       overflow:hidden;
-      background:
-        linear-gradient(135deg,
-          color-mix(in srgb, var(--c2) 10%, transparent),
-          color-mix(in srgb, var(--c5) 22%, transparent)
-        ),
-        radial-gradient(360px 220px at 22% 28%, color-mix(in srgb, var(--c6) 10%, transparent), transparent 72%),
-        radial-gradient(360px 220px at 78% 44%, color-mix(in srgb, var(--c3) 10%, transparent), transparent 76%);
+      background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);
     }
     .hero-photo.placeholder::after{
       content:"PHOTO PLACEHOLDER";
@@ -654,11 +631,18 @@
       .field.half, .field.third{grid-column:span 12;}
       .prefix{flex-basis: 180px;}
     }
-  </style>
+  
+    .footer-rule{
+      width: min(360px, 70vw);
+      height:1px;
+      background: linear-gradient(90deg, transparent 0%, #e7dbd0 20%, #626a48 50%, #e7dbd0 80%, transparent 100%);
+      opacity:.75;
+      margin:10px auto 8px;
+    }
+    </style>
 </head>
 
 <body>
-  <div class="bg-fixed" aria-hidden="true"></div>
   <div class="bg-veil" aria-hidden="true"></div>
 
   <header>
@@ -1192,84 +1176,5 @@
     }
     loadCountries();
   </script>
-
-<script>
-/*__API_SUBMIT__*/
-(function(){
-  const form = document.getElementById('contactForm');
-  if(!form) return;
-
-  async function postLead(payload){
-    const res = await fetch('/api/lead', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json().catch(()=>({}));
-    if(!res.ok) {
-      throw new Error(data && data.error ? data.error : ('HTTP ' + res.status));
-    }
-    return data;
-  }
-
-  form.addEventListener('submit', async function(e){
-    e.preventDefault();
-
-    // collect values (match ids in v8)
-    const firstName = (document.getElementById('firstName')||{}).value?.trim() || '';
-    const lastName  = (document.getElementById('lastName')||{}).value?.trim() || '';
-    const email     = (document.getElementById('email')||{}).value?.trim() || '';
-    const country   = (document.getElementById('country')||{}).value || '';
-    const dialCode  = (document.getElementById('dialCode')||{}).value || '';
-    const phoneLocal= (document.getElementById('phone')||{}).value?.trim() || '';
-    const message   = (document.getElementById('message')||{}).value?.trim() || '';
-
-    const optin = !!(document.getElementById('waOptin')||{}).checked;
-
-    const sessionChecks = Array.from(document.querySelectorAll('input[name="sessions"]:checked')).map(x=>x.value);
-    const packageChecks = Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x=>x.value);
-
-    // Basic client-side validation (server will re-validate)
-    const errors = [];
-    if(!firstName) errors.push('Ad gerekli.');
-    if(!lastName) errors.push('Soyad gerekli.');
-    if(!country) errors.push('Ülke gerekli.');
-    if(!dialCode) errors.push('Ülke kodu gerekli.');
-    if(!phoneLocal) errors.push('Telefon gerekli.');
-    if(!email) errors.push('Email gerekli.');
-    if(!optin) errors.push('WhatsApp onayı gerekli.');
-    if(sessionChecks.length + packageChecks.length < 1) errors.push('En az bir seans veya paket seçmelisin.');
-
-    if(errors.length){
-      alert(errors.join('
-'));
-      return;
-    }
-
-    const payload = {
-      firstName, lastName, email, country,
-      dialCode, phoneLocal, message,
-      optin,
-      sessions: sessionChecks,
-      packages: packageChecks
-    };
-
-    const btn = form.querySelector('button[type="submit"]');
-    const oldText = btn ? btn.textContent : '';
-    if(btn){ btn.disabled = true; btn.textContent = 'Gönderiliyor…'; }
-
-    try{
-      await postLead(payload);
-      alert('Talebin alındı. WhatsApp mesajı birazdan gelecek.');
-      form.reset();
-    }catch(err){
-      alert('Gönderim başarısız: ' + (err && err.message ? err.message : err));
-    }finally{
-      if(btn){ btn.disabled = false; btn.textContent = oldText || 'Gönder'; }
-    }
-  });
-})();
-</script>
-
 </body>
 </html>
