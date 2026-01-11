@@ -1,103 +1,84 @@
-// api/lead.js (ESM) - Vercel Node Serverless uyumlu, raw body parse eder
-
-const json = (res, status, obj) => {
-  res.statusCode = status;
-  res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.end(JSON.stringify(obj));
-};
-
-const readRawBody = (req) =>
-  new Promise((resolve, reject) => {
-    let data = "";
-    req.on("data", (chunk) => (data += chunk));
-    req.on("end", () => resolve(data));
-    req.on("error", reject);
-  });
-
+// api/lead.js  (ESM - works with package.json: { "type": "module" })
 export default async function handler(req, res) {
-  // CORS gerekmez (aynı domain) ama preflight gelirse bozulmasın:
-  if (req.method === "OPTIONS") {
-    res.statusCode = 204;
-    return res.end();
-  }
-
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
-    return json(res, 405, { ok: false, error: "Use POST /api/lead" });
-  }
-
   try {
-    const needEnv = [
-      "WHATSAPP_TOKEN",
-      "WHATSAPP_PHONE_NUMBER_ID",
-      "WHATSAPP_TEST_TO",
-      "WHATSAPP_TEMPLATE_NAME",
-      "WHATSAPP_TEMPLATE_LANG",
-    ];
-    const missing = needEnv.filter((k) => !process.env[k]);
+    // Helpful for quick browser checks
+    if (req.method === 'GET') {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.end(JSON.stringify({ ok: true, message: "lead endpoint up (POST to send WhatsApp template)" }));
+      return;
+    }
+
+    if (req.method === 'OPTIONS') {
+      res.statusCode = 204;
+      res.end();
+      return;
+    }
+
+    if (req.method !== 'POST') {
+      res.statusCode = 405;
+      res.setHeader('Allow', 'POST, GET, OPTIONS');
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.end(JSON.stringify({ ok: false, error: 'Method not allowed' }));
+      return;
+    }
+
+    const required = ['WHATSAPP_TOKEN', 'WHATSAPP_PHONE_NUMBER_ID', 'WHATSAPP_TEMPLATE_NAME', 'WHATSAPP_TEMPLATE_LANG'];
+    const missing = required.filter((k) => !process.env[k] || String(process.env[k]).trim() === '');
     if (missing.length) {
-      return json(res, 400, { ok: false, error: "Missing env vars", need: missing });
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.end(JSON.stringify({ ok: false, error: 'Missing env vars', need: missing }));
+      return;
     }
 
-    // --- BODY PARSE (kritik) ---
-    const raw = await readRawBody(req);
-    let body = {};
-    try {
-      body = raw ? JSON.parse(raw) : {};
-    } catch {
-      return json(res, 400, { ok: false, error: "Invalid JSON body" });
-    }
+    const body = await readJsonBody(req);
 
-    // Zorunlu alanlar (mesaj hariç)
-    const required = ["firstName", "lastName", "country", "phone", "email"];
-    const missingFields = required.filter((k) => !String(body?.[k] ?? "").trim());
-    if (missingFields.length) {
-      return json(res, 400, { ok: false, error: "Missing fields", need: missingFields });
-    }
+    // Frontend already validates; still keep server-side guards.
+    const to = String(body?.to || '').replace(/\D/g, '');
+    const firstName = String(body?.firstName || '').trim();
+    const lastName = String(body?.lastName || '').trim();
+    const sessions = Array.isArray(body?.sessions) ? body.sessions : [];
+    const packages = Array.isArray(body?.packages) ? body.packages : [];
 
-    // Checkbox: en az biri seçili
-    const optin1 = !!body.optin_whatsapp;
-    const optin2 = !!body.optin_stop;
-    if (!optin1 && !optin2) {
-      return json(res, 400, { ok: false, error: "At least one opt-in checkbox must be selected" });
-    }
+    if (!to || to.length < 8) throw new Error('Telefon numarası geçersiz.');
+    if (!firstName || !lastName) throw new Error('Ad / Soyad zorunlu.');
+    if ((sessions.length + packages.length) < 1) throw new Error('En az 1 seans veya paket seçilmeli.');
 
-    // Seans/paket seçimi
-    const sessions = Array.isArray(body.sessions) ? body.sessions : [];
-    const packages = Array.isArray(body.packages) ? body.packages : [];
-    if (sessions.length === 0 && packages.length === 0) {
-      return json(res, 400, { ok: false, error: "Select at least one session or package" });
-    }
+    // Prepare template variables. (Adjust to match your template placeholders order!)
+    const chosen = [
+      sessions.length ? `Seanslar: ${sessions.join(', ')}` : null,
+      packages.length ? `Paketler: ${packages.join(', ')}` : null,
+    ].filter(Boolean).join(' • ');
 
-    const p1 = sessions.join(", ") || "-";
-    const p2 = packages.join(", ") || "-";
-
-    const url = `https://graph.facebook.com/v22.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`;
+    const vars = [
+      firstName,                        // {{1}} - name
+      chosen || '-',                    // {{2}} - selection summary
+    ];
 
     const payload = {
-      messaging_product: "whatsapp",
-      to: process.env.WHATSAPP_TEST_TO,
-      type: "template",
+      messaging_product: 'whatsapp',
+      to,
+      type: 'template',
       template: {
         name: process.env.WHATSAPP_TEMPLATE_NAME,
-        language: { code: process.env.WHATSAPP_TEMPLATE_LANG }, // ör: "tr"
+        language: { code: process.env.WHATSAPP_TEMPLATE_LANG },
         components: [
           {
-            type: "body",
-            parameters: [
-              { type: "text", text: p1 },
-              { type: "text", text: p2 },
-            ],
+            type: 'body',
+            parameters: vars.map((v) => ({ type: 'text', text: String(v) })),
           },
         ],
       },
     };
 
+    const url = `https://graph.facebook.com/v20.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`;
+
     const r = await fetch(url, {
-      method: "POST",
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(payload),
     });
@@ -105,16 +86,31 @@ export default async function handler(req, res) {
     const data = await r.json().catch(() => ({}));
 
     if (!r.ok) {
-      return json(res, r.status, {
-        ok: false,
-        status: r.status,
-        data,
-        debug: { lang: process.env.WHATSAPP_TEMPLATE_LANG, name: process.env.WHATSAPP_TEMPLATE_NAME },
-      });
+      res.statusCode = r.status || 500;
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.end(JSON.stringify({ ok: false, status: r.status, data }));
+      return;
     }
 
-    return json(res, 200, { ok: true, status: 200, data });
-  } catch (e) {
-    return json(res, 500, { ok: false, error: "Server error", message: String(e?.message || e) });
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.end(JSON.stringify({ ok: true, status: 200, data }));
+  } catch (err) {
+    res.statusCode = 500;
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.end(JSON.stringify({ ok: false, error: err?.message || String(err) }));
   }
+}
+
+function readJsonBody(req) {
+  return new Promise((resolve, reject) => {
+    let raw = '';
+    req.on('data', (chunk) => { raw += chunk; });
+    req.on('end', () => {
+      if (!raw) return resolve({});
+      try { resolve(JSON.parse(raw)); }
+      catch (e) { reject(new Error('JSON parse failed')); }
+    });
+    req.on('error', reject);
+  });
 }
