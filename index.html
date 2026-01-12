@@ -1195,12 +1195,12 @@
   }
 });
 
-    // UX: disable submit until consent is checked
-    const consentWhatsApp = document.getElementById('consentWhatsApp');
-    const submitBtn = document.getElementById('submitBtn');
-    function syncSubmit(){ submitBtn.disabled = !consentWhatsApp.checked; }
-    consentWhatsApp.addEventListener('change', syncSubmit);
-    syncSubmit();
+
+    // Consent rules:
+    // - WhatsApp consent MUST be checked to send a WhatsApp message (policy + practical requirement)
+    // - STOP awareness is recommended but not required
+    // We do NOT disable the button (people think it's "broken"); we validate on submit and show a toast.
+
 
     // Populate countries + dial code list
     async function loadCountries(){
