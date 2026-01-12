@@ -1110,10 +1110,10 @@
   e.preventDefault();
   // Required fields are enforced by HTML `required` + our checkbox check.
   const form = e.currentTarget;
-  const btn = document.getElementById('btnSubmit');
-  const oldText = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = 'Gönderiliyor...';
+      const btn = document.getElementById("submitBtn") || form.querySelector('button[type="submit"]');
+      const oldText = btn ? btn.textContent : "";
+      if (btn) btn.disabled = true;
+      if (btn) btn.textContent = "Gönderiliyor...";
 
   try {
     const firstName = (document.getElementById('firstName').value || '').trim();
@@ -1190,8 +1190,8 @@
     console.error(err);
     toast('Sunucuya bağlanırken hata oluştu. Lütfen sonra tekrar deneyin.', true);
   } finally {
-    btn.disabled = false;
-    btn.textContent = oldText;
+      if (btn) btn.disabled = false;
+      if (btn) btn.textContent = oldText;
   }
 });
 
