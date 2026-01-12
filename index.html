@@ -1108,58 +1108,52 @@
     // Demo submit
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-
-  // Basic required checks (message optional)
-  const requiredOk =
-    document.getElementById('firstName').value.trim() &&
-    document.getElementById('lastName').value.trim() &&
-    document.getElementById('country').value &&
-    document.getElementById('phonePrefix').value &&
-    document.getElementById('phone').value.trim() &&
-    document.getElementById('email').value.trim() &&
-    document.getElementById('consentWhatsApp').checked;
-
-  const picked = document.querySelectorAll('input[name="sessions"]:checked, input[name="packages"]:checked').length;
-
-  if (!requiredOk) {
-    showToast("Lütfen zorunlu alanları doldurun ve WhatsApp onayını işaretleyin.");
-    return;
-  }
-  if (picked < 1) {
-    showToast("Lütfen en az 1 seans veya paket seçin.");
-    return;
-  }
-
-  const btn = document.getElementById('submitBtn');
+  // Required fields are enforced by HTML `required` + our checkbox check.
+  const form = e.currentTarget;
+  const btn = document.getElementById('btnSubmit');
   const oldText = btn.textContent;
   btn.disabled = true;
-  btn.textContent = "Gönderiliyor…";
+  btn.textContent = 'Gönderiliyor...';
 
   try {
-    const firstName = document.getElementById('firstName').value.trim();
-    const lastName  = document.getElementById('lastName').value.trim();
-    const country   = document.getElementById('country').value;
-    const phonePrefix = document.getElementById('phonePrefix').value;
-    const phoneRaw  = document.getElementById('phone').value.trim();
-    const email     = document.getElementById('email').value.trim();
-    const message   = (document.getElementById('message').value || "").trim();
+    const firstName = (document.getElementById('firstName').value || '').trim();
+    const lastName  = (document.getElementById('lastName').value || '').trim();
+    const email     = (document.getElementById('email').value || '').trim();
+    const message   = (document.getElementById('message').value || '').trim();
 
-    const consentStop = !!document.getElementById('consentStop')?.checked;
+    // Phone build: country code select already includes +XX, input is digits.
+    const cc = (document.getElementById('phoneCode').value || '').replace('+','').trim();
+    const phoneLocal = (document.getElementById('phoneNumber').value || '').replace(/\D/g,'').trim();
+    const to = (cc + phoneLocal).replace(/\D/g,'');
 
-    // e164-ish digits (backend also normalizes)
-    const to = (phonePrefix + phoneRaw).replace(/\D/g,'');
-
+    // Sessions / packages
     const sessions = Array.from(document.querySelectorAll('input[name="sessions"]:checked')).map(x => x.value);
     const packages = Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x => x.value);
 
+    // Checkboxes: at least one must be selected
+    const optin1 = document.getElementById('optinWhatsApp').checked;
+    const optin2 = document.getElementById('optinStop').checked;
+    if (!optin1 && !optin2) {
+      toast('Lütfen en az bir onay kutusunu işaretleyin.', true);
+      return;
+    }
+
+    // Basic phone sanity: must start with country code and have reasonable length
+    if (to.length < 8) {
+      toast('Telefon numarası eksik görünüyor. Lütfen kontrol edin.', true);
+      return;
+    }
+
     const payload = {
-      firstName, lastName, country,
-      phonePrefix, phoneRaw,
       to,
-      email, message,
-      optin: true,
-      stopInfo: consentStop,
-      sessions, packages
+      firstName,
+      lastName,
+      email,
+      message,
+      sessions,
+      packages,
+      optin_whatsapp: optin1,
+      optin_stop: optin2
     };
 
     const r = await fetch('/api/lead', {
@@ -1168,36 +1162,39 @@
       body: JSON.stringify(payload)
     });
 
-    // Safe JSON parse
-    let data = null;
-    try { data = await r.json(); } catch { data = null; }
+    const data = await r.json().catch(() => ({}));
 
-    // SUCCESS: accept either {ok:true} or {status:200}
-    if (r.ok && (data?.ok === true || data?.status === 200 || data?.data?.messages?.[0]?.message_status === "accepted")) {
-      showToast("Talebiniz alındı. WhatsApp üzerinden mesaj gönderdik.");
-      resetContactForm();
-      closeModal();
+    // Success rule:
+    // - WhatsApp is the critical path. If WhatsApp accepted, treat as success even if email is pending/fails.
+    if (r.ok && (data.whatsapp_ok || data.ok)) {
+      if (data.email_ok === false) {
+        toast('WhatsApp gönderildi. (Mail kısmı henüz hazır değil — domain doğrulanınca aktif olacak.)', false);
+      } else {
+        toast('Gönderildi. En kısa sürede dönüş yapılacak.', false);
+      }
+      // reset + close
+      form.reset();
+      closeContact();
       return;
     }
 
-    // Failure
+    // Not OK
     const msg =
-      data?.error ||
       data?.message ||
+      data?.error ||
       data?.whatsapp_error?.error?.message ||
-      data?.whatsapp_error?.error?.error_data?.details ||
-      `Gönderim başarısız. (HTTP ${r.status})`;
+      'Gönderim başarısız. Lütfen tekrar deneyin.';
+    toast(msg, true);
 
-    showToast(msg);
-    // On failure: keep modal open so user can fix & retry.
   } catch (err) {
     console.error(err);
-    showToast("Sunucuya bağlanırken hata oluştu. Tekrar deneyin.");
+    toast('Sunucuya bağlanırken hata oluştu. Lütfen sonra tekrar deneyin.', true);
   } finally {
     btn.disabled = false;
     btn.textContent = oldText;
   }
 });
+
     // UX: disable submit until consent is checked
     const consentWhatsApp = document.getElementById('consentWhatsApp');
     const submitBtn = document.getElementById('submitBtn');
