@@ -19,80 +19,31 @@ const PRICE_SESSION = 5;
 const PRICE_PACKAGE = 10;
 
 async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
-  const token = process.env.WHATSAPP_TOKEN;
-  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-  const templateName = process.env.WHATSAPP_TEMPLATE_NAME || "zin_booking_summary_v1"; 
-  const templateLang = "tr"; 
-
-  const waTo = digitsOnly(to);
-  const sessionCount = safeArr(sessions).length;
-  const packageCount = safeArr(packages).length;
-  const totalPrice = (sessionCount * PRICE_SESSION) + (packageCount * PRICE_PACKAGE);
-  
-  const sessionNames = sessions.join(', ') || 'Seçilmedi';
-  const packageNames = packages.join(', ') || 'Seçilmedi';
-
-  // İkinci değişken için metni hazırlıyoruz (Alt satır olmadan düz metin)
-  const detailText = `Seanslar: ${sessionNames} ($${sessionCount * PRICE_SESSION}). Paketler: ${packageNames} ($${packageCount * PRICE_PACKAGE}). TOPLAM: $${totalPrice}. Ödeme: Western Union/MoneyGram (Ali Veli / Hasan Hüseyin). Dekontu lütfen bu numaraya iletiniz.`;
-
-  const payload = {
-    messaging_product: 'whatsapp',
-    to: waTo,
-    type: 'template',
-    template: {
-      name: templateName,
-      language: { code: templateLang },
-      components: [
-        {
-          type: 'body',
-          parameters: [
-            { type: 'text', text: firstName }, // {{1}} buraya gelecek
-            { type: 'text', text: detailText }  // {{2}} buraya gelecek
-          ]
-        }
-      ]
-    }
-  };
-
   try {
-    const resp = await fetch(`https://graph.facebook.com/v22.0/${phoneNumberId}/messages`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-    return await resp.json();
-  } catch (e) {
-    return { error: e.message };
-  }
-}
+    const token = process.env.WHATSAPP_TOKEN;
+    const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+    const templateName = process.env.WHATSAPP_TEMPLATE_NAME || "zin_booking_summary_v1"; 
+    const templateLang = "tr"; 
 
-export default async function handler(req, res) {
-  allowCors(req, res);
-  if (req.method === 'OPTIONS') return json(res, 204, { ok: true });
-  if (req.method !== 'POST') return json(res, 405, { ok: false });
+    const waTo = digitsOnly(to);
+    const sessionCount = safeArr(sessions).length;
+    const packageCount = safeArr(packages).length;
+    const totalPrice = (sessionCount * PRICE_SESSION) + (packageCount * PRICE_PACKAGE);
+    
+    const sessionNames = sessions.join(', ') || 'Seçilmedi';
+    const packageNames = packages.join(', ') || 'Seçilmedi';
 
-  try {
-    const body = req.body || {};
-    const firstName = safeStr(body.firstName);
-    const prefix = safeStr(body.phonePrefix); 
-    const phoneRaw = safeStr(body.phoneRaw);
-    const to = prefix.replace('+', '') + phoneRaw.replace(/\D/g, ''); 
+    const detailText = `Seanslar: ${sessionNames} ($${sessionCount * PRICE_SESSION}). Paketler: ${packageNames} ($${packageCount * PRICE_PACKAGE}). TOPLAM: $${totalPrice}. Ödeme: Western Union/MoneyGram (Ali Veli / Hasan Hüseyin). Dekontu lütfen bu numaraya iletiniz.`;
 
-    const waResult = await sendWhatsAppTemplate({ 
-      to, 
-      firstName, 
-      sessions: safeArr(body.sessions), 
-      packages: safeArr(body.packages) 
-    });
-
-    console.log("WhatsApp API Nihai Yanıtı:", waResult);
-
-    // Form başarılı dönsün
-    return json(res, 200, { ok: true });
-
-  } catch (err) {
-    console.error("Kritik Hata:", err);
-    return json(res, 500, { ok: false });
+    const payload = {
+      messaging_product: 'whatsapp',
+      to: waTo,
+      type: 'template',
+      template: {
+        name: templateName,
+        language: { code: templateLang },
+        components: [
+          {
+            type: 'body',
+            parameters: [
+              { type: 'text', text: firstName },
