@@ -1,3 +1,4 @@
+// /api/lead.js
 const json = (res, status, obj) => {
   res.statusCode = status;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -20,11 +21,13 @@ const PRICE_PACKAGE = 10;
 async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
   const token = process.env.WHATSAPP_TOKEN;
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-  const templateName = process.env.WHATSAPP_TEMPLATE_NAME || "hello_world"; 
-  const templateLang = process.env.WHATSAPP_TEMPLATE_LANG || "en_US"; 
+  const templateName = process.env.WHATSAPP_TEMPLATE_NAME || "zin_booking_summary_v1"; 
+  
+  // HATA BURADAYDI: Dil kodunu "tr" olarak zorlayalım. 
+  // Eğer Meta panelinde "Türkçe" seçtiysen kod "tr" olmalı.
+  const templateLang = "tr"; 
 
   const waTo = digitsOnly(to);
-  
   const sessionCount = safeArr(sessions).length;
   const packageCount = safeArr(packages).length;
   const totalPrice = (sessionCount * PRICE_SESSION) + (packageCount * PRICE_PACKAGE);
@@ -32,8 +35,7 @@ async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
   const sessionNames = sessions.join(', ') || 'Seçilmedi';
   const packageNames = packages.join(', ') || 'Seçilmedi';
 
-  // MESAJ METNİ
-  const messageText = `Sayın ${firstName}, talebiniz alındı.\nSeanslar: ${sessionNames} ($${sessionCount * PRICE_SESSION})\nPaketler: ${packageNames} ($${packageCount * PRICE_PACKAGE})\nTOPLAM: $${totalPrice}\n\nÖdeme: Western Union/MoneyGram (Ali Veli / Hasan Hüseyin). Dekontu buraya iletiniz.`;
+  const messageText = `Sayın ${firstName}, talebiniz alındı.\n\nSeanslar: ${sessionNames} ($${sessionCount * PRICE_SESSION})\nPaketler: ${packageNames} ($${packageCount * PRICE_PACKAGE})\nTOPLAM: $${totalPrice}\n\nÖdeme: Western Union/MoneyGram (Ali Veli / Hasan Hüseyin). Dekontu buraya iletiniz.`;
 
   const payload = {
     messaging_product: 'whatsapp',
@@ -41,7 +43,7 @@ async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
     type: 'template',
     template: {
       name: templateName,
-      language: { code: templateLang },
+      language: { code: templateLang }, // Burası artık "tr" gidecek
       components: [
         {
           type: 'body',
@@ -53,16 +55,19 @@ async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
     }
   };
 
-  const resp = await fetch(`https://graph.facebook.com/v19.0/${phoneNumberId}/messages`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(payload)
-  });
-
-  return await resp.json();
+  try {
+    const resp = await fetch(`https://graph.facebook.com/v19.0/${phoneNumberId}/messages`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+    return await resp.json();
+  } catch (e) {
+    return { error: e.message };
+  }
 }
 
 export default async function handler(req, res) {
@@ -73,12 +78,11 @@ export default async function handler(req, res) {
   try {
     const body = req.body || {};
     const firstName = safeStr(body.firstName);
-    const lastName = safeStr(body.lastName);
     const prefix = safeStr(body.phonePrefix); 
     const phoneRaw = safeStr(body.phoneRaw);
     const to = prefix.replace('+', '') + phoneRaw.replace(/\D/g, ''); 
 
-    // WhatsApp'ı dene
+    // WhatsApp'ı gönder
     const waResult = await sendWhatsAppTemplate({ 
       to, 
       firstName, 
@@ -86,14 +90,13 @@ export default async function handler(req, res) {
       packages: safeArr(body.packages) 
     });
 
-    console.log("WhatsApp API Yanıtı:", waResult);
+    console.log("WhatsApp API Son Yanıtı:", waResult);
 
-    // Eğer WhatsApp hata verdiyse bile formu "başarılı" gösterelim ki kullanıcı paniklemesin
-    // Ama loglarda hatayı görebilelim.
-    return json(res, 200, { ok: true, info: "İşlem alındı" });
+    // Form her türlü başarılı dönsün ki kullanıcı hata görmesin
+    return json(res, 200, { ok: true });
 
   } catch (err) {
-    console.error("Hata Detayı:", err);
-    return json(res, 500, { ok: false, error: "Sunucu hatası" });
+    console.error("Kritik Hata:", err);
+    return json(res, 500, { ok: false });
   }
 }
