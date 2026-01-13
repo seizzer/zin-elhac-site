@@ -32,9 +32,8 @@ async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
   const sessionNames = sessions.join(', ') || 'Seçilmedi';
   const packageNames = packages.join(', ') || 'Seçilmedi';
 
-  // KRİTİK DÜZELTME: Meta kuralı gereği \n (alt satır) karakterlerini kaldırdık. 
-  // Her şeyi tek bir düz metin olarak, aralara boşluk koyarak yazıyoruz.
-  const messageText = `Sayın ${firstName}, talebiniz alındı. Seanslar: ${sessionNames} ($${sessionCount * PRICE_SESSION}). Paketler: ${packageNames} ($${packageCount * PRICE_PACKAGE}). TOPLAM: $${totalPrice}. Ödeme: Western Union/MoneyGram (Ali Veli / Hasan Hüseyin). Dekontu lütfen bu numaraya iletiniz.`;
+  // İkinci değişken için metni hazırlıyoruz (Alt satır olmadan düz metin)
+  const detailText = `Seanslar: ${sessionNames} ($${sessionCount * PRICE_SESSION}). Paketler: ${packageNames} ($${packageCount * PRICE_PACKAGE}). TOPLAM: $${totalPrice}. Ödeme: Western Union/MoneyGram (Ali Veli / Hasan Hüseyin). Dekontu lütfen bu numaraya iletiniz.`;
 
   const payload = {
     messaging_product: 'whatsapp',
@@ -47,7 +46,8 @@ async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
         {
           type: 'body',
           parameters: [
-            { type: 'text', text: messageText } 
+            { type: 'text', text: firstName }, // {{1}} buraya gelecek
+            { type: 'text', text: detailText }  // {{2}} buraya gelecek
           ]
         }
       ]
@@ -81,7 +81,6 @@ export default async function handler(req, res) {
     const phoneRaw = safeStr(body.phoneRaw);
     const to = prefix.replace('+', '') + phoneRaw.replace(/\D/g, ''); 
 
-    // WhatsApp'ı gönder
     const waResult = await sendWhatsAppTemplate({ 
       to, 
       firstName, 
@@ -89,7 +88,7 @@ export default async function handler(req, res) {
       packages: safeArr(body.packages) 
     });
 
-    console.log("WhatsApp API Son Yanıtı:", waResult);
+    console.log("WhatsApp API Nihai Yanıtı:", waResult);
 
     // Form başarılı dönsün
     return json(res, 200, { ok: true });
@@ -97,5 +96,3 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error("Kritik Hata:", err);
     return json(res, 500, { ok: false });
-  }
-}
