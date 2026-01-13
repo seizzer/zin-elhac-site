@@ -4,5 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "npx vercel dev"
+  },
+  "dependencies": {
+    "resend": "^3.2.0"
   }
 }
