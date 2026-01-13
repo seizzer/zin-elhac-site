@@ -1109,14 +1109,18 @@
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const requiredOk =
-        document.getElementById('firstName').value.trim() &&
-        document.getElementById('lastName').value.trim() &&
-        document.getElementById('country').value &&
-        document.getElementById('phonePrefix').value &&
-        document.getElementById('phone').value.trim() &&
-        document.getElementById('email').value.trim() &&
-        document.getElementById('consentWhatsApp').checked;
+      const countryEl = document.getElementById('country');
+const prefixEl = document.getElementById('phonePrefix');
+
+const requiredOk =
+  document.getElementById('firstName').value.trim().length > 0 &&
+  document.getElementById('lastName').value.trim().length > 0 &&
+  countryEl.selectedIndex > 0 &&
+  prefixEl.selectedIndex > 0 &&
+  document.getElementById('phone').value.trim().length > 0 &&
+  document.getElementById('email').value.trim().length > 0 &&
+  document.getElementById('consentWhatsApp').checked;
+
 
       const picked = document.querySelectorAll('input[name="sessions"]:checked, input[name="packages"]:checked').length;
 
