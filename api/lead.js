@@ -52,7 +52,7 @@ async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
   const messageText = `Sayın ${firstName}, iletişim talebiniz alınmıştır.\n\n` +
     `Seçtiğiniz Seanslar: ${sessionNames} ($${sessionCount * PRICE_SESSION})\n` +
     `Seçtiğiniz Paketler: ${packageNames} ($${packageCount * PRICE_PACKAGE})\n\n` +
-    `TOPLAM TUTAR: $${total}\n\n` +
+    `TOPLAM TUTAR: $${totalPrice}\n\n` +
     `Ödeme Kanalları:\n` +
     `- Western Union\n` +
     `- MoneyGram\n\n` +
@@ -165,7 +165,7 @@ export default async function handler(req, res) {
     const packages = safeArr(body.packages);
     const message = safeStr(body.message);
 
-    // Zorunlu alan kontrolü
+    // Zorunlu alan kontrolü - prefix ve phoneRaw artık doğru kontrol ediliyor
     if (!firstName || !lastName || !email || !country || !prefix || !phoneRaw) {
       console.error("Eksik alanlar:", body);
       return json(res, 400, { ok: false, error: 'Lütfen tüm zorunlu alanları doldurunuz.' });
