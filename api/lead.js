@@ -22,9 +22,6 @@ async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
   const token = process.env.WHATSAPP_TOKEN;
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
   const templateName = process.env.WHATSAPP_TEMPLATE_NAME || "zin_booking_summary_v1"; 
-  
-  // HATA BURADAYDI: Dil kodunu "tr" olarak zorlayalım. 
-  // Eğer Meta panelinde "Türkçe" seçtiysen kod "tr" olmalı.
   const templateLang = "tr"; 
 
   const waTo = digitsOnly(to);
@@ -35,7 +32,9 @@ async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
   const sessionNames = sessions.join(', ') || 'Seçilmedi';
   const packageNames = packages.join(', ') || 'Seçilmedi';
 
-  const messageText = `Sayın ${firstName}, talebiniz alındı.\n\nSeanslar: ${sessionNames} ($${sessionCount * PRICE_SESSION})\nPaketler: ${packageNames} ($${packageCount * PRICE_PACKAGE})\nTOPLAM: $${totalPrice}\n\nÖdeme: Western Union/MoneyGram (Ali Veli / Hasan Hüseyin). Dekontu buraya iletiniz.`;
+  // KRİTİK DÜZELTME: Meta kuralı gereği \n (alt satır) karakterlerini kaldırdık. 
+  // Her şeyi tek bir düz metin olarak, aralara boşluk koyarak yazıyoruz.
+  const messageText = `Sayın ${firstName}, talebiniz alındı. Seanslar: ${sessionNames} ($${sessionCount * PRICE_SESSION}). Paketler: ${packageNames} ($${packageCount * PRICE_PACKAGE}). TOPLAM: $${totalPrice}. Ödeme: Western Union/MoneyGram (Ali Veli / Hasan Hüseyin). Dekontu lütfen bu numaraya iletiniz.`;
 
   const payload = {
     messaging_product: 'whatsapp',
@@ -43,7 +42,7 @@ async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
     type: 'template',
     template: {
       name: templateName,
-      language: { code: templateLang }, // Burası artık "tr" gidecek
+      language: { code: templateLang },
       components: [
         {
           type: 'body',
@@ -56,7 +55,7 @@ async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
   };
 
   try {
-    const resp = await fetch(`https://graph.facebook.com/v19.0/${phoneNumberId}/messages`, {
+    const resp = await fetch(`https://graph.facebook.com/v22.0/${phoneNumberId}/messages`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -92,7 +91,7 @@ export default async function handler(req, res) {
 
     console.log("WhatsApp API Son Yanıtı:", waResult);
 
-    // Form her türlü başarılı dönsün ki kullanıcı hata görmesin
+    // Form başarılı dönsün
     return json(res, 200, { ok: true });
 
   } catch (err) {
