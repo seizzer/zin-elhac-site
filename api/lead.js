@@ -1,3 +1,4 @@
+// /api/lead.js
 const json = (res, status, obj) => {
   res.statusCode = status;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -17,6 +18,7 @@ const digitsOnly = (v) => String(v || '').replace(/\D/g, '');
 const PRICE_SESSION = 5;
 const PRICE_PACKAGE = 10;
 
+// WHATSAPP GÖNDERİM FONKSİYONU
 async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
   try {
     const token = process.env.WHATSAPP_TOKEN;
@@ -28,7 +30,6 @@ async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
     const sCount = safeArr(sessions).length;
     const pCount = safeArr(packages).length;
     const total = (sCount * PRICE_SESSION) + (pCount * PRICE_PACKAGE);
-    
     const sNames = sessions.join(', ') || 'Yok';
     const pNames = packages.join(', ') || 'Yok';
 
@@ -41,15 +42,13 @@ async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
       template: {
         name: templateName,
         language: { code: templateLang },
-        components: [
-          {
-            type: 'body',
-            parameters: [
-              { type: 'text', text: firstName },
-              { type: 'text', text: detailText }
-            ]
-          }
-        ]
+        components: [{
+          type: 'body',
+          parameters: [
+            { type: 'text', text: firstName },
+            { type: 'text', text: detailText }
+          ]
+        }]
       }
     };
 
@@ -67,6 +66,57 @@ async function sendWhatsAppTemplate({ to, firstName, sessions, packages }) {
   }
 }
 
+// RESEND MAİL GÖNDERİM FONKSİYONU (YENİ!)
+async function sendOwnerEmail({ firstName, lastName, email, phone, country, sessions, packages, message }) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const toOwner = "zins.diary@gmail.com"; 
+  const fromEmail = process.env.RESEND_FROM; // Resend'de onayladığın domain maili
+
+  if (!apiKey || !fromEmail) {
+    console.log("Resend ayarları eksik, mail atlanıyor.");
+    return { skipped: true };
+  }
+
+  const sNames = sessions.join(', ') || 'Yok';
+  const pNames = packages.join(', ') || 'Yok';
+
+  const html = `
+    <div style="font-family: sans-serif; color: #626a48; border: 1px solid #e7dbd0; padding: 20px; border-radius: 10px;">
+      <h2 style="color: #b36932;">Yeni Danışan Formu (Ajanda Kaydı)</h2>
+      <p><strong>Ad Soyad:</strong> ${firstName} ${lastName}</p>
+      <p><strong>Ülke:</strong> ${country}</p>
+      <p><strong>Telefon:</strong> ${phone}</p>
+      <p><strong>E-posta:</strong> ${email}</p>
+      <hr style="border: 0; border-top: 1px solid #e7dbd0;" />
+      <p><strong>Seçilen Seanslar:</strong> ${sNames}</p>
+      <p><strong>Seçilen Paketler:</strong> ${pNames}</p>
+      <hr style="border: 0; border-top: 1px solid #e7dbd0;" />
+      <p><strong>Danışan Mesajı:</strong><br/>${message || 'Mesaj yok.'}</p>
+      <p style="font-size: 11px; color: #999; margin-top: 20px;">Bu mail zin-elhac-site üzerinden otomatik üretilmiştir.</p>
+    </div>
+  `;
+
+  try {
+    const resp = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: fromEmail,
+        to: [toOwner],
+        subject: `Yeni Talep: ${firstName} ${lastName}`,
+        html: html
+      })
+    });
+    return await resp.json();
+  } catch (e) {
+    return { error: e.message };
+  }
+}
+
+// ANA İŞLEYİCİ
 export default async function handler(req, res) {
   allowCors(req, res);
   if (req.method === 'OPTIONS') return json(res, 204, { ok: true });
@@ -75,18 +125,30 @@ export default async function handler(req, res) {
   try {
     const body = req.body || {};
     const firstName = safeStr(body.firstName);
+    const lastName = safeStr(body.lastName);
     const prefix = safeStr(body.phonePrefix); 
     const phoneRaw = safeStr(body.phoneRaw);
+    const phone = `${prefix} ${phoneRaw}`;
     const to = prefix.replace('+', '') + phoneRaw.replace(/\D/g, ''); 
 
+    // 1. WhatsApp Gönder
     const waResult = await sendWhatsAppTemplate({ 
       to, 
       firstName, 
       sessions: safeArr(body.sessions), 
       packages: safeArr(body.packages) 
     });
+    console.log("WA:", waResult);
 
-    console.log("WA Result:", waResult);
+    // 2. Mail Gönder (Senin Ajandan İçin)
+    const mailResult = await sendOwnerEmail({
+      firstName, lastName, email: safeStr(body.email),
+      phone, country: safeStr(body.country),
+      sessions: safeArr(body.sessions),
+      packages: safeArr(body.packages),
+      message: safeStr(body.message)
+    });
+    console.log("Mail:", mailResult);
 
     return json(res, 200, { ok: true });
 
