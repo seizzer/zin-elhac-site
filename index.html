@@ -297,7 +297,7 @@
       flex-wrap:wrap;
       align-items:center;
     }
-
+    
     .btn{
       border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
       background: color-mix(in srgb, var(--c4) 18%, transparent); /* subtle, not solid */
@@ -631,7 +631,7 @@
       .field.half, .field.third{grid-column:span 12;}
       .prefix{flex-basis: 180px;}
     }
-
+  
     .footer-rule{
       width: min(360px, 70vw);
       height:1px;
@@ -929,6 +929,7 @@
 
   <script>
     // Country calling codes dataset (loaded live)
+    // Source: GitHub gist raw countries.json (name, iso2, dial_code). citeturn2view0
     const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
 
     function fastScrollTo(el){
@@ -952,6 +953,12 @@
       a.addEventListener('click', (e) => {
         e.preventDefault();
         const target = document.querySelector(a.getAttribute('href'));
+        if (target) fastScrollTo(target);
+      });
+    });
+    document.querySelectorAll('[data-fast-scroll]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = document.querySelector(btn.getAttribute('data-fast-scroll'));
         if (target) fastScrollTo(target);
       });
     });
@@ -984,6 +991,10 @@
         sec.style.transform = `translateY(${y.toFixed(1)}px) scale(${scale.toFixed(4)})`;
         sec.style.filter = `blur(${blur.toFixed(2)}px)`;
       });
+
+      const s = window.scrollY || 0;
+      const shift = Math.max(-95, Math.min(95, -s * 0.07));
+      document.documentElement.style.setProperty('--bgShift', shift.toFixed(2) + 'px');
     }
 
     function onScroll(){
@@ -1031,6 +1042,54 @@
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
 
+    // Detail data
+    const sessionData = {
+      1: { title: "Seans 1", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet." },
+      2: { title: "Seans 2", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras elementum ultrices diam. Maecenas ligula massa, varius a." },
+      3: { title: "Seans 3", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi." }
+    };
+    const packageData = {
+      1: { title: "Paket 1", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat volutpat. Nam dui mi, tincidunt quis." },
+      2: { title: "Paket 2", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus." },
+      3: { title: "Paket 3", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer malesuada. In in enim a arcu imperdiet malesuada." },
+      4: { title: "Paket 4", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel lectus. Donec odio tempus molestie, porttitor ut." }
+    };
+
+    const sessionWrap = document.getElementById('sessionDetailWrap');
+    const sessionTitle = document.getElementById('sessionDetailTitle');
+    const sessionText  = document.getElementById('sessionDetailText');
+    const closeSession = document.getElementById('closeSessionDetail');
+
+    const packageWrap = document.getElementById('packageDetailWrap');
+    const packageTitle = document.getElementById('packageDetailTitle');
+    const packageText  = document.getElementById('packageDetailText');
+    const closePackage = document.getElementById('closePackageDetail');
+
+    function openDetail(kind, id){
+      if (kind === 'session'){
+        const d = sessionData[id];
+        sessionTitle.textContent = d.title + " • Detay";
+        sessionText.textContent  = d.text;
+        sessionWrap.classList.add('open');
+        sessionWrap.scrollIntoView({ behavior:'smooth', block:'nearest' });
+      } else {
+        const d = packageData[id];
+        packageTitle.textContent = d.title + " • Detay";
+        packageText.textContent  = d.text;
+        packageWrap.classList.add('open');
+        packageWrap.scrollIntoView({ behavior:'smooth', block:'nearest' });
+      }
+    }
+    function closeDetail(kind){
+      if (kind === 'session') sessionWrap.classList.remove('open');
+      else packageWrap.classList.remove('open');
+    }
+
+    document.querySelectorAll('[data-detail="session"]').forEach(btn => btn.addEventListener('click', () => openDetail('session', btn.getAttribute('data-id'))));
+    document.querySelectorAll('[data-detail="package"]').forEach(btn => btn.addEventListener('click', () => openDetail('package', btn.getAttribute('data-id'))));
+    closeSession.addEventListener('click', () => closeDetail('session'));
+    closePackage.addEventListener('click', () => closeDetail('package'));
+
     // Message counter
     const messageEl = document.getElementById('message');
     const msgCount = document.getElementById('msgCount');
@@ -1046,11 +1105,10 @@
       toastTimer = setTimeout(() => toast.classList.remove('show'), 1700);
     }
 
-    // Submit
+    // Demo submit
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      // Basic required checks (message optional)
       const requiredOk =
         document.getElementById('firstName').value.trim() &&
         document.getElementById('lastName').value.trim() &&
@@ -1062,11 +1120,12 @@
 
       const picked = document.querySelectorAll('input[name="sessions"]:checked, input[name="packages"]:checked').length;
 
-      if (!requiredOk) {
+      if (!requiredOk){
         showToast("Lütfen zorunlu alanları doldurun ve WhatsApp onayını işaretleyin.");
         return;
       }
-      if (picked < 1) {
+
+      if (picked < 1){
         showToast("Lütfen en az 1 seans veya paket seçin.");
         return;
       }
@@ -1076,7 +1135,7 @@
       btn.disabled = true;
       btn.textContent = "Gönderiliyor…";
 
-      try {
+      try{
         const firstName = document.getElementById('firstName').value.trim();
         const lastName  = document.getElementById('lastName').value.trim();
         const country   = document.getElementById('country').value;
@@ -1085,27 +1144,14 @@
         const email     = document.getElementById('email').value.trim();
         const message   = (document.getElementById('message').value || "").trim();
 
-        const consentStop = !!document.getElementById('consentStop')?.checked;
-
-        // Build E.164 number (WhatsApp expects '+' prefix)
-        const digits = (phonePrefix + phoneRaw).replace(/\D/g,'');
-        const to = digits ? ('+' + digits) : '';
+        // Build E.164 number (WhatsApp expects +<country><number>)
+    const digits = (phonePrefix + phoneRaw).replace(/\D/g,'');
+    const to = digits ? ('+' + digits) : '';
 
         const sessions = Array.from(document.querySelectorAll('input[name="sessions"]:checked')).map(x => x.value);
         const packages = Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x => x.value);
 
-        // Send only the fields the backend expects
-        const payload = {
-          to,
-          firstName,
-          lastName,
-          country,
-          email,
-          message,
-          optin: true,
-          sessions,
-          packages
-        };
+        const payload = { firstName, lastName, country, phonePrefix, phoneRaw, to, email, message, sessions, packages };
 
         const r = await fetch('/api/lead', {
           method: 'POST',
@@ -1113,33 +1159,24 @@
           body: JSON.stringify(payload)
         });
 
-        let data = null;
-        try { data = await r.json(); } catch { data = null; }
+        const data = await r.json().catch(() => ({}));
 
-        if (r.ok && (data?.ok === true || data?.status === 200 || data?.data?.messages?.[0]?.message_status === "accepted")) {
-          showToast("Talebiniz alındı. WhatsApp üzerinden mesaj gönderdik.");
-          resetContactForm();
-          closeModal();
+        if (!r.ok || !data.ok){
+          const msg = data?.error || data?.message || "Gönderim başarısız. Lütfen tekrar deneyin.";
+          showToast(msg);
           return;
         }
 
-        const msg =
-          data?.error ||
-          data?.message ||
-          data?.whatsapp_error?.error?.message ||
-          data?.whatsapp_error?.error?.error_data?.details ||
-          `Gönderim başarısız. (HTTP ${r.status})`;
-
-        showToast(msg);
-      } catch (err) {
-        console.error(err);
+        showToast("Talebiniz alındı. WhatsApp üzerinden mesaj gönderdik.");
+        resetContactForm();
+        closeModal();
+      }catch(err){
         showToast("Sunucuya bağlanırken hata oluştu. Tekrar deneyin.");
-      } finally {
+      }finally{
         btn.disabled = false;
         btn.textContent = oldText;
       }
     });
-
     // UX: disable submit until consent is checked
     const consentWhatsApp = document.getElementById('consentWhatsApp');
     const submitBtn = document.getElementById('submitBtn');
@@ -1148,15 +1185,6 @@
     syncSubmit();
 
     // Populate countries + dial code list
-    function syncCountryToPrefix(){
-      const countrySel = document.getElementById('country');
-      const prefixSel = document.getElementById('phonePrefix');
-      if (!countrySel || !prefixSel) return;
-      const selectedCountry = countrySel.value;
-      const opt = prefixSel.querySelector(`option[data-iso="${selectedCountry}"]`);
-      if (opt) prefixSel.value = opt.value;
-    }
-
     async function loadCountries(){
       const countrySelect = document.getElementById('country');
       const prefixSelect = document.getElementById('phonePrefix');
@@ -1167,17 +1195,12 @@
         opt.textContent = label;
         sel.appendChild(opt);
       }
-      function addPrefix(value, label, iso){
-        const opt = document.createElement('option');
-        opt.value = value;
-        opt.textContent = label;
-        opt.dataset.iso = iso;
-        prefixSelect.appendChild(opt);
-      }
 
       try{
         const res = await fetch(COUNTRIES_URL, { cache: "force-cache" });
         const list = await res.json();
+
+        // Sort by name (stable, simple)
         list.sort((a,b) => (a.name||"").localeCompare(b.name||"", "en"));
 
         list.forEach(c => {
@@ -1185,14 +1208,16 @@
           const code = c.code || "";
           const dial = c.dial_code || "";
           if (!name || !code || !dial) return;
+
           addOption(countrySelect, code, name);
-          addPrefix(dial, `${dial} — ${name}`, code);
+          addOption(prefixSelect, dial, `${dial} — ${name}`);
         });
 
+        // reasonable defaults
         countrySelect.value = "TR";
         prefixSelect.value = "+90";
-        countrySelect.addEventListener('change', syncCountryToPrefix);
       } catch(err){
+        // Fallback minimal list if fetch blocked/offline
         const fallback = [
           {name:"Turkey", code:"TR", dial:"+90"},
           {name:"United Arab Emirates", code:"AE", dial:"+971"},
@@ -1202,11 +1227,10 @@
         ];
         fallback.forEach(c => {
           addOption(countrySelect, c.code, c.name);
-          addPrefix(c.dial, `${c.dial} — ${c.name}`, c.code);
+          addOption(prefixSelect, c.dial, `${c.dial} — ${c.name}`);
         });
         countrySelect.value = "TR";
         prefixSelect.value = "+90";
-        countrySelect.addEventListener('change', syncCountryToPrefix);
       }
     }
     loadCountries();
