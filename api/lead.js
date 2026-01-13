@@ -9,18 +9,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Gelen veriyi loglara yazdıralım ki neyin eksik olduğunu görelim
+    // Log alarak verinin gelip gelmediğini görüyoruz
     console.log("FORM'DAN GELEN VERİLER:", JSON.stringify(req.body));
 
     const { name, phone, session, package: selectedPackage, sessionPrice, packagePrice } = req.body;
 
-    // 2. Telefon numarası kontrolü (Hatanın sebebi burasıydı)
+    // 2. Telefon numarası kontrolü
     if (!phone) {
       console.error("HATA: Telefon numarası (phone) boş geldi!");
       return res.status(400).json({ error: 'Telefon numarası zorunludur.' });
     }
 
     // Verileri WhatsApp formatına hazırlama
+    // Eğer seans veya paket seçilmediyse 'Seçilmedi' yazsın
     const selectedItems = `${session || 'Seçilmedi'}, ${selectedPackage || 'Seçilmedi'}`;
     const totalDetails = `${session}: $${sessionPrice}, ${selectedPackage}: $${packagePrice}`;
 
@@ -77,4 +78,6 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error("SİSTEM HATASI:", error);
-    return res.status(500).json({ error:
+    return res.status(500).json({ error: error.message });
+  }
+}
