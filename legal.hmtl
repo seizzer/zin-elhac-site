@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>سياسة الخصوصية - Zîn Elhac</title>
+  <meta name="description" content="Gizlilik Politikası ve KVKK Aydınlatma Metni" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      /* Aynı Renk Paleti */
+      --c1:#f5f0eb; --c2:#b36932; --c3:#626a48; --c4:#faf7f5; --c5:#e7dbd0; --c6:#c65c75;
+      --ink: var(--c3);
+      --inkSoft: color-mix(in srgb, var(--c3) 70%, transparent);
+      --headerH:70px; --footerH:64px; --max:900px; /* Okuma için daha dar */
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      margin:0; color:var(--ink); background: var(--c4);
+      font-family: "Noto Kufi Arabic", Arial, sans-serif;
+      font-weight: 300; overflow-x:hidden; direction: rtl; /* Arapça Yön */
+    }
+    
+    header{
+      height:var(--headerH); display:flex; align-items:center; justify-content:center;
+      background: color-mix(in srgb, var(--c4) 14%, transparent);
+      border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+    }
+    .logo{font-size:18px; font-weight:500; color:var(--ink); text-decoration:none;}
+
+    main{
+      width:min(var(--max), calc(100% - 40px)); margin:40px auto; 
+      background: color-mix(in srgb, var(--c1) 30%, transparent);
+      border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      padding:40px; border-radius:4px;
+    }
+
+    h1{font-size:24px; font-weight:500; margin-bottom:24px; color:var(--c3);}
+    h2{font-size:18px; font-weight:500; margin-top:32px; margin-bottom:12px; color:var(--c2);}
+    p{line-height:1.8; font-size:15px; color:var(--inkSoft); margin-bottom:16px;}
+    ul{margin-bottom:16px; padding-right:20px;}
+    li{line-height:1.7; font-size:15px; color:var(--inkSoft); margin-bottom:8px;}
+
+    .back-link{
+      display:inline-block; margin-bottom:30px; text-decoration:none;
+      color:var(--c3); font-size:14px; border-bottom:1px solid currentColor;
+    }
+    .back-link:hover{color:var(--c6);}
+
+    footer{
+      text-align:center; padding:20px; font-size:12px; color:var(--inkSoft);
+      border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+    }
+
+    @media (max-width: 768px){
+      main{padding:20px;}
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/" class="logo">Zîn Elhac</a>
+  </header>
+
+  <main>
+    <a href="/" class="back-link">‹ العودة إلى الصفحة الرئيسية</a>
+
+    <h1>سياسة الخصوصية وحماية البيانات الشخصية</h1>
+    <p>في Zîn Elhac ("نحن")، نولي أهمية كبيرة لخصوصية زوارنا وعملائنا. تم إعداد نص التوضيح هذا لإبلاغك بكيفية معالجة بياناتك الشخصية وفقًا لقانون حماية البيانات الشخصية رقم 6698 ("KVKK").</p>
+
+    <h2>1. ما هي البيانات التي نجمعها؟</h2>
+    <p>عند ملء نماذج الاتصال على موقعنا، قد نجمع البيانات التالية:</p>
+    <ul>
+      <li>الاسم واللقب</li>
+      <li>معلومات الاتصال (رقم الهاتف، عنوان البريد الإلكتروني)</li>
+      <li>الدولة ومحتوى رسالتك</li>
+    </ul>
+
+    <h2>2. غرض معالجة البيانات</h2>
+    <p>تتم معالجة بياناتك الشخصية للأغراض التالية:</p>
+    <ul>
+      <li>التواصل معك والرد على استفساراتك</li>
+      <li>تقديم خدمات الكوتشينج (Coaching) وتنظيم المواعيد</li>
+      <li>إرسال المعلومات والعروض الخاصة بخدماتنا (بموافقتك)</li>
+    </ul>
+
+    <h2>3. نقل البيانات</h2>
+    <p>لا يتم نقل بياناتك الشخصية إلى أطراف ثالثة إلا في الحالات التي يقتضيها القانون أو لغرض تقديم الخدمة (مثل أدوات الاتصال).</p>
+
+    <h2>4. حقوقك</h2>
+    <p>بموجب المادة 11 من قانون KVKK، لديك الحق في:</p>
+    <ul>
+      <li>معرفة ما إذا كانت بياناتك الشخصية قد تمت معالجتها أم لا</li>
+      <li>طلب المعلومات إذا تمت معالجة بياناتك</li>
+      <li>معرفة الغرض من المعالجة وما إذا كانت تستخدم وفقًا لذلك</li>
+      <li>طلب تصحيح البيانات إذا كانت ناقصة أو غير صحيحة</li>
+      <li>طلب حذف أو إتلاف البيانات الشخصية</li>
+    </ul>
+
+    <h2>5. الاتصال</h2>
+    <p>لممارسة حقوقك أو لطرح أي أسئلة، يمكنك التواصل معنا عبر البريد الإلكتروني أو نموذج الاتصال.</p>
+
+  </main>
+
+  <footer>
+    Zin Diary - 2026
+  </footer>
+
+</body>
+</html>
