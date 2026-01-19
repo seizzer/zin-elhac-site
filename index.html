@@ -122,39 +122,48 @@
     
     /* FOTOĞRAF ALANI (SAĞ TARAFTA) */
     .hero-photo {
+      /* Alanın genel boyutları ve çerçevesi */
       min-height: 100%;
       border: 1px solid color-mix(in srgb, var(--c5) 55%, transparent);
-      /* Sol sınır kaldırıldı, sağa yapışacak */
-      border-left: none; 
+      border-right: none;
       position: relative;
       overflow: hidden;
+      
+      /* Arka plan dolgusu (Resim ortada, kenarlar boş kalmasın diye soft gradyan) */
       background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);
+      
+      /* FOTOĞRAF ÇAĞIRMA */
       background-image: url('zin.jpg'); 
+      
+      /* TEKNİK AYARLAR */
       background-repeat: no-repeat;
-      background-size: 477px 543px; 
+      
+      /* RESİM BOYUTU: Verdiğin net piksel ölçülerine göre KESİN ayarlandı */
+      background-size: 382px 679px; 
+      
+      /* HİZALAMA: Resmi tam ortaya yerleştir */
       background-position: center center;
+      
+      /* Efektler */
+      filter: sepia(10%) contrast(95%);
       transition: filter 0.3s ease;
     }
-
-    /* METİN ALANI (SOL TARAFTA) */
-    .hero-text{
-        background: color-mix(in srgb, var(--c4) 62%, transparent); 
-        border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
-        /* Sağ sınır kaldırıldı, foto ile birleşecek */
-        border-right: none;
-        padding:22px 22px 20px; 
-        display:flex; flex-direction:column; justify-content:center;
+    .hero-photo:hover {
+      filter: sepia(0%) contrast(100%);
     }
 
     @media (max-width: 980px){
-      .about{grid-template-columns:1fr;} 
       .hero-photo{
         border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
-        border-left:1px solid color-mix(in srgb, var(--c5) 55%, transparent); /* Mobilde sınırları geri getir */
         border-bottom:none; 
         min-height:400px;
-        background-size: contain;
+        /* Mobilde de tam sığsın ve ortalansın */
+        background-size: contain; 
+        background-position: center;
       }
+    }
+    /* ---------------------------------------------------- */
+
       .hero-text{
           border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
       }
