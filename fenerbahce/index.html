@@ -436,4 +436,130 @@
               <div class="pick-title">خياراتك:</div>
               <div class="pick-grid">
                 <div class="pick-box">
-                  <div class="pick-title">اللقاءات الفردية
+                  <div class="pick-title">اللقاءات الفردية</div>
+                  <label class="check"><input type="checkbox" name="sessions" value="Seans 1" /><span>لقاء "سكينة"</span></label>
+                  <label class="check"><input type="checkbox" name="sessions" value="Seans 2" /><span>لقاء "بصيرة"</span></label>
+                  <label class="check"><input type="checkbox" name="sessions" value="Seans 3" /><span>لقاء "العبور"</span></label>
+                </div>
+                <div class="pick-box">
+                  <div class="pick-title">الرحلات - الباقات</div>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 1" /><span>رحلة "المفتاح"</span></label>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 2" /><span>رحلة "انعكاس"</span></label>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 3" /><span>رحلة "بوابة النور"</span></label>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 4" /><span>رحلة "بوابة الأمان"</span></label>
+                </div>
+              </div>
+              
+              <div class="consent-box">
+                <label class="check"><input id="consentWhatsApp" type="checkbox" required /><span>أوافق على تلقي رسائل معلوماتية عبر تطبيق واتساب.</span></label>
+                <label class="check"><input id="consentStop" type="checkbox" required /><span>أعلم أنه يمكنني الإلغاء في أي وقت بكتابة "STOP".</span></label>
+                <label class="check"><input id="consentPrivacy" type="checkbox" required /><span>قرأت ووافقت على <a href="legal.html" target="_blank" style="text-decoration:underline">سياسة الخصوصية وحماية البيانات</a>.</span></label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-foot"><button class="submit" type="submit" form="contactForm" id="submitBtn">إرسال</button></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
+
+    document.querySelectorAll('[data-scroll]').forEach(a => a.addEventListener('click', e => { 
+      e.preventDefault(); 
+      const t = document.querySelector(a.getAttribute('href')); 
+      if(t) window.scrollTo({top: t.offsetTop - 70, behavior: 'smooth'}); 
+    }));
+    
+    const sections = Array.from(document.querySelectorAll('[data-section]'));
+    function updateMotion(){
+       if(window.innerWidth < 768) {
+         sections.forEach(sec => { sec.style.opacity = "1"; sec.style.transform = "none"; sec.style.filter = "none"; });
+         return;
+       }
+       const center = window.innerHeight * 0.52;
+       sections.forEach(sec => {
+         const r = sec.getBoundingClientRect();
+         const d = Math.abs((r.top + r.height/2) - center);
+         const t = 1 - Math.min(d / (window.innerHeight * 1.15), 1);
+         sec.style.opacity = (0.3 + t*0.7).toFixed(3);
+         sec.style.transform = `translateY(${(18 - t*18).toFixed(1)}px) scale(${(0.99 + t*0.01).toFixed(4)})`;
+         sec.style.filter = `blur(${(2.6 - t*2.6).toFixed(2)}px)`;
+       });
+    }
+    window.addEventListener('scroll', () => requestAnimationFrame(updateMotion));
+    window.addEventListener('resize', updateMotion);
+    updateMotion();
+
+    const modal = document.getElementById('contactModal');
+    function openModal(){ modal.classList.add('open'); }
+    function closeModal(){ modal.classList.remove('open'); }
+    document.querySelectorAll('[data-open-contact]').forEach(b => b.addEventListener('click', openModal));
+    document.getElementById('navContact').addEventListener('click', (e)=>{e.preventDefault(); openModal();});
+    
+    function toggleDetail(btn, id) {
+      const targetWrap = document.getElementById('detail-' + id);
+      const isOpen = targetWrap.classList.contains('open');
+      closeAllDetails();
+      if(!isOpen) {
+        targetWrap.classList.add('open');
+        setTimeout(() => { targetWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 300);
+      }
+    }
+    function closeAllDetails() { document.querySelectorAll('.detail-wrap').forEach(w => w.classList.remove('open')); }
+
+    const toEasternArabic = (n) => n.toString().replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
+    document.getElementById('message').addEventListener('input', e => {
+        document.getElementById('msgCount').textContent = toEasternArabic(e.target.value.length) + "/٥٠٠";
+    });
+
+    async function loadCountries(){
+       const res = await fetch(COUNTRIES_URL); const list = await res.json();
+       list.sort((a,b)=>a.name.localeCompare(b.name));
+       const cSel = document.getElementById('country'); const pSel = document.getElementById('phonePrefix');
+       list.forEach(c => {
+          cSel.innerHTML += `<option value="${c.code}">${c.name}</option>`;
+          pSel.innerHTML += `<option value="${c.dial_code}">${c.dial_code} - ${c.name}</option>`;
+       });
+       cSel.value="TR"; pSel.value="+90";
+    }
+    loadCountries();
+
+    function showToast(msg){ 
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show'); 
+      setTimeout(()=>t.classList.remove('show'), 3500); 
+    }
+
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const formData = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        phonePrefix: document.getElementById('phonePrefix').value,
+        phoneRaw: document.getElementById('phone').value,
+        email: document.getElementById('email').value,
+        message: document.getElementById('message').value,
+        sessions: Array.from(document.querySelectorAll('input[name="sessions"]:checked')).map(x => x.value),
+        packages: Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x => x.value)
+      };
+      
+      btn.disabled = true; btn.textContent = "جاري الإرسال...";
+      try{
+        await fetch('/api/lead', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(formData) });
+        showToast("تم الإرسال بنجاح!");
+        document.getElementById('contactForm').reset();
+        setTimeout(closeModal, 1500);
+      } catch(err){
+        showToast("خطأ!");
+      } finally {
+        btn.disabled = false; btn.textContent = "إرسال";
+      }
+    });
+  </script>
+</body>
+</html>
