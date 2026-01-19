@@ -271,12 +271,43 @@
       select.prefix {flex: 0 0 110px; width: 110px !important;}
     }
 
-    /* SEANS 1 RESMİ İÇİN STİL - DÜZELTİLDİ: CONTAIN (SIĞDIR) */
+    /* GÖRSEL AYARLARI (HEPSİ İÇİN GEÇERLİ ORTAK KURALLAR) */
+    
+    /* Seans 1 (Sakina) */
     #media-session-1 {
       background-image: url('seans 1.jpg');
-      background-size: contain; /* FOTONUN TAMAMI GÖRÜNSÜN */
-      background-repeat: no-repeat;
-      background-position: center; /* ORTALA */
+      background-size: contain; background-repeat: no-repeat; background-position: center;
+    }
+    /* Seans 2 (Basira) */
+    #media-session-2 {
+      background-image: url('seans 2.jpg');
+      background-size: contain; background-repeat: no-repeat; background-position: center;
+    }
+    /* Seans 3 (Al-Abour) */
+    #media-session-3 {
+      background-image: url('seans 3.jpg');
+      background-size: contain; background-repeat: no-repeat; background-position: center;
+    }
+    
+    /* Paket 1 (Miftah) */
+    #media-package-1 {
+      background-image: url('paket 1.jpg');
+      background-size: contain; background-repeat: no-repeat; background-position: center;
+    }
+    /* Paket 2 (Inikas) */
+    #media-package-2 {
+      background-image: url('paket 2.jpg');
+      background-size: contain; background-repeat: no-repeat; background-position: center;
+    }
+    /* Paket 3 (Nur) */
+    #media-package-3 {
+      background-image: url('paket 3.jpg');
+      background-size: contain; background-repeat: no-repeat; background-position: center;
+    }
+    /* Paket 4 (Aman) */
+    #media-package-4 {
+      background-image: url('paket 4.jpg');
+      background-size: contain; background-repeat: no-repeat; background-position: center;
     }
   </style>
 </head>
@@ -359,7 +390,7 @@
             </article>
 
             <article class="card">
-              <div class="card-media placeholder"></div>
+              <div class="card-media placeholder" id="media-session-2"></div>
               <div class="card-body">
                 <h3 class="card-title">لقاء "بصيرة"</h3>
                 <button class="card-link" type="button" data-detail="session" data-id="2">التفاصيل <span class="chev">›</span></button>
@@ -367,7 +398,7 @@
             </article>
 
             <article class="card">
-              <div class="card-media placeholder"></div>
+              <div class="card-media placeholder" id="media-session-3"></div>
               <div class="card-body">
                 <h3 class="card-title">لقاء "العبور"</h3>
                 <button class="card-link" type="button" data-detail="session" data-id="3">التفاصيل <span class="chev">›</span></button>
@@ -394,10 +425,10 @@
         <div class="section-head"><h2>الرحلات - الباقات</h2></div>
         <div class="cards-block">
           <div class="cards-grid cols-4">
-             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "المفتاح"</h3><button class="card-link" data-detail="package" data-id="1">التفاصيل ›</button></div></article>
-             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "انعكاس"</h3><button class="card-link" data-detail="package" data-id="2">التفاصيل ›</button></div></article>
-             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "بوابة النور"</h3><button class="card-link" data-detail="package" data-id="3">التفاصيل ›</button></div></article>
-             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "بوابة الأمان"</h3><button class="card-link" data-detail="package" data-id="4">التفاصيل ›</button></div></article>
+             <article class="card"><div class="card-media placeholder" id="media-package-1"></div><div class="card-body"><h3 class="card-title">رحلة "المفتاح"</h3><button class="card-link" data-detail="package" data-id="1">التفاصيل ›</button></div></article>
+             <article class="card"><div class="card-media placeholder" id="media-package-2"></div><div class="card-body"><h3 class="card-title">رحلة "انعكاس"</h3><button class="card-link" data-detail="package" data-id="2">التفاصيل ›</button></div></article>
+             <article class="card"><div class="card-media placeholder" id="media-package-3"></div><div class="card-body"><h3 class="card-title">رحلة "بوابة النور"</h3><button class="card-link" data-detail="package" data-id="3">التفاصيل ›</button></div></article>
+             <article class="card"><div class="card-media placeholder" id="media-package-4"></div><div class="card-body"><h3 class="card-title">رحلة "بوابة الأمان"</h3><button class="card-link" data-detail="package" data-id="4">التفاصيل ›</button></div></article>
           </div>
           
           <div class="detail-wrap" id="packageDetailWrap">
@@ -475,6 +506,7 @@
   <script>
     const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
     
+    // DETAY İÇERİKLERİ KÜTÜPHANESİ
     const SESSION_DETAILS = {
         "1": "نسمة هوا لقلبك. بنتحرر من وجع قديم، وبنفرغ التقل اللي بصدرك لترتاح روحك وتصفى.",
         "2": "لما تضيعي الطريق، بنمسك المرايا سوا لنرتب الكركبة اللي براسك ونشوف خطواتك الجاية بوضوح",
@@ -495,6 +527,7 @@
     }
     document.querySelectorAll('[data-scroll]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const t = document.querySelector(a.getAttribute('href')); if(t) fastScrollTo(t); }));
     
+    // Smooth fade logic
     const sections = Array.from(document.querySelectorAll('[data-section]'));
     function updateMotion(){
        const center = window.innerHeight * 0.52;
@@ -553,6 +586,7 @@
     const toast = document.getElementById('toast');
     function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 3500); }
 
+    // FORM SUBMIT
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
