@@ -1,126 +1,599 @@
-import { Resend } from 'resend';
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zîn Elhac</title>
+  <meta name="description" content="Zîn Elhac — yaşam koçluğu seans ve paketleri" />
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@200;300;400;500&display=swap" rel="stylesheet">
 
-// ÜRÜN KATALOĞU (GÜNCELLENDİ)
-const CATALOG = {
-  // Seanslar
-  "Seans 1": { name: 'لقاء "سكينة"', price: 65 },
-  "Seans 2": { name: 'لقاء "بصيرة"', price: 110 },
-  "Seans 3": { name: 'لقاء "العبور"', price: 147 },
-  
-  // Paketler (YENİ EKLENDİ)
-  "Paket 1": { name: 'رحلة "المفتاح"', price: 490 },
-  "Paket 2": { name: 'رحلة "انعكاس"', price: 695 },
-  "Paket 3": { name: 'رحلة "بوابة النور"', price: 888 },
-  "Paket 4": { name: 'رحلة "بوابة الأمان"', price: 1200 }
-};
-
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  try {
-    const { 
-      firstName, lastName, phonePrefix, phoneRaw, 
-      sessions, packages, email, message 
-    } = req.body;
-
-    const name = `${firstName || ''} ${lastName || ''}`.trim();
-    const phone = `${phonePrefix || ''}${phoneRaw || ''}`.replace(/\D/g, ''); 
-    const clientEmail = email || 'Belirtilmedi';
-    const clientMessage = message || 'Mesaj bırakılmadı.';
-
-    if (!phone) return res.status(400).json({ error: 'Telefon zorunlu.' });
-
-    // SEPET HESAPLAMA
-    let selectedNames = [];
-    let totalPrice = 0;
-
-    const allItems = [...(sessions || []), ...(packages || [])];
-
-    if (allItems.length > 0) {
-      allItems.forEach(itemKey => {
-        const product = CATALOG[itemKey];
-        if (product) {
-          selectedNames.push(product.name);
-          totalPrice += product.price;
-        } else {
-          selectedNames.push(itemKey);
-        }
-      });
-    } else {
-      selectedNames.push("Seçim Yapılmadı");
+  <style>
+    :root{
+      /* PALETTE */
+      --c1:#f5f0eb; --c2:#b36932; --c3:#626a48; --c4:#faf7f5; --c5:#e7dbd0; --c6:#c65c75;
+      --ink: var(--c3);
+      --inkSoft: color-mix(in srgb, var(--c3) 70%, transparent);
+      --veil: color-mix(in srgb, var(--c4) 86%, transparent);
+      --headerH:70px; --footerH:64px; --max:1260px;
+      --ease: cubic-bezier(.16,.92,.18,1); 
     }
 
-    const selectedItemsStr = selectedNames.join(", ");
-    const totalDetailsStr = `${totalPrice}$`;
+    *{box-sizing:border-box;}
+    html,body{height:100%;}
+    html{scroll-behavior:smooth;}
+    body{
+      margin:0; color:var(--ink); background: var(--c4);
+      font-family: "Noto Kufi Arabic", Arial, sans-serif;
+      font-weight: 300; overflow-x:hidden;
+    }
+    a{color:inherit; text-decoration:none;}
+    button{font-family:inherit; color:inherit;}
+    ::selection{background: color-mix(in srgb, var(--c6) 20%, transparent);}
 
-    // WHATSAPP
-    const waResponse = await fetch(
-      `https://graph.facebook.com/v21.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.WHATSAPP_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messaging_product: "whatsapp",
-          to: phone, 
-          type: "template",
-          template: {
-            name: process.env.WHATSAPP_TEMPLATE_NAME,
-            language: { code: process.env.WHATSAPP_TEMPLATE_LANG || "tr" },
-            components: [
-              {
-                type: "body",
-                parameters: [
-                  { type: "text", text: selectedItemsStr },
-                  { type: "text", text: totalDetailsStr }
-                ],
-              },
-            ],
-          },
-        }),
+    .bg-veil{
+      position:fixed; inset:0; z-index:-1;
+      background:
+        radial-gradient(1200px 720px at 18% 16%, color-mix(in srgb, var(--c2) 16%, transparent), transparent 62%),
+        radial-gradient(1200px 720px at 82% 18%, color-mix(in srgb, var(--c6) 12%, transparent), transparent 66%),
+        linear-gradient(180deg, color-mix(in srgb, var(--c4) 86%, transparent), color-mix(in srgb, var(--c1) 62%, transparent));
+      backdrop-filter: blur(10px);
+    }
+
+    header{
+      position:fixed; inset:0 0 auto 0; height:var(--headerH); z-index:50;
+      background: color-mix(in srgb, var(--c4) 14%, transparent);
+      backdrop-filter: blur(16px);
+      border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+    }
+    .header-inner{
+      height:100%; width:min(var(--max), calc(100% - 40px)); margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between; gap:18px;
+    }
+    nav{display:flex; gap:22px; align-items:center; justify-content:center; flex:1;}
+    .nav-item{
+      position:relative; padding:12px 2px; font-weight:400; font-size:14px; letter-spacing:.01em;
+      color: color-mix(in srgb, var(--c3) 78%, transparent);
+      transition:color 180ms var(--ease), transform 180ms var(--ease), opacity 180ms var(--ease);
+      outline:none; opacity:.95;
+    }
+    .nav-item::after{
+      content:""; position:absolute; left:0; right:0; bottom:3px; height:2px;
+      background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);
+      transform:scaleX(0); transform-origin:center; transition:transform 260ms var(--ease);
+    }
+    .nav-item:hover{color: var(--c3); transform:translateY(-1px); opacity:1;}
+    .nav-item:hover::after{transform:scaleX(1);}
+    
+    .nameblock{
+      min-width:190px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:6px; line-height:1.05; text-align:center;
+    }
+    .name-top{font-weight:400; font-size:15px; letter-spacing:.01em;}
+    .name-sep{
+      width:124px; height:1px; background: linear-gradient(90deg, #e7dbd0 0%, #626a48 50%, #e7dbd0 100%); opacity: .8;
+    }
+    .name-ar{
+      font-weight:400; font-size:14px; color: color-mix(in srgb, var(--c3) 76%, transparent);
+      direction:rtl; margin-top:-1px;
+    }
+
+    footer{
+      position:fixed; inset:auto 0 0 0; height:var(--footerH); z-index:50;
+      background: color-mix(in srgb, var(--c4) 18%, transparent);
+      backdrop-filter: blur(16px); border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+    }
+    .footer-inner{
+      height:100%; width:min(var(--max), calc(100% - 40px)); margin:0 auto;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .footer-col{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;}
+    .social{display:flex; align-items:center; justify-content:center; gap:14px; line-height:0;}
+    .icon-btn{
+      width:26px; height:26px; padding:0; border:none; background:transparent; cursor:pointer;
+      opacity:.9; transition:opacity 180ms var(--ease), transform 180ms var(--ease);
+      display:inline-flex; align-items:center; justify-content:center; color: color-mix(in srgb, var(--c3) 84%, transparent);
+    }
+    .icon-btn:hover{opacity:1; transform:translateY(-1px); color: color-mix(in srgb, var(--c6) 55%, var(--c3));}
+    .icon{width:22px; height:22px; display:block; fill:currentColor;}
+    .footer-text{font-size:11.5px; font-weight:300; color: color-mix(in srgb, var(--c3) 72%, transparent); letter-spacing:.02em;}
+
+    main{min-height:100vh; padding-top:var(--headerH); padding-bottom:var(--footerH);}
+    section{
+      min-height:calc(100vh - var(--headerH) - var(--footerH));
+      display:flex; align-items:stretch; justify-content:center; padding:0; position:relative;
+      opacity:0.30; transform:translateY(18px) scale(0.990); filter: blur(2.6px);
+      transition:opacity 120ms linear, transform 120ms linear, filter 120ms linear;
+      will-change:opacity, transform, filter;
+    }
+    #ben-kimim{ background: color-mix(in srgb, var(--c4) 18%, transparent); }
+    #tekli-seanslar{ background: color-mix(in srgb, var(--c1) 22%, transparent); }
+    #paketler{ background: color-mix(in srgb, var(--c5) 22%, transparent); }
+
+    .wrap{width:min(var(--max), calc(100% - 40px)); margin:0 auto; padding:0; display:flex; flex-direction:column; justify-content:center; flex:1;}
+    .section-head{display:flex; align-items:baseline; justify-content:flex-start; gap:16px; margin:0 0 18px; padding:28px 0 0;}
+    .section-head h2{margin:0; font-size:30px; letter-spacing:.01em; font-weight:400; color: color-mix(in srgb, var(--c3) 92%, transparent);}
+
+    .about{display:grid; grid-template-columns: 1.05fr .95fr; gap:0; align-items:stretch; min-height:calc(100vh - var(--headerH) - var(--footerH) - 64px); padding-bottom:24px;}
+    
+    /* FOTOĞRAF ALANI (Net ve Ortalanmış) */
+    .hero-photo {
+      min-height: 100%;
+      border: 1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      border-right: none;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);
+      background-image: url('zin.jpg'); 
+      background-repeat: no-repeat;
+      background-size: 477px 543px; 
+      background-position: center center;
+      transition: filter 0.3s ease;
+    }
+
+    @media (max-width: 980px){
+      .hero-photo{
+        border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
+        border-bottom:none; 
+        min-height:400px;
+        background-size: contain;
       }
-    );
+    }
+    
+    .hero-text{background: color-mix(in srgb, var(--c4) 62%, transparent); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:22px 22px 20px; display:flex; flex-direction:column; justify-content:center;}
+    
+    .ar-text {
+      direction: rtl; 
+      font-family: 'Noto Kufi Arabic', sans-serif; 
+      font-size: 15px; 
+      line-height: 1.8; 
+      color: var(--inkSoft); 
+      margin-bottom: 20px;
+    }
+    .ar-text p { margin-bottom: 12px; }
 
-    const waData = await waResponse.json();
+    .hero-cta{margin-top:4px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
+    
+    .btn{
+      border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      background: color-mix(in srgb, var(--c4) 18%, transparent);
+      padding:13px 16px; font-weight:400; font-size:13px; cursor:pointer; letter-spacing:.01em;
+      transition:transform 180ms var(--ease), background 220ms var(--ease), border-color 220ms var(--ease), box-shadow 220ms var(--ease);
+    }
+    .btn:hover{transform:translateY(-2px); background: color-mix(in srgb, var(--c4) 34%, transparent); border-color: color-mix(in srgb, var(--c6) 26%, var(--c5)); box-shadow: 0 0 0 6px color-mix(in srgb, var(--c5) 45%, transparent);}
+    .btn.primary{background: color-mix(in srgb, var(--c6) 14%, transparent); border-color: color-mix(in srgb, var(--c6) 32%, var(--c5)); color: color-mix(in srgb, var(--c3) 92%, transparent);}
+    .btn.primary:hover{background: color-mix(in srgb, var(--c6) 22%, transparent); border-color: color-mix(in srgb, var(--c6) 42%, var(--c5)); box-shadow: 0 0 0 6px color-mix(in srgb, var(--c6) 16%, transparent);}
 
-    // MAIL
-    await resend.emails.send({
-      from: process.env.RESEND_FROM,
-      to: process.env.OWNER_EMAIL,
-      subject: `Yeni Kayıt: ${name}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
-            <div style="background-color: #D4A373; padding: 20px; text-align: center;">
-                <h2 style="color: #ffffff; margin: 0;">Yeni Başvuru Alındı 🎉</h2>
-            </div>
-            <div style="padding: 20px;">
-                <p style="color: #555;">Web sitenizden yeni bir form dolduruldu.</p>
-                <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                    <tr style="background-color: #f9f9f9;"><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">👤 Ad Soyad</td><td style="padding:12px; border:1px solid #ddd;">${name}</td></tr>
-                    <tr><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">📱 Telefon</td><td style="padding:12px; border:1px solid #ddd;">${phone}</td></tr>
-                    <tr style="background-color: #f9f9f9;"><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">📧 E-posta</td><td style="padding:12px; border:1px solid #ddd;">${clientEmail}</td></tr>
-                    <tr><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">📌 Seçimler</td><td style="padding:12px; border:1px solid #ddd; color:#d35400; font-weight:bold;">${selectedItemsStr}</td></tr>
-                    <tr style="background-color: #f9f9f9;"><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">💰 Toplam Tutar</td><td style="padding:12px; border:1px solid #ddd;">${totalDetailsStr}</td></tr>
-                    <tr><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">📝 Mesaj</td><td style="padding:12px; border:1px solid #ddd; font-style:italic;">"${clientMessage}"</td></tr>
-                </table>
-                <div style="margin-top: 30px; text-align: center;">
-                    <a href="mailto:${clientEmail}" style="background-color: #D4A373; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Yanıtla</a>
-                </div>
-            </div>
+    .cards-block{background: color-mix(in srgb, var(--c4) 56%, transparent); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:0; margin:0 0 24px;}
+    .cards-grid{display:grid; gap:0;}
+    .cards-grid.cols-3{grid-template-columns:repeat(3, 1fr);}
+    .cards-grid.cols-4{grid-template-columns:repeat(4, 1fr);}
+
+    .card{
+      min-height:320px; border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); display:flex; flex-direction:column; background: color-mix(in srgb, var(--c1) 18%, transparent);
+      transition: transform 240ms var(--ease), background 240ms var(--ease), filter 240ms var(--ease); will-change: transform, filter;
+    }
+    .card:last-child{border-right:none;}
+    .card:hover{transform: translateY(-6px) scale(1.01); background: color-mix(in srgb, var(--c4) 66%, transparent); filter: brightness(1.035); z-index:2;}
+    .card-media{height:190px; border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent); position:relative; background: radial-gradient(280px 150px at 28% 30%, color-mix(in srgb, var(--c2) 14%, transparent), transparent 74%), linear-gradient(135deg, color-mix(in srgb, var(--c5) 18%, transparent), transparent 74%);}
+    .card-body{padding:16px 16px 18px; display:flex; flex-direction:column; gap:8px; flex:1;}
+    .card-title{margin:0; font-size:18px; font-weight:500; letter-spacing:0; color: var(--c3); direction: rtl; text-align: right;} 
+    
+    .card-link{
+      margin-top:auto; align-self:flex-start; background:transparent; border:none; padding:0; cursor:pointer; 
+      font-weight:400; font-size:13.5px; color: color-mix(in srgb, var(--c3) 84%, transparent); 
+      display:inline-flex; gap:8px; align-items:center; transition:transform 180ms var(--ease), color 180ms var(--ease);
+      font-family: 'Noto Kufi Arabic', sans-serif;
+    }
+    .card-link:hover{transform:translateX(-3px); color: color-mix(in srgb, var(--c6) 45%, var(--c3));}
+    .chev { display: inline-block; transform: scaleX(-1); }
+
+    /* DETAIL PANEL */
+    .detail-wrap{border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c4) 62%, transparent); overflow:hidden; max-height:0; opacity:0; transform:translateY(-10px); transition:max-height 640ms var(--ease), opacity 320ms var(--ease), transform 640ms var(--ease);}
+    .detail-wrap.open{max-height:340px; opacity:1; transform:translateY(0);}
+    .detail-inner{padding:16px; display:flex; gap:16px; align-items:flex-start; justify-content:space-between;}
+    
+    .detail-text{
+      font-size:15px; line-height:1.75; color: var(--inkSoft); 
+      overflow:auto; max-height:240px; flex:1; font-weight:300; direction:rtl; text-align:right;
+      scrollbar-width: none; -ms-overflow-style: none;
+    }
+    .detail-text::-webkit-scrollbar { display: none; }
+
+    .detail-actions{display:flex; flex-direction:column; gap:12px; align-items:flex-end; flex:0 0 auto;}
+    .xbtn{width:36px; height:36px; border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c4) 78%, transparent); cursor:pointer; font-size:16px; transition:transform 180ms var(--ease), background 180ms var(--ease);}
+    .xbtn:hover{transform:translateY(-2px); background: color-mix(in srgb, var(--c4) 92%, transparent);}
+    .link-cta{font-weight:400; font-size:13.5px; cursor:pointer; color: var(--c3); border-bottom:2px solid color-mix(in srgb, var(--c6) 55%, transparent); padding-bottom:2px; font-family: 'Noto Kufi Arabic', sans-serif;}
+    
+    /* Modal */
+    .modal{position:fixed; inset:0; background: color-mix(in srgb, var(--c3) 22%, transparent); backdrop-filter:blur(16px); display:flex; align-items:center; justify-content:center; z-index:100; padding:18px; opacity:0; pointer-events:none; transition: opacity 260ms var(--ease);}
+    .modal-card{width:min(980px, 100%); max-height:min(82vh, 860px); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c4) 92%, transparent); box-shadow:0 28px 84px color-mix(in srgb, var(--c3) 20%, transparent); display:grid; grid-template-rows:auto 1fr auto; transform: translateY(12px) scale(0.985); opacity:0; transition: transform 360ms var(--ease), opacity 260ms var(--ease);}
+    .modal.open{opacity:1; pointer-events:auto;}
+    .modal.open .modal-card{transform: translateY(0) scale(1); opacity:1;}
+    .modal-head{padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent); direction: rtl;}
+    .modal-body{padding:14px 16px; overflow:auto; direction: rtl; text-align: right;}
+    .grid-form{display:grid; grid-template-columns:repeat(12, 1fr); gap:12px;}
+    .field{grid-column:span 12;}
+    .field.half{grid-column:span 6;}
+    .field.third{grid-column:span 4;}
+    label{display:block; font-weight:400; font-size:12px; letter-spacing:.01em; color: var(--inkSoft); margin-bottom:6px;}
+    
+    input, select, textarea{width:100%; border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:12px; font-size:14px; background: color-mix(in srgb, var(--c4) 86%, transparent); outline:none; transition:box-shadow 180ms var(--ease), border-color 180ms var(--ease); font-weight:300; color: var(--c3); text-align: right;}
+    input:focus, select:focus, textarea:focus{border-color: color-mix(in srgb, var(--c6) 38%, transparent); background: color-mix(in srgb, var(--c4) 96%, transparent); box-shadow:0 0 0 4px color-mix(in srgb, var(--c5) 55%, transparent);}
+    textarea{min-height:110px; resize:vertical;}
+    
+    /* Telefon alanı için özel düzenleme (RTL'de düzgün durması için) */
+    .row{display:flex; gap:10px; align-items:center; width:100%; direction: ltr;}
+    select.prefix{flex: 0 0 130px; width:130px !important; text-align: left;}
+    input#phone{flex: 1; width: auto !important; text-align: left;} 
+
+    .pick-title{margin:10px 0 6px; font-weight:400; font-size:12.5px; color:var(--inkSoft);}
+    .pick-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+    .pick-box{border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c1) 22%, transparent); padding:10px 12px;}
+    .check{display:flex; align-items:flex-start; gap:10px; padding:8px 6px;}
+    .check:hover{background: color-mix(in srgb, var(--c4) 34%, transparent);}
+    .check input{width:18px; height:18px; margin-top:2px; accent-color: var(--c6); flex-shrink: 0;}
+    .check span{font-weight:300; font-size:13.5px; color:var(--inkSoft); line-height:1.35;}
+    
+    .modal-foot{padding:12px 16px; border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent); display:flex; align-items:center; justify-content:space-between; gap:12px; direction: rtl;}
+    .submit{border:1px solid color-mix(in srgb, var(--c6) 35%, transparent); background: color-mix(in srgb, var(--c6) 72%, transparent); color: var(--c4); padding:12px 16px; font-weight:400; font-size:13px; cursor:pointer; transition:transform 180ms var(--ease), background 180ms var(--ease);}
+    .submit:hover{transform:translateY(-2px); background: color-mix(in srgb, var(--c6) 84%, transparent);}
+    .submit:disabled{opacity:.55; cursor:not-allowed;}
+    
+    /* TOAST MESAJI */
+    .toast{
+      position:fixed; left:50%; transform:translateX(-50%); bottom:calc(var(--footerH) + 12px); 
+      background: color-mix(in srgb, var(--c4) 92%, transparent); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
+      padding:10px 14px; font-weight:400; font-size:14px; color:var(--inkSoft); 
+      box-shadow:0 18px 44px color-mix(in srgb, var(--c3) 14%, transparent); display:none; z-index:120;
+      direction: rtl; font-family: 'Noto Kufi Arabic', sans-serif;
+    }
+    .toast.show{display:block;}
+
+    @media (max-width: 980px){
+      :root{--headerH:64px; --footerH:58px;}
+      .nameblock{display:none;} nav{justify-content:flex-start;} .about{grid-template-columns:1fr;} 
+      .hero-photo{border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); border-bottom:none; min-height:320px;}
+      .cards-grid.cols-3, .cards-grid.cols-4, .pick-grid{grid-template-columns:1fr;}
+      .field.half, .field.third{grid-column:span 12;}
+      select.prefix {flex: 0 0 110px; width: 110px !important;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-veil" aria-hidden="true"></div>
+
+  <header>
+    <div class="header-inner">
+      <nav aria-label="Ana Menü">
+        <a class="nav-item" href="#ben-kimim" data-scroll>مين أنا؟</a>
+        <a class="nav-item" href="#tekli-seanslar" data-scroll>اللقاءات - الجلسات الفردية</a>
+        <a class="nav-item" href="#paketler" data-scroll>الرحلات - الباقات</a>
+        <a class="nav-item" href="#iletisim" id="navContact">تواصل</a>
+      </nav>
+      <div class="nameblock" title="Zîn Elhac">
+        <div class="name-top">Zîn Elhac</div>
+        <div class="name-sep"></div>
+        <div class="name-ar">زين إلحق</div>
+      </div>
+    </div>
+  </header>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-col">
+        <div class="social">
+            <a href="https://www.instagram.com/zin.diary/" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="Instagram">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Z"/>
+                <path d="M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/>
+                <path d="M17.5 6.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/>
+              </svg>
+            </a>
+            <a href="https://tiktok.com/@lifecoach.zin" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="TikTok">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 3v10.3a4.7 4.7 0 1 1-4.1-4.63v2.18a2.7 2.7 0 1 0 2.1 2.63V3h2Z"/>
+                <path d="M14 3c.9 2.9 3.4 5 7 5v2c-2.9 0-5.4-1.2-7-3V3Z"/>
+              </svg>
+            </a>
         </div>
-      `,
+        <div class="footer-text">Zin Diary - 2026</div>
+      </div>
+    </div>
+  </footer>
+
+  <main id="main">
+    <section id="ben-kimim" data-section>
+      <div class="wrap">
+        <div class="section-head"><h2>مين أنا؟</h2></div>
+        <div class="about">
+          <div class="hero-photo"></div>
+          <div class="hero-text">
+            <div class="ar-text">
+                <p>قبل عشر سنين، كنت واقفة بنفس المكان اللي إنتي فيه اليوم؛ بعرف تماماً شو يعني يكون الطريق غبش والقلب تقيل. الحياة ما كانت وردية ولا سهلة، والفرص ما انمدت لي على طبق من ذهب، بس أنا اخترت إني حاول وأمشي رغم الخوف.</p>
+                <p>اسمي زين، وخبرتي بالحياة هي اللي علمتني قبل كتبي ودراستي.
+بآمن إنو السعي هو المفتاح، وإنو أصعب تجاربنا هي اللي بتصنع أقوى بداياتنا. شغفي بالحياة بيخليني أشوف الجمال حتى بالأماكن المنسية، ورسالتي اليوم هي إني ساندك لتكتشفي القوة اللي جواتك. إذا كنتِ عم تدوري على مرافقة بتفهمك بصدق وبتاخد بإيدك للعبور بسلام، فأنا هون لنمشي هالطريق سوا</p>
+            </div>
+            <div class="hero-cta"><button class="btn primary" type="button" data-open-contact>Benimle iletişime geç</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tekli-seanslar" data-section>
+      <div class="wrap">
+        <div class="section-head"><h2>اللقاءات - الجلسات الفردية</h2></div>
+        <div class="cards-block">
+          <div class="cards-grid cols-3" id="sessionCards">
+            <article class="card">
+              <div class="card-media placeholder"></div>
+              <div class="card-body">
+                <h3 class="card-title">لقاء "سكينة"</h3>
+                <button class="card-link" type="button" data-detail="session" data-id="1">التفاصيل <span class="chev">›</span></button>
+              </div>
+            </article>
+            <article class="card">
+              <div class="card-media placeholder"></div>
+              <div class="card-body">
+                <h3 class="card-title">لقاء "بصيرة"</h3>
+                <button class="card-link" type="button" data-detail="session" data-id="2">التفاصيل <span class="chev">›</span></button>
+              </div>
+            </article>
+            <article class="card">
+              <div class="card-media placeholder"></div>
+              <div class="card-body">
+                <h3 class="card-title">لقاء "العبور"</h3>
+                <button class="card-link" type="button" data-detail="session" data-id="3">التفاصيل <span class="chev">›</span></button>
+              </div>
+            </article>
+          </div>
+          <div class="detail-wrap" id="sessionDetailWrap">
+            <div class="detail-inner">
+              <div class="detail-text" id="sessionDetailText"></div>
+              <div class="detail-actions">
+                <button class="xbtn" id="closeSessionDetail">×</button>
+                <span class="link-cta" data-open-contact>تواصلي معي</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="paketler" data-section>
+      <div class="wrap">
+        <div class="section-head"><h2>الرحلات - الباقات</h2></div>
+        <div class="cards-block">
+          <div class="cards-grid cols-4">
+             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "المفتاح"</h3><button class="card-link" data-detail="package" data-id="1">التفاصيل ›</button></div></article>
+             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "انعكاس"</h3><button class="card-link" data-detail="package" data-id="2">التفاصيل ›</button></div></article>
+             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "بوابة النور"</h3><button class="card-link" data-detail="package" data-id="3">التفاصيل ›</button></div></article>
+             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "بوابة الأمان"</h3><button class="card-link" data-detail="package" data-id="4">التفاصيل ›</button></div></article>
+          </div>
+          <div class="detail-wrap" id="packageDetailWrap">
+            <div class="detail-inner">
+              <div class="detail-text" id="packageDetailText"></div>
+              <div class="detail-actions">
+                <button class="xbtn" id="closePackageDetail">×</button>
+                <span class="link-cta" data-open-contact>تواصلي معي</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="iletisim" data-section aria-hidden="true" style="min-height:1px; padding:0;"><div class="wrap" style="padding:0;"></div></section>
+  </main>
+
+  <div class="modal" id="contactModal">
+    <div class="modal-card">
+      <div class="modal-head"><strong id="contactTitle">تواصل</strong><button class="xbtn" id="closeModal">×</button></div>
+      <div class="modal-body">
+        <form id="contactForm">
+          <div class="grid-form">
+            <div class="field half"><label>الاسم الأول</label><input id="firstName" name="firstName" required /></div>
+            <div class="field half"><label>اسم العائلة</label><input id="lastName" name="lastName" required /></div>
+            <div class="field third"><label>الدولة</label><select id="country" name="country" required><option value="" disabled selected>اختر</option></select></div>
+            <div class="field" style="grid-column: span 9;">
+              <label>رقم الهاتف</label>
+              <div class="row">
+                <select class="prefix" id="phonePrefix" name="phonePrefix" required></select>
+                <input id="phone" name="phone" type="tel" required placeholder="5xx xxx xx xx" />
+              </div>
+            </div>
+            <div class="field half"><label>البريد الإلكتروني</label><input id="email" name="email" type="email" required /></div>
+            <div class="field half"><label>الرسالة</label><textarea id="message" name="message" maxlength="500"></textarea><div class="counter"><span id="msgCount">0/500</span></div></div>
+
+            <div class="field">
+              <div class="pick-title">خياراتك:</div>
+              <div class="pick-grid">
+                <div class="pick-box">
+                  <div class="pick-title">اللقاءات - الجلسات الفردية</div>
+                  <label class="check"><input type="checkbox" name="sessions" value="Seans 1" /><span>لقاء "سكينة"</span></label>
+                  <label class="check"><input type="checkbox" name="sessions" value="Seans 2" /><span>لقاء "بصيرة"</span></label>
+                  <label class="check"><input type="checkbox" name="sessions" value="Seans 3" /><span>لقاء "العبور"</span></label>
+                </div>
+                <div class="pick-box">
+                  <div class="pick-title">الرحلات - الباقات</div>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 1" /><span>رحلة "المفتاح"</span></label>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 2" /><span>رحلة "انعكاس"</span></label>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 3" /><span>رحلة "بوابة النور"</span></label>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 4" /><span>رحلة "بوابة الأمان"</span></label>
+                </div>
+              </div>
+              
+              <div class="consent-box" style="margin-top:12px;">
+                <label class="check" style="margin-bottom:6px;">
+                    <input id="consentWhatsApp" type="checkbox" required />
+                    <span>أوافق على تلقي رسائل معلوماتية عبر تطبيق واتساب.</span>
+                </label>
+                <label class="check">
+                    <input id="consentStop" type="checkbox" required /> 
+                    <span>أعلم أنه يمكنني الإلغاء في أي وقت بكتابة "STOP".</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-foot"><div class="foot-note"></div><button class="submit" type="submit" form="contactForm" id="submitBtn">إرسال</button></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Hazır</div>
+
+  <script>
+    const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
+    
+    const SESSION_DETAILS = {
+        "1": "نسمة هوا لقلبك. بنتحرر من وجع قديم، وبنفرغ التقل اللي بصدرك لترتاح روحك وتصفى.",
+        "2": "لما تضيعي الطريق، بنمسك المرايا سوا لنرتب الكركبة اللي براسك ونشوف خطواتك الجاية بوضوح",
+        "3": "الرحلة المتكاملة - لقاء يجمع بين راحة القلب ونور العقل"
+    };
+
+    const PACKAGE_DETAILS = {
+        "1": "أربع لقاءات لطيفة لفتح باب التغيير. بنبدأ بالهدوء، بنفتح شوي شوي، وبنخلي القلب يتنفس.",
+        "2": "ستة لقاءات لتشوفي نفسك بوضوح. بنفك التشابك، بنرتب الأفكار، وبنوصل لمكان فيه نور وفهم.",
+        "3": "ثمانية لقاءات للتحول العميق. بنفتح كل الأبواب اللي كانت مسكرة وبنلاقي الطريق الحقيقي لحياة بتشبهك.",
+        "4": "اثنا عشر لقاء للعودة الكاملة لنفسك. رحلة الأمان الداخلي، السكينة، والحياة اللي طالما حلمتِ فيها."
+    };
+
+    function fastScrollTo(el){
+       const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--headerH')) || 70;
+       const y = el.getBoundingClientRect().top + window.pageYOffset - headerH;
+       window.scrollTo({top: y, behavior: 'smooth'});
+    }
+    document.querySelectorAll('[data-scroll]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const t = document.querySelector(a.getAttribute('href')); if(t) fastScrollTo(t); }));
+    
+    // Smooth fade logic
+    const sections = Array.from(document.querySelectorAll('[data-section]'));
+    function updateMotion(){
+       const center = window.innerHeight * 0.52;
+       sections.forEach(sec => {
+         const r = sec.getBoundingClientRect();
+         const d = Math.abs((r.top + r.height/2) - center);
+         const t = 1 - Math.min(d / (window.innerHeight * 1.15), 1);
+         sec.style.opacity = (0.3 + t*0.7).toFixed(3);
+         sec.style.transform = `translateY(${(18 - t*18).toFixed(1)}px) scale(${(0.99 + t*0.01).toFixed(4)})`;
+         sec.style.filter = `blur(${(2.6 - t*2.6).toFixed(2)}px)`;
+       });
+    }
+    window.addEventListener('scroll', () => requestAnimationFrame(updateMotion));
+    window.addEventListener('resize', updateMotion);
+    updateMotion();
+
+    const modal = document.getElementById('contactModal');
+    function openModal(){ modal.classList.add('open'); }
+    function closeModal(){ modal.classList.remove('open'); }
+    document.querySelectorAll('[data-open-contact]').forEach(b => b.addEventListener('click', openModal));
+    document.getElementById('navContact').addEventListener('click', (e)=>{e.preventDefault(); openModal();});
+    
+    // MODAL KAPATMA (ÇARPI + DIŞARI TIKLAMA)
+    document.getElementById('closeModal').addEventListener('click', closeModal);
+    // Dışarı tıklama mantığı:
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
     });
 
-    return res.status(200).json({ success: true, metaResponse: waData });
+    function toggleDetail(type, show){
+      const wrap = document.getElementById(type+'DetailWrap');
+      if(!wrap) return;
+      if(show) wrap.classList.add('open');
+      else wrap.classList.remove('open');
+    }
+    
+    document.querySelectorAll('[data-detail]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const targetBtn = e.target.closest('button');
+        const type = targetBtn.dataset.detail;
+        const id = targetBtn.dataset.id;
+        
+        let content = "";
+        if(type === 'session') content = SESSION_DETAILS[id] || "";
+        else content = PACKAGE_DETAILS[id] || "";
 
-  } catch (error) {
-    console.error("SİSTEM HATASI:", error);
-    return res.status(500).json({ error: error.message });
-  }
-}
+        document.getElementById(type+'DetailText').textContent = content;
+
+        toggleDetail(type, true);
+      });
+    });
+
+    document.getElementById('closeSessionDetail').addEventListener('click', ()=>toggleDetail('session', false));
+    document.getElementById('closePackageDetail').addEventListener('click', ()=>toggleDetail('package', false));
+
+    const toast = document.getElementById('toast');
+    function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 3500); }
+
+    // FORM SUBMIT
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const old = btn.textContent;
+      
+      const formData = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        country: document.getElementById('country').value,
+        phonePrefix: document.getElementById('phonePrefix').value,
+        phoneRaw: document.getElementById('phone').value,
+        email: document.getElementById('email').value,
+        message: document.getElementById('message').value,
+        sessions: Array.from(document.querySelectorAll('input[name="sessions"]:checked')).map(x => x.value),
+        packages: Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x => x.value)
+      };
+
+      if (formData.sessions.length === 0 && formData.packages.length === 0) {
+        showToast("يرجى اختيار جلسة واحدة أو باقة واحدة على الأقل."); // Arapça uyarı
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        showToast("يرجى إدخال عنوان بريد إلكتروني صالح."); // Arapça uyarı
+        return;
+      }
+
+      if(!document.getElementById('consentWhatsApp').checked || !document.getElementById('consentStop').checked){ 
+          showToast("يرجى الموافقة على جميع الشروط."); // Arapça uyarı
+          return; 
+      }
+      
+      btn.disabled = true; btn.textContent = "جاري الإرسال..."; // Gönderiliyor...
+      
+      try{
+        await fetch('/api/lead', {
+           method:'POST', headers:{'Content-Type':'application/json'},
+           body: JSON.stringify(formData)
+        });
+        // BAŞARILI TOAST (ARAPÇA)
+        showToast("تم استلام طلبك بنجاح. سيتم توفير معلومات مفصلة عبر تطبيق واتساب.");
+        document.getElementById('contactForm').reset();
+        setTimeout(closeModal, 1500);
+      } catch(err){
+        showToast("حدث خطأ، يرجى المحاولة مرة أخرى.");
+        closeModal();
+      } finally {
+        btn.disabled = false; btn.textContent = old;
+      }
+    });
+
+    async function loadCountries(){
+       const res = await fetch(COUNTRIES_URL); const list = await res.json();
+       list.sort((a,b)=>a.name.localeCompare(b.name));
+       const cSel = document.getElementById('country'); const pSel = document.getElementById('phonePrefix');
+       list.forEach(c => {
+          cSel.innerHTML += `<option value="${c.code}">${c.name}</option>`;
+          pSel.innerHTML += `<option value="${c.dial_code}">${c.dial_code} - ${c.name}</option>`;
+       });
+       cSel.value="TR"; pSel.value="+90";
+    }
+    loadCountries();
+    document.getElementById('message').addEventListener('input', e => document.getElementById('msgCount').textContent = e.target.value.length+"/500");
+  </script>
+</body>
+</html>
