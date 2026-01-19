@@ -479,11 +479,11 @@
            method:'POST', headers:{'Content-Type':'application/json'},
            body: JSON.stringify(formData)
         });
-        showToast("Başarılı!");
+        showToast("Başvurunuz başarıyla alındı. Detaylı bilgilendirme WhatsApp üzerinden yapılacaktır.");
         document.getElementById('contactForm').reset();
         setTimeout(closeModal, 1000);
       } catch(err){
-        showToast("İletildi.");
+        showToast("Talebiniz alındı. En kısa sürede dönüş yapılacaktır.");
         closeModal();
       } finally {
         btn.disabled = false; btn.textContent = old;
@@ -502,9 +502,6 @@
     }
     loadCountries();
     document.getElementById('message').addEventListener('input', e => document.getElementById('msgCount').textContent = e.target.value.length+"/500");
-    
-    // Checkbox değişince butonu kontrol etmeye gerek kalmadı, submit anında kontrol ediyoruz
-    // document.getElementById('consentWhatsApp').addEventListener('change', e => ... );
   </script>
 </body>
 </html>
