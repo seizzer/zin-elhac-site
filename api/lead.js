@@ -2,59 +2,65 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// ÜRÜN KATALOĞU (Fiyat ve İsim Eşleştirmesi)
+const CATALOG = {
+  // Seanslar (Arapça isimler ve Fiyatlar)
+  "Seans 1": { name: 'لقاء "سكينة"', price: 65 },
+  "Seans 2": { name: 'لقاء "بصيرة"', price: 110 },
+  "Seans 3": { name: 'لقاء "العبور"', price: 147 },
+  
+  // Paketler (Fiyatları henüz belli değilse 0 veya tahmini yazabilirsin)
+  "Paket 1": { name: 'Paket 1', price: 0 },
+  "Paket 2": { name: 'Paket 2', price: 0 },
+  "Paket 3": { name: 'Paket 3', price: 0 },
+  "Paket 4": { name: 'Paket 4', price: 0 }
+};
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    console.log("FORM'DAN GELEN HAM VERİ:", JSON.stringify(req.body));
-
-    // 1. ADIM: Formdan gelen tüm verileri alıyoruz (Email ve Mesaj dahil)
     const { 
-      firstName, 
-      lastName, 
-      phonePrefix, 
-      phoneRaw, 
-      sessions, 
-      packages, 
-      sessionPrice, 
-      packagePrice,
-      email,    // Yeni eklendi
-      message   // Yeni eklendi
+      firstName, lastName, phonePrefix, phoneRaw, 
+      sessions, packages, email, message 
     } = req.body;
 
-    // 2. ADIM: Verileri düzenliyoruz
+    // 1. İsim ve Telefon
     const name = `${firstName || ''} ${lastName || ''}`.trim();
-    
-    // Telefon temizleme
     const phone = `${phonePrefix || ''}${phoneRaw || ''}`.replace(/\D/g, ''); 
-
-    // Müşteri e-posta ve mesajı (Boşsa varsayılan değer atanır)
     const clientEmail = email || 'Belirtilmedi';
     const clientMessage = message || 'Mesaj bırakılmadı.';
 
-    // Seans ve paketleri metne çevirme
-    const sessionName = Array.isArray(sessions) ? sessions.join(", ") : (sessions || 'Seçilmedi');
-    const packageName = Array.isArray(packages) ? packages.join(", ") : (packages || 'Seçilmedi');
+    if (!phone) return res.status(400).json({ error: 'Telefon zorunlu.' });
 
-    // Fiyatlar
-    const sPrice = sessionPrice || '0';
-    const pPrice = packagePrice || '0';
+    // 2. SEPET HESAPLAMA (Otomatik Fiyat ve İsim Bulma)
+    let selectedNames = [];
+    let totalPrice = 0;
 
-    // 3. ADIM: Telefon kontrolü
-    if (!phone) {
-      console.error("HATA: Telefon numarası oluşturulamadı!");
-      return res.status(400).json({ error: 'Telefon numarası zorunludur.' });
+    // Gelen ham verileri (Seans 1, Paket 2 vb.) tek listede birleştir
+    const allItems = [...(sessions || []), ...(packages || [])];
+
+    if (allItems.length > 0) {
+      allItems.forEach(itemKey => {
+        const product = CATALOG[itemKey]; // Katalogdan bul
+        if (product) {
+          selectedNames.push(product.name); // Arapça ismini listeye ekle
+          totalPrice += product.price;      // Fiyatı topla
+        } else {
+          selectedNames.push(itemKey); // Katalogda yoksa olduğu gibi ekle
+        }
+      });
+    } else {
+      selectedNames.push("Seçim Yapılmadı");
     }
 
-    // 4. ADIM: WhatsApp ve Mail için ortak metinler
-    const selectedItems = `${sessionName}, ${packageName}`;
-    const totalDetails = `Seans: $${sPrice}, Paket: $${pPrice}`;
+    // WhatsApp ve Mail için Hazır Metinler
+    const selectedItemsStr = selectedNames.join(", "); // Örn: لقاء "سكينة", Paket 1
+    const totalDetailsStr = `${totalPrice}$`;          // Örn: 65$
 
-    // 5. WhatsApp Gönderimi
-    console.log("WhatsApp isteği hazırlanıyor... Gidecek No:", phone);
-    
+    // 3. WHATSAPP GÖNDERİMİ
     const waResponse = await fetch(
       `https://graph.facebook.com/v21.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`,
       {
@@ -74,8 +80,8 @@ export default async function handler(req, res) {
               {
                 type: "body",
                 parameters: [
-                  { type: "text", text: selectedItems }, // {{1}}
-                  { type: "text", text: totalDetails }   // {{2}}
+                  { type: "text", text: selectedItemsStr }, // {{1}} -> Ürün İsimleri
+                  { type: "text", text: totalDetailsStr }   // {{2}} -> Toplam Tutar
                 ],
               },
             ],
@@ -85,57 +91,30 @@ export default async function handler(req, res) {
     );
 
     const waData = await waResponse.json();
-    console.log("META API CEVABI:", JSON.stringify(waData));
 
-    // 6. Mail Gönderimi (YENİ PROFESYONEL TABLO ŞABLONU)
+    // 4. MAIL GÖNDERİMİ
     await resend.emails.send({
       from: process.env.RESEND_FROM,
-      to: process.env.OWNER_EMAIL, // Senin mail adresin (env dosyasındaki)
+      to: process.env.OWNER_EMAIL,
       subject: `Yeni Kayıt: ${name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
-            
             <div style="background-color: #D4A373; padding: 20px; text-align: center;">
                 <h2 style="color: #ffffff; margin: 0;">Yeni Başvuru Alındı 🎉</h2>
             </div>
-
             <div style="padding: 20px;">
-                <p style="color: #555; font-size: 16px;">Web sitenizden yeni bir form dolduruldu. Müşteri detayları aşağıdadır:</p>
-                
+                <p style="color: #555;">Web sitenizden yeni bir form dolduruldu.</p>
                 <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                    <tr style="background-color: #f9f9f9;">
-                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #333; width: 40%;">👤 Ad Soyad</td>
-                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">${name}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #333;">📱 Telefon</td>
-                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">${phone}</td>
-                    </tr>
-                    <tr style="background-color: #f9f9f9;">
-                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #333;">📧 E-posta</td>
-                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">${clientEmail}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #333;">📌 Seçilen Paket/Seans</td>
-                        <td style="padding: 12px; border: 1px solid #ddd; color: #d35400; font-weight: bold;">${selectedItems}</td>
-                    </tr>
-                     <tr style="background-color: #f9f9f9;">
-                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #333;">💰 Tahmini Tutar</td>
-                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">${totalDetails}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #333;">📝 Müşteri Mesajı</td>
-                        <td style="padding: 12px; border: 1px solid #ddd; color: #555; font-style: italic;">"${clientMessage}"</td>
-                    </tr>
+                    <tr style="background-color: #f9f9f9;"><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">👤 Ad Soyad</td><td style="padding:12px; border:1px solid #ddd;">${name}</td></tr>
+                    <tr><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">📱 Telefon</td><td style="padding:12px; border:1px solid #ddd;">${phone}</td></tr>
+                    <tr style="background-color: #f9f9f9;"><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">📧 E-posta</td><td style="padding:12px; border:1px solid #ddd;">${clientEmail}</td></tr>
+                    <tr><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">📌 Seçimler</td><td style="padding:12px; border:1px solid #ddd; color:#d35400; font-weight:bold;">${selectedItemsStr}</td></tr>
+                    <tr style="background-color: #f9f9f9;"><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">💰 Toplam Tutar</td><td style="padding:12px; border:1px solid #ddd;">${totalDetailsStr}</td></tr>
+                    <tr><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">📝 Mesaj</td><td style="padding:12px; border:1px solid #ddd; font-style:italic;">"${clientMessage}"</td></tr>
                 </table>
-
                 <div style="margin-top: 30px; text-align: center;">
-                    <a href="mailto:${clientEmail}" style="background-color: #D4A373; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Müşteriye Yanıt Yaz</a>
+                    <a href="mailto:${clientEmail}" style="background-color: #D4A373; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Yanıtla</a>
                 </div>
-            </div>
-
-            <div style="background-color: #f4f4f4; padding: 10px; text-align: center; font-size: 12px; color: #888;">
-                Bu e-posta ZinDiary.com iletişim formundan otomatik olarak gönderilmiştir.
             </div>
         </div>
       `,
