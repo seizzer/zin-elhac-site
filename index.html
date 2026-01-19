@@ -118,8 +118,9 @@
 
     .about{display:grid; grid-template-columns: 1.05fr .95fr; gap:0; align-items:stretch; min-height:calc(100vh - var(--headerH) - var(--footerH) - 64px); padding-bottom:24px;}
     
-    /* --- FOTOĞRAF ALANI DÜZENLEMESİ (477x543px ORTALI) --- */
+    /* --- FOTOĞRAF ALANI DÜZENLEMESİ (382x679px KIRPILMIŞ) --- */
     .hero-photo {
+      /* Alanın genel boyutları ve çerçevesi */
       min-height: 100%;
       border: 1px solid color-mix(in srgb, var(--c5) 55%, transparent);
       border-right: none;
@@ -129,13 +130,17 @@
       /* Arka plan dolgusu (Resim ortada, kenarlar boş kalmasın diye soft gradyan) */
       background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);
       
-      /* FOTOĞRAF AYARLARI */
+      /* FOTOĞRAF ÇAĞIRMA */
       background-image: url('zin.jpg'); 
       
-      /* İSTEDİĞİN NET ÖLÇÜLER VE ORTALAMA */
+      /* TEKNİK AYARLAR */
       background-repeat: no-repeat;
+      
+      /* RESİM BOYUTU: Verdiğin net piksel ölçülerine göre KESİN ayarlandı */
+      background-size: 382px 679px; 
+      
+      /* HİZALAMA: Resmi tam ortaya yerleştir */
       background-position: center center;
-      background-size: 477px 543px; 
       
       /* Efektler */
       filter: sepia(10%) contrast(95%);
@@ -150,8 +155,9 @@
         border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
         border-bottom:none; 
         min-height:400px;
-        /* Mobilde taşmayı önlemek için sığdır */
-        background-size: contain;
+        /* Mobilde de tam sığsın ve ortalansın */
+        background-size: contain; 
+        background-position: center;
       }
     }
     /* ---------------------------------------------------- */
@@ -450,6 +456,7 @@
   <script>
     const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
     
+    // DETAY İÇERİKLERİ KÜTÜPHANESİ (TÜM METİNLER TAMAMLANDI)
     const SESSION_DETAILS = {
         "1": "نسمة هوا لقلبك. بنتحرر من وجع قديم، وبنفرغ التقل اللي بصدرك لترتاح روحك وتصفى.",
         "2": "لما تضيعي الطريق، بنمسك المرايا سوا لنرتب الكركبة اللي براسك ونشوف خطواتك الجاية بوضوح",
@@ -470,6 +477,7 @@
     }
     document.querySelectorAll('[data-scroll]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const t = document.querySelector(a.getAttribute('href')); if(t) fastScrollTo(t); }));
     
+    // Smooth fade logic
     const sections = Array.from(document.querySelectorAll('[data-section]'));
     function updateMotion(){
        const center = window.innerHeight * 0.52;
@@ -493,6 +501,7 @@
     document.getElementById('navContact').addEventListener('click', (e)=>{e.preventDefault(); openModal();});
     document.getElementById('closeModal').addEventListener('click', closeModal);
 
+    // GELİŞTİRİLMİŞ TOGGLE FONKSİYONU
     function toggleDetail(type, show){
       const wrap = document.getElementById(type+'DetailWrap');
       if(!wrap) return;
@@ -500,12 +509,14 @@
       else wrap.classList.remove('open');
     }
     
+    // BUTON DİNLEYİCİSİ (AKILLI İÇERİK)
     document.querySelectorAll('[data-detail]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const targetBtn = e.target.closest('button');
         const type = targetBtn.dataset.detail; // session veya package
         const id = targetBtn.dataset.id; // 1, 2, 3...
         
+        // İçeriği bul ve yerleştir
         let content = "";
         if(type === 'session') content = SESSION_DETAILS[id] || "";
         else content = PACKAGE_DETAILS[id] || "";
@@ -522,6 +533,7 @@
     const toast = document.getElementById('toast');
     function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 2500); }
 
+    // FORM SUBMIT
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
