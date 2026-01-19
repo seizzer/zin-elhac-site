@@ -190,7 +190,11 @@
       transition: transform 240ms var(--ease), background 240ms var(--ease), filter 240ms var(--ease); will-change: transform, filter;
     }
     .card:last-child{border-right:none;}
-    .card:hover{transform: translateY(-6px) scale(1.01); background: color-mix(in srgb, var(--c4) 66%, transparent); filter: brightness(1.035); z-index:2;}
+    .card:hover{
+      transform: translateY(-6px) scale(1.01); 
+      filter: brightness(1.035); 
+      z-index:2;
+    }
     .card-media{height:190px; border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent); position:relative; background: radial-gradient(280px 150px at 28% 30%, color-mix(in srgb, var(--c2) 14%, transparent), transparent 74%), linear-gradient(135deg, color-mix(in srgb, var(--c5) 18%, transparent), transparent 74%);}
     .card-body{padding:16px 16px 18px; display:flex; flex-direction:column; gap:8px; flex:1;}
     .card-title{margin:0; font-size:18px; font-weight:500; letter-spacing:0; color: var(--c3); direction: rtl; text-align: right;} 
@@ -248,6 +252,10 @@
     .check input{width:18px; height:18px; margin-top:2px; accent-color: var(--c6); flex-shrink: 0;}
     .check span{font-weight:300; font-size:13.5px; color:var(--inkSoft); line-height:1.35;}
     
+    /* Link Style inside Checkbox */
+    .check a { color: var(--c3); text-decoration: underline; transition: color 0.2s;}
+    .check a:hover { color: var(--c6); }
+
     .modal-foot{padding:12px 16px; border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent); display:flex; align-items:center; justify-content:space-between; gap:12px; direction: rtl;}
     .submit{border:1px solid color-mix(in srgb, var(--c6) 35%, transparent); background: color-mix(in srgb, var(--c6) 72%, transparent); color: var(--c4); padding:12px 16px; font-weight:400; font-size:13px; cursor:pointer; transition:transform 180ms var(--ease), background 180ms var(--ease);}
     .submit:hover{transform:translateY(-2px); background: color-mix(in srgb, var(--c6) 84%, transparent);}
@@ -271,40 +279,31 @@
       select.prefix {flex: 0 0 110px; width: 110px !important;}
     }
 
-    /* GÖRSEL AYARLARI (HEPSİ İÇİN GEÇERLİ ORTAK KURALLAR) */
-    
-    /* Seans 1 (Sakina) */
+    /* GÖRSEL AYARLARI */
     #media-session-1 {
       background-image: url('seans 1.jpg');
       background-size: contain; background-repeat: no-repeat; background-position: center;
     }
-    /* Seans 2 (Basira) */
     #media-session-2 {
       background-image: url('seans 2.jpg');
       background-size: contain; background-repeat: no-repeat; background-position: center;
     }
-    /* Seans 3 (Al-Abour) */
     #media-session-3 {
       background-image: url('seans 3.jpg');
       background-size: contain; background-repeat: no-repeat; background-position: center;
     }
-    
-    /* Paket 1 (Miftah) */
     #media-package-1 {
       background-image: url('paket 1.jpg');
       background-size: contain; background-repeat: no-repeat; background-position: center;
     }
-    /* Paket 2 (Inikas) */
     #media-package-2 {
       background-image: url('paket 2.jpg');
       background-size: contain; background-repeat: no-repeat; background-position: center;
     }
-    /* Paket 3 (Nur) */
     #media-package-3 {
       background-image: url('paket 3.jpg');
       background-size: contain; background-repeat: no-repeat; background-position: center;
     }
-    /* Paket 4 (Aman) */
     #media-package-4 {
       background-image: url('paket 4.jpg');
       background-size: contain; background-repeat: no-repeat; background-position: center;
@@ -368,7 +367,7 @@
                 <p>اسمي زين، وخبرتي بالحياة هي اللي علمتني قبل كتبي ودراستي.
 بآمن إنو السعي هو المفتاح، وإنو أصعب تجاربنا هي اللي بتصنع أقوى بداياتنا. شغفي بالحياة بيخليني أشوف الجمال حتى بالأماكن المنسية، ورسالتي اليوم هي إني ساندك لتكتشفي القوة اللي جواتك. إذا كنتِ عم تدوري على مرافقة بتفهمك بصدق وبتاخد بإيدك للعبور بسلام، فأنا هون لنمشي هالطريق سوا</p>
             </div>
-            <div class="hero-cta"><button class="btn primary" type="button" data-open-contact>Benimle iletişime geç</button></div>
+            <div class="hero-cta"><button class="btn primary" type="button" data-open-contact>تواصلي معي</button></div>
           </div>
           <div class="hero-photo"></div>
         </div>
@@ -458,8 +457,8 @@
             <div class="field" style="grid-column: span 9;">
               <label>رقم الهاتف</label>
               <div class="row">
-                <input id="phone" name="phone" type="tel" required placeholder="5xx xxx xx xx" />
                 <select class="prefix" id="phonePrefix" name="phonePrefix" required></select>
+                <input id="phone" name="phone" type="tel" required placeholder="5xx xxx xx xx" />
               </div>
             </div>
             <div class="field half"><label>البريد الإلكتروني</label><input id="email" name="email" type="email" required /></div>
@@ -488,9 +487,13 @@
                     <input id="consentWhatsApp" type="checkbox" required />
                     <span>أوافق على تلقي رسائل معلوماتية عبر تطبيق واتساب.</span>
                 </label>
-                <label class="check">
+                <label class="check" style="margin-bottom:6px;">
                     <input id="consentStop" type="checkbox" required /> 
                     <span>أعلم أنه يمكنني الإلغاء في أي وقت بكتابة "STOP".</span>
+                </label>
+                <label class="check">
+                    <input id="consentPrivacy" type="checkbox" required /> 
+                    <span>قرأت ووافقت على <a href="legal.html" target="_blank">سياسة الخصوصية وحماية البيانات</a>.</span>
                 </label>
               </div>
             </div>
@@ -615,7 +618,7 @@
         return;
       }
 
-      if(!document.getElementById('consentWhatsApp').checked || !document.getElementById('consentStop').checked){ 
+      if(!document.getElementById('consentWhatsApp').checked || !document.getElementById('consentStop').checked || !document.getElementById('consentPrivacy').checked){ 
           showToast("يرجى الموافقة على جميع الشروط.");
           return; 
       }
