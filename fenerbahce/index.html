@@ -3,12 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Zîn Elhac</title>
+  <title>Zin Elhac | زين الحاج</title>
   <meta name="description" content="Zîn Elhac — yaşam koçluğu seans ve paketleri" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@200;300;400;500&display=swap" rel="stylesheet">
+  
+  <link rel="icon" href="favicon.png" type="image/png">
 
   <style>
     :root{
@@ -118,7 +120,6 @@
 
     .wrap{width:min(var(--max), calc(100% - 40px)); margin:0 auto; padding:0; display:flex; flex-direction:column; justify-content:center; flex:1;}
     
-    /* BAŞLIKLARI SAĞA YASLAMA */
     .section-head{display:flex; align-items:baseline; justify-content:flex-start; gap:16px; margin:0 0 18px; padding:28px 0 0;}
     .section-head h2{margin:0; font-size:30px; letter-spacing:.01em; font-weight:400; color: color-mix(in srgb, var(--c3) 92%, transparent); text-align: right;}
 
@@ -271,7 +272,7 @@
       <div class="nameblock" title="Zîn Elhac">
         <div class="name-top">Zîn Elhac</div>
         <div class="name-sep"></div>
-        <div class="name-ar">زين إلحق</div>
+        <div class="name-ar">زين الحاج</div>
       </div>
       <nav aria-label="Ana Menü">
         <a class="nav-item" href="#ben-kimim" data-scroll>مين أنا؟</a>
@@ -402,7 +403,7 @@
                <div class="card-body"><h3 class="card-title">رحلة "بوابة الأمان"</h3><button class="card-link" onclick="toggleDetail(this, 'p4')">التفاصيل ›</button></div>
                <div class="detail-wrap" id="detail-p4">
                  <div class="detail-inner">
-                   <div class="detail-text">اثنا عشر لقاء للعودة الكاملة لنفسك. رحلة الأمان الداخلي.</div>
+                   <div class="detail-text">اثna عشر لقاء للعودة الكاملة لنفسك. رحلة الأمان الداخلي.</div>
                    <div class="detail-actions"><span class="link-cta" data-open-contact>تواصلي معي</span><button class="xbtn" onclick="closeAllDetails()">×</button></div>
                  </div>
                </div>
@@ -544,14 +545,14 @@
         phoneRaw: document.getElementById('phone').value,
         email: document.getElementById('email').value,
         message: document.getElementById('message').value,
-        sessions: Array.from(document.querySelectorAll('input[name="sessions"]:checked')).map(x => x.value),
-        packages: Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x => x.value)
+        sessions: Array.from(document.querySelectorAll('input[name=\"sessions\"]:checked')).map(x => x.value),
+        packages: Array.from(document.querySelectorAll('input[name=\"packages\"]:checked')).map(x => x.value)
       };
       
       btn.disabled = true; btn.textContent = "جاري الإرسال...";
       try{
         await fetch('/api/lead', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(formData) });
-        showToast("تم الإرسال بنجاح!");
+        showToast("تم الإرسal بنجاح!");
         document.getElementById('contactForm').reset();
         setTimeout(closeModal, 1500);
       } catch(err){
