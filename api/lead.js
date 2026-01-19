@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   try {
     console.log("FORM'DAN GELEN HAM VERİ:", JSON.stringify(req.body));
 
-    // 1. ADIM: Loglara göre verileri doğru isimlerle alıyoruz
+    // 1. ADIM: Formdan gelen tüm verileri alıyoruz (Email ve Mesaj dahil)
     const { 
       firstName, 
       lastName, 
@@ -19,31 +19,36 @@ export default async function handler(req, res) {
       sessions, 
       packages, 
       sessionPrice, 
-      packagePrice 
+      packagePrice,
+      email,    // Yeni eklendi
+      message   // Yeni eklendi
     } = req.body;
 
-    // 2. ADIM: Parçalı verileri birleştiriyoruz (Backend'in beklediği hale getiriyoruz)
-    // İsim soyisim birleşiyor
+    // 2. ADIM: Verileri düzenliyoruz
     const name = `${firstName || ''} ${lastName || ''}`.trim();
     
-    // Telefon kod ve numara birleşiyor (Örn: +90 ve 555... -> +90555...)
-    const phone = `${phonePrefix || ''}${phoneRaw || ''}`.replace(/\D/g, ''); // Sadece rakamları bırak
+    // Telefon temizleme
+    const phone = `${phonePrefix || ''}${phoneRaw || ''}`.replace(/\D/g, ''); 
 
-    // Seans ve paketler dizi (array) olarak geliyor ["Seans 1"], onları metne çeviriyoruz
+    // Müşteri e-posta ve mesajı (Boşsa varsayılan değer atanır)
+    const clientEmail = email || 'Belirtilmedi';
+    const clientMessage = message || 'Mesaj bırakılmadı.';
+
+    // Seans ve paketleri metne çevirme
     const sessionName = Array.isArray(sessions) ? sessions.join(", ") : (sessions || 'Seçilmedi');
     const packageName = Array.isArray(packages) ? packages.join(", ") : (packages || 'Seçilmedi');
 
-    // Fiyatlar gelmediyse (undefined ise) boş görünmesin diye kontrol
+    // Fiyatlar
     const sPrice = sessionPrice || '0';
     const pPrice = packagePrice || '0';
 
-    // 3. ADIM: Telefon kontrolü (Artık birleştirdiğimiz için hata vermeyecek)
+    // 3. ADIM: Telefon kontrolü
     if (!phone) {
       console.error("HATA: Telefon numarası oluşturulamadı!");
       return res.status(400).json({ error: 'Telefon numarası zorunludur.' });
     }
 
-    // 4. ADIM: WhatsApp için metinleri hazırlama
+    // 4. ADIM: WhatsApp ve Mail için ortak metinler
     const selectedItems = `${sessionName}, ${packageName}`;
     const totalDetails = `Seans: $${sPrice}, Paket: $${pPrice}`;
 
@@ -82,17 +87,57 @@ export default async function handler(req, res) {
     const waData = await waResponse.json();
     console.log("META API CEVABI:", JSON.stringify(waData));
 
-    // 6. Mail Gönderimi
+    // 6. Mail Gönderimi (YENİ PROFESYONEL TABLO ŞABLONU)
     await resend.emails.send({
       from: process.env.RESEND_FROM,
-      to: process.env.OWNER_EMAIL,
+      to: process.env.OWNER_EMAIL, // Senin mail adresin (env dosyasındaki)
       subject: `Yeni Kayıt: ${name}`,
       html: `
-        <h3>Yeni Ajanda Kaydı</h3>
-        <p><strong>İsim:</strong> ${name}</p>
-        <p><strong>Telefon:</strong> ${phone}</p>
-        <p><strong>Seçimler:</strong> ${selectedItems}</p>
-        <p><strong>Fiyat Detayı:</strong> ${totalDetails}</p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+            
+            <div style="background-color: #D4A373; padding: 20px; text-align: center;">
+                <h2 style="color: #ffffff; margin: 0;">Yeni Başvuru Alındı 🎉</h2>
+            </div>
+
+            <div style="padding: 20px;">
+                <p style="color: #555; font-size: 16px;">Web sitenizden yeni bir form dolduruldu. Müşteri detayları aşağıdadır:</p>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                    <tr style="background-color: #f9f9f9;">
+                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #333; width: 40%;">👤 Ad Soyad</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">${name}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #333;">📱 Telefon</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">${phone}</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #333;">📧 E-posta</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">${clientEmail}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #333;">📌 Seçilen Paket/Seans</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; color: #d35400; font-weight: bold;">${selectedItems}</td>
+                    </tr>
+                     <tr style="background-color: #f9f9f9;">
+                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #333;">💰 Tahmini Tutar</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">${totalDetails}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #333;">📝 Müşteri Mesajı</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; color: #555; font-style: italic;">"${clientMessage}"</td>
+                    </tr>
+                </table>
+
+                <div style="margin-top: 30px; text-align: center;">
+                    <a href="mailto:${clientEmail}" style="background-color: #D4A373; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Müşteriye Yanıt Yaz</a>
+                </div>
+            </div>
+
+            <div style="background-color: #f4f4f4; padding: 10px; text-align: center; font-size: 12px; color: #888;">
+                Bu e-posta ZinDiary.com iletişim formundan otomatik olarak gönderilmiştir.
+            </div>
+        </div>
       `,
     });
 
