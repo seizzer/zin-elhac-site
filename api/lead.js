@@ -72,7 +72,7 @@ export default async function handler(req, res) {
           type: "template",
           template: {
             name: process.env.WHATSAPP_TEMPLATE_NAME,
-            language: { code: process.env.WHATSAPP_TEMPLATE_LANG || "tr" },
+           language: { code: "ar" },  // Burayı bu şekilde değiştirdik
             components: [
               {
                 type: "body",
