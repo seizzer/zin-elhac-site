@@ -113,16 +113,19 @@
     #paketler{ background: color-mix(in srgb, var(--c5) 22%, transparent); }
 
     .wrap{width:min(var(--max), calc(100% - 40px)); margin:0 auto; padding:0; display:flex; flex-direction:column; justify-content:center; flex:1;}
-    .section-head{display:flex; align-items:baseline; justify-content:flex-start; gap:16px; margin:0 0 18px; padding:28px 0 0;}
+    
+    /* GÜNCELLENDİ: Başlıklar sağa yaslandı */
+    .section-head{display:flex; align-items:baseline; justify-content:flex-end; gap:16px; margin:0 0 18px; padding:28px 0 0;}
     .section-head h2{margin:0; font-size:30px; letter-spacing:.01em; font-weight:400; color: color-mix(in srgb, var(--c3) 92%, transparent);}
 
-    .about{display:grid; grid-template-columns: 1.05fr .95fr; gap:0; align-items:stretch; min-height:calc(100vh - var(--headerH) - var(--footerH) - 64px); padding-bottom:24px;}
+    .about{display:grid; grid-template-columns: 0.95fr 1.05fr; gap:0; align-items:stretch; min-height:calc(100vh - var(--headerH) - var(--footerH) - 64px); padding-bottom:24px;}
     
-    /* FOTOĞRAF ALANI (Net ve Ortalanmış) */
+    /* FOTOĞRAF ALANI (SAĞ TARAFTA) */
     .hero-photo {
       min-height: 100%;
       border: 1px solid color-mix(in srgb, var(--c5) 55%, transparent);
-      border-right: none;
+      /* Sol sınır kaldırıldı, sağa yapışacak */
+      border-left: none; 
       position: relative;
       overflow: hidden;
       background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);
@@ -133,16 +136,29 @@
       transition: filter 0.3s ease;
     }
 
+    /* METİN ALANI (SOL TARAFTA) */
+    .hero-text{
+        background: color-mix(in srgb, var(--c4) 62%, transparent); 
+        border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
+        /* Sağ sınır kaldırıldı, foto ile birleşecek */
+        border-right: none;
+        padding:22px 22px 20px; 
+        display:flex; flex-direction:column; justify-content:center;
+    }
+
     @media (max-width: 980px){
+      .about{grid-template-columns:1fr;} 
       .hero-photo{
         border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
+        border-left:1px solid color-mix(in srgb, var(--c5) 55%, transparent); /* Mobilde sınırları geri getir */
         border-bottom:none; 
         min-height:400px;
         background-size: contain;
       }
+      .hero-text{
+          border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      }
     }
-    
-    .hero-text{background: color-mix(in srgb, var(--c4) 62%, transparent); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:22px 22px 20px; display:flex; flex-direction:column; justify-content:center;}
     
     .ar-text {
       direction: rtl; 
@@ -154,7 +170,7 @@
     }
     .ar-text p { margin-bottom: 12px; }
 
-    .hero-cta{margin-top:4px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
+    .hero-cta{margin-top:4px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content: flex-end;} /* Butonu da sağa yasladım */
     
     .btn{
       border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
@@ -224,8 +240,8 @@
     input:focus, select:focus, textarea:focus{border-color: color-mix(in srgb, var(--c6) 38%, transparent); background: color-mix(in srgb, var(--c4) 96%, transparent); box-shadow:0 0 0 4px color-mix(in srgb, var(--c5) 55%, transparent);}
     textarea{min-height:110px; resize:vertical;}
     
-    /* Telefon alanı için özel düzenleme (RTL'de düzgün durması için) */
-    .row{display:flex; gap:10px; align-items:center; width:100%; direction: ltr;}
+    /* GÜNCELLENDİ: Telefon Kutusu Sıralaması (Input Solda, Prefix Sağda) */
+    .row{display:flex; gap:10px; align-items:center; width:100%; direction: ltr;} 
     select.prefix{flex: 0 0 130px; width:130px !important; text-align: left;}
     input#phone{flex: 1; width: auto !important; text-align: left;} 
 
@@ -242,7 +258,6 @@
     .submit:hover{transform:translateY(-2px); background: color-mix(in srgb, var(--c6) 84%, transparent);}
     .submit:disabled{opacity:.55; cursor:not-allowed;}
     
-    /* TOAST MESAJI */
     .toast{
       position:fixed; left:50%; transform:translateX(-50%); bottom:calc(var(--footerH) + 12px); 
       background: color-mix(in srgb, var(--c4) 92%, transparent); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
@@ -286,6 +301,7 @@
     <div class="footer-inner">
       <div class="footer-col">
         <div class="social">
+            
             <a href="https://www.instagram.com/zin.diary/" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="Instagram">
               <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Z"/>
@@ -293,12 +309,14 @@
                 <path d="M17.5 6.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/>
               </svg>
             </a>
+
             <a href="https://tiktok.com/@lifecoach.zin" target="_blank" rel="noopener noreferrer" class="icon-btn" aria-label="TikTok">
               <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M14 3v10.3a4.7 4.7 0 1 1-4.1-4.63v2.18a2.7 2.7 0 1 0 2.1 2.63V3h2Z"/>
                 <path d="M14 3c.9 2.9 3.4 5 7 5v2c-2.9 0-5.4-1.2-7-3V3Z"/>
               </svg>
             </a>
+
         </div>
         <div class="footer-text">Zin Diary - 2026</div>
       </div>
@@ -310,7 +328,6 @@
       <div class="wrap">
         <div class="section-head"><h2>مين أنا؟</h2></div>
         <div class="about">
-          <div class="hero-photo"></div>
           <div class="hero-text">
             <div class="ar-text">
                 <p>قبل عشر سنين، كنت واقفة بنفس المكان اللي إنتي فيه اليوم؛ بعرف تماماً شو يعني يكون الطريق غبش والقلب تقيل. الحياة ما كانت وردية ولا سهلة، والفرص ما انمدت لي على طبق من ذهب، بس أنا اخترت إني حاول وأمشي رغم الخوف.</p>
@@ -319,6 +336,7 @@
             </div>
             <div class="hero-cta"><button class="btn primary" type="button" data-open-contact>Benimle iletişime geç</button></div>
           </div>
+          <div class="hero-photo"></div>
         </div>
       </div>
     </section>
@@ -328,6 +346,7 @@
         <div class="section-head"><h2>اللقاءات - الجلسات الفردية</h2></div>
         <div class="cards-block">
           <div class="cards-grid cols-3" id="sessionCards">
+            
             <article class="card">
               <div class="card-media placeholder"></div>
               <div class="card-body">
@@ -335,6 +354,7 @@
                 <button class="card-link" type="button" data-detail="session" data-id="1">التفاصيل <span class="chev">›</span></button>
               </div>
             </article>
+
             <article class="card">
               <div class="card-media placeholder"></div>
               <div class="card-body">
@@ -342,6 +362,7 @@
                 <button class="card-link" type="button" data-detail="session" data-id="2">التفاصيل <span class="chev">›</span></button>
               </div>
             </article>
+
             <article class="card">
               <div class="card-media placeholder"></div>
               <div class="card-body">
@@ -349,7 +370,9 @@
                 <button class="card-link" type="button" data-detail="session" data-id="3">التفاصيل <span class="chev">›</span></button>
               </div>
             </article>
+
           </div>
+          
           <div class="detail-wrap" id="sessionDetailWrap">
             <div class="detail-inner">
               <div class="detail-text" id="sessionDetailText"></div>
@@ -373,6 +396,7 @@
              <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "بوابة النور"</h3><button class="card-link" data-detail="package" data-id="3">التفاصيل ›</button></div></article>
              <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "بوابة الأمان"</h3><button class="card-link" data-detail="package" data-id="4">التفاصيل ›</button></div></article>
           </div>
+          
           <div class="detail-wrap" id="packageDetailWrap">
             <div class="detail-inner">
               <div class="detail-text" id="packageDetailText"></div>
@@ -400,8 +424,8 @@
             <div class="field" style="grid-column: span 9;">
               <label>رقم الهاتف</label>
               <div class="row">
-                <select class="prefix" id="phonePrefix" name="phonePrefix" required></select>
                 <input id="phone" name="phone" type="tel" required placeholder="5xx xxx xx xx" />
+                <select class="prefix" id="phonePrefix" name="phonePrefix" required></select>
               </div>
             </div>
             <div class="field half"><label>البريد الإلكتروني</label><input id="email" name="email" type="email" required /></div>
@@ -468,7 +492,6 @@
     }
     document.querySelectorAll('[data-scroll]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const t = document.querySelector(a.getAttribute('href')); if(t) fastScrollTo(t); }));
     
-    // Smooth fade logic
     const sections = Array.from(document.querySelectorAll('[data-section]'));
     function updateMotion(){
        const center = window.innerHeight * 0.52;
@@ -491,9 +514,7 @@
     document.querySelectorAll('[data-open-contact]').forEach(b => b.addEventListener('click', openModal));
     document.getElementById('navContact').addEventListener('click', (e)=>{e.preventDefault(); openModal();});
     
-    // MODAL KAPATMA (ÇARPI + DIŞARI TIKLAMA)
     document.getElementById('closeModal').addEventListener('click', closeModal);
-    // Dışarı tıklama mantığı:
     window.addEventListener('click', (e) => {
       if (e.target === modal) {
         closeModal();
@@ -529,7 +550,6 @@
     const toast = document.getElementById('toast');
     function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 3500); }
 
-    // FORM SUBMIT
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
@@ -548,29 +568,28 @@
       };
 
       if (formData.sessions.length === 0 && formData.packages.length === 0) {
-        showToast("يرجى اختيار جلسة واحدة أو باقة واحدة على الأقل."); // Arapça uyarı
+        showToast("يرجى اختيار جلسة واحدة أو باقة واحدة على الأقل.");
         return;
       }
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(formData.email)) {
-        showToast("يرجى إدخال عنوان بريد إلكتروني صالح."); // Arapça uyarı
+        showToast("يرجى إدخال عنوان بريد إلكتروني صالح.");
         return;
       }
 
       if(!document.getElementById('consentWhatsApp').checked || !document.getElementById('consentStop').checked){ 
-          showToast("يرجى الموافقة على جميع الشروط."); // Arapça uyarı
+          showToast("يرجى الموافقة على جميع الشروط.");
           return; 
       }
       
-      btn.disabled = true; btn.textContent = "جاري الإرسال..."; // Gönderiliyor...
+      btn.disabled = true; btn.textContent = "جاري الإرسال...";
       
       try{
         await fetch('/api/lead', {
            method:'POST', headers:{'Content-Type':'application/json'},
            body: JSON.stringify(formData)
         });
-        // BAŞARILI TOAST (ARAPÇA)
         showToast("تم استلام طلبك بنجاح. سيتم توفير معلومات مفصلة عبر تطبيق واتساب.");
         document.getElementById('contactForm').reset();
         setTimeout(closeModal, 1500);
