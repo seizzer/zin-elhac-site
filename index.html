@@ -149,6 +149,7 @@
     .card-link{margin-top:auto; align-self:flex-start; background:transparent; border:none; padding:0; cursor:pointer; font-weight:400; font-size:13.5px; color: color-mix(in srgb, var(--c3) 84%, transparent); display:inline-flex; gap:8px; align-items:center; transition:transform 180ms var(--ease), color 180ms var(--ease);}
     .card-link:hover{transform:translateX(3px); color: color-mix(in srgb, var(--c6) 45%, var(--c3));}
 
+    /* DETAIL PANEL */
     .detail-wrap{border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c4) 62%, transparent); overflow:hidden; max-height:0; opacity:0; transform:translateY(-10px); transition:max-height 640ms var(--ease), opacity 320ms var(--ease), transform 640ms var(--ease);}
     .detail-wrap.open{max-height:340px; opacity:1; transform:translateY(0);}
     .detail-inner{padding:16px; display:flex; gap:16px; align-items:flex-start; justify-content:space-between;}
@@ -171,22 +172,20 @@
     .field.third{grid-column:span 4;}
     label{display:block; font-weight:400; font-size:12px; letter-spacing:.01em; color: var(--inkSoft); margin-bottom:6px;}
     
-    /* INPUT DÜZELTMELERİ */
     input, select, textarea{width:100%; border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:12px; font-size:14px; background: color-mix(in srgb, var(--c4) 86%, transparent); outline:none; transition:box-shadow 180ms var(--ease), border-color 180ms var(--ease); font-weight:300; color: var(--c3);}
     input:focus, select:focus, textarea:focus{border-color: color-mix(in srgb, var(--c6) 38%, transparent); background: color-mix(in srgb, var(--c4) 96%, transparent); box-shadow:0 0 0 4px color-mix(in srgb, var(--c5) 55%, transparent);}
     textarea{min-height:110px; resize:vertical;}
     
-    /* TELEFON SATIRI HİZALAMA */
     .row{display:flex; gap:10px; align-items:center; width:100%;}
-    select.prefix{flex: 0 0 130px; width:130px !important;} /* Sabit genişlik */
-    input#phone{flex: 1; width: auto !important;} /* Kalanı doldur */
+    select.prefix{flex: 0 0 130px; width:130px !important;}
+    input#phone{flex: 1; width: auto !important;} 
 
     .pick-title{margin:10px 0 6px; font-weight:400; font-size:12.5px; color:var(--inkSoft);}
     .pick-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
     .pick-box{border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c1) 22%, transparent); padding:10px 12px;}
     .check{display:flex; align-items:flex-start; gap:10px; padding:8px 6px;}
     .check:hover{background: color-mix(in srgb, var(--c4) 34%, transparent);}
-    .check input{width:18px; height:18px; margin-top:2px; accent-color: var(--c6); flex-shrink: 0;} /* Kutucuk ezilmesin */
+    .check input{width:18px; height:18px; margin-top:2px; accent-color: var(--c6); flex-shrink: 0;}
     .check span{font-weight:300; font-size:13.5px; color:var(--inkSoft); line-height:1.35;}
     
     .modal-foot{padding:12px 16px; border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent); display:flex; align-items:center; justify-content:space-between; gap:12px;}
@@ -202,7 +201,6 @@
       .hero-photo{border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); border-bottom:none; min-height:320px;}
       .cards-grid.cols-3, .cards-grid.cols-4, .pick-grid{grid-template-columns:1fr;}
       .field.half, .field.third{grid-column:span 12;}
-      /* Mobil için prefix ayarı */
       select.prefix {flex: 0 0 110px; width: 110px !important;}
     }
   </style>
@@ -368,8 +366,8 @@
                     <span>WhatsApp üzerinden bilgilendirme mesajı almayı kabul ediyorum.</span>
                 </label>
                 <label class="check">
-                    <input id="consentStop" type="checkbox" checked disabled /> 
-                    <span style="opacity:0.8;">İstediğim zaman "STOP" yazarak iptal edebileceğimi biliyorum.</span>
+                    <input id="consentStop" type="checkbox" required /> 
+                    <span>İstediğim zaman "STOP" yazarak iptal edebileceğimi biliyorum.</span>
                 </label>
               </div>
             </div>
@@ -437,6 +435,7 @@
     const toast = document.getElementById('toast');
     function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 2500); }
 
+    // FORM SUBMIT
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
@@ -454,7 +453,24 @@
         packages: Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x => x.value)
       };
 
-      if(!document.getElementById('consentWhatsApp').checked){ showToast("Onay gerekli"); return; }
+      // 1. ZORUNLU SEÇİM KONTROLÜ
+      if (formData.sessions.length === 0 && formData.packages.length === 0) {
+        showToast("Lütfen en az bir seans veya paket seçiniz.");
+        return;
+      }
+
+      // 2. EMAIL REGEX KONTROLÜ
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        showToast("Lütfen geçerli bir e-posta adresi giriniz.");
+        return;
+      }
+
+      // 3. ONAY KUTULARI KONTROLÜ
+      if(!document.getElementById('consentWhatsApp').checked || !document.getElementById('consentStop').checked){ 
+          showToast("Lütfen tüm onay kutularını işaretleyin."); 
+          return; 
+      }
       
       btn.disabled = true; btn.textContent = "Gönderiliyor...";
       
@@ -486,7 +502,9 @@
     }
     loadCountries();
     document.getElementById('message').addEventListener('input', e => document.getElementById('msgCount').textContent = e.target.value.length+"/500");
-    document.getElementById('consentWhatsApp').addEventListener('change', e => document.getElementById('submitBtn').disabled = !e.target.checked);
+    
+    // Checkbox değişince butonu kontrol etmeye gerek kalmadı, submit anında kontrol ediyoruz
+    // document.getElementById('consentWhatsApp').addEventListener('change', e => ... );
   </script>
 </body>
 </html>
