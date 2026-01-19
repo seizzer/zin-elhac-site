@@ -133,18 +133,15 @@
       transition: filter 0.3s ease;
     }
 
-    /* DÜZELTİLDİ: İçerik dikey ortalama ayarı */
     .hero-text{
         background: color-mix(in srgb, var(--c4) 62%, transparent); 
         border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
         border-right: none;
         padding:22px 22px 20px; 
-        
-        /* Flexbox ile dikey ortalama */
         display: flex; 
         flex-direction: column; 
         justify-content: center; 
-        height: 100%; /* Yüksekliği garantiye al */
+        height: 100%; 
     }
 
     @media (max-width: 980px){
@@ -273,6 +270,13 @@
       .field.half, .field.third{grid-column:span 12;}
       select.prefix {flex: 0 0 110px; width: 110px !important;}
     }
+
+    /* YENİ EKLENEN STİL: SEANS 1 RESMİ İÇİN */
+    #media-session-1 {
+      background-image: url('seans 1.jpg');
+      background-size: cover;
+      background-position: center;
+    }
   </style>
 </head>
 
@@ -346,7 +350,7 @@
           <div class="cards-grid cols-3" id="sessionCards">
             
             <article class="card">
-              <div class="card-media placeholder"></div>
+              <div class="card-media placeholder" id="media-session-1"></div>
               <div class="card-body">
                 <h3 class="card-title">لقاء "سكينة"</h3>
                 <button class="card-link" type="button" data-detail="session" data-id="1">التفاصيل <span class="chev">›</span></button>
