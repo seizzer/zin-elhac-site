@@ -118,25 +118,29 @@
 
     .about{display:grid; grid-template-columns: 1.05fr .95fr; gap:0; align-items:stretch; min-height:calc(100vh - var(--headerH) - var(--footerH) - 64px); padding-bottom:24px;}
     
-    /* --- FOTOĞRAF ALANI DÜZENLEMESİ (Kaliteli & Ortalı) --- */
+    /* --- FOTOĞRAF ALANI DÜZENLEMESİ (382x679px KIRPILMIŞ) --- */
     .hero-photo {
+      /* Alanın genel boyutları ve çerçevesi */
       min-height: 100%;
       border: 1px solid color-mix(in srgb, var(--c5) 55%, transparent);
       border-right: none;
       position: relative;
       overflow: hidden;
       
-      /* Resim */
+      /* Arka plan dolgusu (Resim ortada, kenarlar boş kalmasın diye soft gradyan) */
+      background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);
+      
+      /* FOTOĞRAF ÇAĞIRMA */
       background-image: url('zin.jpg'); 
       
-      /* Kilit nokta burası: COVER kullanıyoruz. 
-         Bu sayede foto uzamaz/basıklaşmaz, kutuyu doldurur, taşan kısımlar otomatik kırpılır. */
-      background-size: cover; 
-      
-      /* Fotoğrafın neresini göstereyim? (Ortasını ve biraz yukarısını - yüz hizası) */
-      background-position: center 20%;
-      
+      /* TEKNİK AYARLAR */
       background-repeat: no-repeat;
+      
+      /* RESİM BOYUTU: Verdiğin net piksel ölçülerine göre KESİN ayarlandı */
+      background-size: 382px 679px; 
+      
+      /* HİZALAMA: Resmi tam ortaya yerleştir */
+      background-position: center center;
       
       /* Efektler */
       filter: sepia(10%) contrast(95%);
@@ -151,7 +155,9 @@
         border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
         border-bottom:none; 
         min-height:400px;
-        background-position: center 20%; 
+        /* Mobilde de tam sığsın ve ortalansın */
+        background-size: contain; 
+        background-position: center;
       }
     }
     /* ---------------------------------------------------- */
