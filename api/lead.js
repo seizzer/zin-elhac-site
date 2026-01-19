@@ -2,18 +2,18 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ÜRÜN KATALOĞU (Fiyat ve İsim Eşleştirmesi)
+// ÜRÜN KATALOĞU (GÜNCELLENDİ)
 const CATALOG = {
-  // Seanslar (Arapça isimler ve Fiyatlar)
+  // Seanslar
   "Seans 1": { name: 'لقاء "سكينة"', price: 65 },
   "Seans 2": { name: 'لقاء "بصيرة"', price: 110 },
   "Seans 3": { name: 'لقاء "العبور"', price: 147 },
   
-  // Paketler (Fiyatları henüz belli değilse 0 veya tahmini yazabilirsin)
-  "Paket 1": { name: 'Paket 1', price: 0 },
-  "Paket 2": { name: 'Paket 2', price: 0 },
-  "Paket 3": { name: 'Paket 3', price: 0 },
-  "Paket 4": { name: 'Paket 4', price: 0 }
+  // Paketler (YENİ EKLENDİ)
+  "Paket 1": { name: 'رحلة "المفتاح"', price: 490 },
+  "Paket 2": { name: 'رحلة "انعكاس"', price: 695 },
+  "Paket 3": { name: 'رحلة "بوابة النور"', price: 888 },
+  "Paket 4": { name: 'رحلة "بوابة الأمان"', price: 1200 }
 };
 
 export default async function handler(req, res) {
@@ -27,7 +27,6 @@ export default async function handler(req, res) {
       sessions, packages, email, message 
     } = req.body;
 
-    // 1. İsim ve Telefon
     const name = `${firstName || ''} ${lastName || ''}`.trim();
     const phone = `${phonePrefix || ''}${phoneRaw || ''}`.replace(/\D/g, ''); 
     const clientEmail = email || 'Belirtilmedi';
@@ -35,32 +34,30 @@ export default async function handler(req, res) {
 
     if (!phone) return res.status(400).json({ error: 'Telefon zorunlu.' });
 
-    // 2. SEPET HESAPLAMA (Otomatik Fiyat ve İsim Bulma)
+    // SEPET HESAPLAMA
     let selectedNames = [];
     let totalPrice = 0;
 
-    // Gelen ham verileri (Seans 1, Paket 2 vb.) tek listede birleştir
     const allItems = [...(sessions || []), ...(packages || [])];
 
     if (allItems.length > 0) {
       allItems.forEach(itemKey => {
-        const product = CATALOG[itemKey]; // Katalogdan bul
+        const product = CATALOG[itemKey];
         if (product) {
-          selectedNames.push(product.name); // Arapça ismini listeye ekle
-          totalPrice += product.price;      // Fiyatı topla
+          selectedNames.push(product.name);
+          totalPrice += product.price;
         } else {
-          selectedNames.push(itemKey); // Katalogda yoksa olduğu gibi ekle
+          selectedNames.push(itemKey);
         }
       });
     } else {
       selectedNames.push("Seçim Yapılmadı");
     }
 
-    // WhatsApp ve Mail için Hazır Metinler
-    const selectedItemsStr = selectedNames.join(", "); // Örn: لقاء "سكينة", Paket 1
-    const totalDetailsStr = `${totalPrice}$`;          // Örn: 65$
+    const selectedItemsStr = selectedNames.join(", ");
+    const totalDetailsStr = `${totalPrice}$`;
 
-    // 3. WHATSAPP GÖNDERİMİ
+    // WHATSAPP
     const waResponse = await fetch(
       `https://graph.facebook.com/v21.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`,
       {
@@ -80,8 +77,8 @@ export default async function handler(req, res) {
               {
                 type: "body",
                 parameters: [
-                  { type: "text", text: selectedItemsStr }, // {{1}} -> Ürün İsimleri
-                  { type: "text", text: totalDetailsStr }   // {{2}} -> Toplam Tutar
+                  { type: "text", text: selectedItemsStr },
+                  { type: "text", text: totalDetailsStr }
                 ],
               },
             ],
@@ -92,7 +89,7 @@ export default async function handler(req, res) {
 
     const waData = await waResponse.json();
 
-    // 4. MAIL GÖNDERİMİ
+    // MAIL
     await resend.emails.send({
       from: process.env.RESEND_FROM,
       to: process.env.OWNER_EMAIL,
