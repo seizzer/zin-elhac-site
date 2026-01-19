@@ -118,7 +118,7 @@
 
     .about{display:grid; grid-template-columns: 1.05fr .95fr; gap:0; align-items:stretch; min-height:calc(100vh - var(--headerH) - var(--footerH) - 64px); padding-bottom:24px;}
     
-    /* GÜNCELLENEN FOTOĞRAF ALANI */
+    /* --- FOTOĞRAF ALANI DÜZENLEMESİ (477x543px ORTALI) --- */
     .hero-photo {
       min-height: 100%;
       border: 1px solid color-mix(in srgb, var(--c5) 55%, transparent);
@@ -126,18 +126,35 @@
       position: relative;
       overflow: hidden;
       
+      /* Arka plan dolgusu (Resim ortada, kenarlar boş kalmasın diye soft gradyan) */
+      background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);
+      
       /* FOTOĞRAF AYARLARI */
       background-image: url('zin.jpg'); 
-      background-size: cover;
-      background-position: 50% 25%; /* Odak noktasını ayarladık */
       
-      /* SOFT EFEKTLER */
+      /* İSTEDİĞİN NET ÖLÇÜLER VE ORTALAMA */
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: 477px 543px; 
+      
+      /* Efektler */
       filter: sepia(10%) contrast(95%);
       transition: filter 0.3s ease;
     }
     .hero-photo:hover {
       filter: sepia(0%) contrast(100%);
     }
+
+    @media (max-width: 980px){
+      .hero-photo{
+        border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
+        border-bottom:none; 
+        min-height:400px;
+        /* Mobilde taşmayı önlemek için sığdır */
+        background-size: contain;
+      }
+    }
+    /* ---------------------------------------------------- */
     
     .hero-text{background: color-mix(in srgb, var(--c4) 62%, transparent); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:22px 22px 20px; display:flex; flex-direction:column; justify-content:center;}
     
@@ -229,12 +246,7 @@
     @media (max-width: 980px){
       :root{--headerH:64px; --footerH:58px;}
       .nameblock{display:none;} nav{justify-content:flex-start;} .about{grid-template-columns:1fr;} 
-      .hero-photo{
-        border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
-        border-bottom:none; 
-        min-height:400px;
-        background-position: 50% 20%; 
-      }
+      .hero-photo{border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); border-bottom:none; min-height:320px;}
       .cards-grid.cols-3, .cards-grid.cols-4, .pick-grid{grid-template-columns:1fr;}
       .field.half, .field.third{grid-column:span 12;}
       select.prefix {flex: 0 0 110px; width: 110px !important;}
@@ -438,7 +450,6 @@
   <script>
     const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
     
-    // DETAY İÇERİKLERİ KÜTÜPHANESİ (TÜM METİNLER TAMAMLANDI)
     const SESSION_DETAILS = {
         "1": "نسمة هوا لقلبك. بنتحرر من وجع قديم، وبنفرغ التقل اللي بصدرك لترتاح روحك وتصفى.",
         "2": "لما تضيعي الطريق، بنمسك المرايا سوا لنرتب الكركبة اللي براسك ونشوف خطواتك الجاية بوضوح",
@@ -459,7 +470,6 @@
     }
     document.querySelectorAll('[data-scroll]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const t = document.querySelector(a.getAttribute('href')); if(t) fastScrollTo(t); }));
     
-    // Smooth fade logic
     const sections = Array.from(document.querySelectorAll('[data-section]'));
     function updateMotion(){
        const center = window.innerHeight * 0.52;
@@ -483,7 +493,6 @@
     document.getElementById('navContact').addEventListener('click', (e)=>{e.preventDefault(); openModal();});
     document.getElementById('closeModal').addEventListener('click', closeModal);
 
-    // GELİŞTİRİLMİŞ TOGGLE FONKSİYONU
     function toggleDetail(type, show){
       const wrap = document.getElementById(type+'DetailWrap');
       if(!wrap) return;
@@ -491,14 +500,12 @@
       else wrap.classList.remove('open');
     }
     
-    // BUTON DİNLEYİCİSİ (AKILLI İÇERİK)
     document.querySelectorAll('[data-detail]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const targetBtn = e.target.closest('button');
         const type = targetBtn.dataset.detail; // session veya package
         const id = targetBtn.dataset.id; // 1, 2, 3...
         
-        // İçeriği bul ve yerleştir
         let content = "";
         if(type === 'session') content = SESSION_DETAILS[id] || "";
         else content = PACKAGE_DETAILS[id] || "";
@@ -515,7 +522,6 @@
     const toast = document.getElementById('toast');
     function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 2500); }
 
-    // FORM SUBMIT
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
