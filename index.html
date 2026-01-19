@@ -118,40 +118,49 @@
 
     .about{display:grid; grid-template-columns: 1.05fr .95fr; gap:0; align-items:stretch; min-height:calc(100vh - var(--headerH) - var(--footerH) - 64px); padding-bottom:24px;}
     
-    /* --- FOTOĞRAF ALANI (DÜZELTİLDİ: FİLTRESİZ & ORTALI) --- */
+    /* --- FOTOĞRAF ALANI DÜZENLEMESİ (382x679px KIRPILMIŞ) --- */
     .hero-photo {
+      /* Alanın genel boyutları ve çerçevesi */
       min-height: 100%;
       border: 1px solid color-mix(in srgb, var(--c5) 55%, transparent);
       border-right: none;
       position: relative;
       overflow: hidden;
       
-      /* Arka plan dolgusu (Resim ortada kalınca kenarlar için) */
+      /* Arka plan dolgusu (Resim ortada, kenarlar boş kalmasın diye soft gradyan) */
       background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);
       
-      /* FOTOĞRAF */
+      /* FOTOĞRAF ÇAĞIRMA */
       background-image: url('zin.jpg'); 
+      
+      /* TEKNİK AYARLAR */
       background-repeat: no-repeat;
       
-      /* BOYUTLANDIRMA: Verdiğin 477x543 ölçülerini kullanıyoruz */
-      background-size: 477px 543px; 
+      /* RESİM BOYUTU: Verdiğin net piksel ölçülerine göre KESİN ayarlandı */
+      background-size: 382px 679px; 
       
-      /* HİZALAMA: Tam ortaya */
+      /* HİZALAMA: Resmi tam ortaya yerleştir */
       background-position: center center;
       
-      /* DİKKAT: Filtreleri sildim! Artık flu olmayacak. */
+      /* Efektler */
+      filter: sepia(10%) contrast(95%);
+      transition: filter 0.3s ease;
+    }
+    .hero-photo:hover {
+      filter: sepia(0%) contrast(100%);
     }
 
-    /* Mobilde taşma olmaması için ayar */
     @media (max-width: 980px){
       .hero-photo{
         border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
         border-bottom:none; 
         min-height:400px;
-        background-size: contain; /* Mobilde ekrana sığsın */
+        /* Mobilde de tam sığsın ve ortalansın */
+        background-size: contain; 
+        background-position: center;
       }
     }
-    /* -------------------------------------------------------- */
+    /* ---------------------------------------------------- */
     
     .hero-text{background: color-mix(in srgb, var(--c4) 62%, transparent); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:22px 22px 20px; display:flex; flex-direction:column; justify-content:center;}
     
