@@ -113,55 +113,52 @@
     #paketler{ background: color-mix(in srgb, var(--c5) 22%, transparent); }
 
     .wrap{width:min(var(--max), calc(100% - 40px)); margin:0 auto; padding:0; display:flex; flex-direction:column; justify-content:center; flex:1;}
-    .section-head{display:flex; align-items:baseline; justify-content:flex-start; gap:16px; margin:0 0 18px; padding:28px 0 0;}
+    
+    /* GÜNCELLENDİ: Başlıklar sağa yaslandı */
+    .section-head{display:flex; align-items:baseline; justify-content:flex-end; gap:16px; margin:0 0 18px; padding:28px 0 0;}
     .section-head h2{margin:0; font-size:30px; letter-spacing:.01em; font-weight:400; color: color-mix(in srgb, var(--c3) 92%, transparent);}
 
-    .about{display:grid; grid-template-columns: 1.05fr .95fr; gap:0; align-items:stretch; min-height:calc(100vh - var(--headerH) - var(--footerH) - 64px); padding-bottom:24px;}
+    .about{display:grid; grid-template-columns: 0.95fr 1.05fr; gap:0; align-items:stretch; min-height:calc(100vh - var(--headerH) - var(--footerH) - 64px); padding-bottom:24px;}
     
-    /* --- FOTOĞRAF ALANI DÜZENLEMESİ (382x679px KIRPILMIŞ) --- */
+    /* FOTOĞRAF ALANI (SAĞ TARAFTA) */
     .hero-photo {
-      /* Alanın genel boyutları ve çerçevesi */
       min-height: 100%;
       border: 1px solid color-mix(in srgb, var(--c5) 55%, transparent);
-      border-right: none;
+      /* Sol sınır kaldırıldı, sağa yapışacak */
+      border-left: none; 
       position: relative;
       overflow: hidden;
-      
-      /* Arka plan dolgusu (Resim ortada, kenarlar boş kalmasın diye soft gradyan) */
       background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);
-      
-      /* FOTOĞRAF ÇAĞIRMA */
       background-image: url('zin.jpg'); 
-      
-      /* TEKNİK AYARLAR */
       background-repeat: no-repeat;
-      
-      /* RESİM BOYUTU: Verdiğin net piksel ölçülerine göre KESİN ayarlandı */
-      background-size: 382px 679px; 
-      
-      /* HİZALAMA: Resmi tam ortaya yerleştir */
+      background-size: 477px 543px; 
       background-position: center center;
-      
-      /* Efektler */
       transition: filter 0.3s ease;
     }
-    .hero-photo:hover {
-      filter: sepia(0%) contrast(100%);
+
+    /* METİN ALANI (SOL TARAFTA) */
+    .hero-text{
+        background: color-mix(in srgb, var(--c4) 62%, transparent); 
+        border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
+        /* Sağ sınır kaldırıldı, foto ile birleşecek */
+        border-right: none;
+        padding:22px 22px 20px; 
+        display:flex; flex-direction:column; justify-content:center;
     }
 
     @media (max-width: 980px){
+      .about{grid-template-columns:1fr;} 
       .hero-photo{
         border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
+        border-left:1px solid color-mix(in srgb, var(--c5) 55%, transparent); /* Mobilde sınırları geri getir */
         border-bottom:none; 
         min-height:400px;
-        /* Mobilde de tam sığsın ve ortalansın */
-        background-size: contain; 
-        background-position: center;
+        background-size: contain;
+      }
+      .hero-text{
+          border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
       }
     }
-    /* ---------------------------------------------------- */
-    
-    .hero-text{background: color-mix(in srgb, var(--c4) 62%, transparent); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:22px 22px 20px; display:flex; flex-direction:column; justify-content:center;}
     
     .ar-text {
       direction: rtl; 
@@ -173,7 +170,7 @@
     }
     .ar-text p { margin-bottom: 12px; }
 
-    .hero-cta{margin-top:4px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
+    .hero-cta{margin-top:4px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content: flex-end;} /* Butonu da sağa yasladım */
     
     .btn{
       border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
@@ -199,39 +196,54 @@
     .card-media{height:190px; border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent); position:relative; background: radial-gradient(280px 150px at 28% 30%, color-mix(in srgb, var(--c2) 14%, transparent), transparent 74%), linear-gradient(135deg, color-mix(in srgb, var(--c5) 18%, transparent), transparent 74%);}
     .card-body{padding:16px 16px 18px; display:flex; flex-direction:column; gap:8px; flex:1;}
     .card-title{margin:0; font-size:18px; font-weight:500; letter-spacing:0; color: var(--c3); direction: rtl; text-align: right;} 
-    .card-link{margin-top:auto; align-self:flex-start; background:transparent; border:none; padding:0; cursor:pointer; font-weight:400; font-size:13.5px; color: color-mix(in srgb, var(--c3) 84%, transparent); display:inline-flex; gap:8px; align-items:center; transition:transform 180ms var(--ease), color 180ms var(--ease);}
-    .card-link:hover{transform:translateX(3px); color: color-mix(in srgb, var(--c6) 45%, var(--c3));}
+    
+    .card-link{
+      margin-top:auto; align-self:flex-start; background:transparent; border:none; padding:0; cursor:pointer; 
+      font-weight:400; font-size:13.5px; color: color-mix(in srgb, var(--c3) 84%, transparent); 
+      display:inline-flex; gap:8px; align-items:center; transition:transform 180ms var(--ease), color 180ms var(--ease);
+      font-family: 'Noto Kufi Arabic', sans-serif;
+    }
+    .card-link:hover{transform:translateX(-3px); color: color-mix(in srgb, var(--c6) 45%, var(--c3));}
+    .chev { display: inline-block; transform: scaleX(-1); }
 
     /* DETAIL PANEL */
     .detail-wrap{border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c4) 62%, transparent); overflow:hidden; max-height:0; opacity:0; transform:translateY(-10px); transition:max-height 640ms var(--ease), opacity 320ms var(--ease), transform 640ms var(--ease);}
     .detail-wrap.open{max-height:340px; opacity:1; transform:translateY(0);}
     .detail-inner{padding:16px; display:flex; gap:16px; align-items:flex-start; justify-content:space-between;}
-    .detail-text{font-size:15px; line-height:1.75; color: var(--inkSoft); overflow:auto; max-height:240px; flex:1; font-weight:300; direction:rtl; text-align:right;}
+    
+    .detail-text{
+      font-size:15px; line-height:1.75; color: var(--inkSoft); 
+      overflow:auto; max-height:240px; flex:1; font-weight:300; direction:rtl; text-align:right;
+      scrollbar-width: none; -ms-overflow-style: none;
+    }
+    .detail-text::-webkit-scrollbar { display: none; }
+
     .detail-actions{display:flex; flex-direction:column; gap:12px; align-items:flex-end; flex:0 0 auto;}
     .xbtn{width:36px; height:36px; border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c4) 78%, transparent); cursor:pointer; font-size:16px; transition:transform 180ms var(--ease), background 180ms var(--ease);}
     .xbtn:hover{transform:translateY(-2px); background: color-mix(in srgb, var(--c4) 92%, transparent);}
-    .link-cta{font-weight:400; font-size:13.5px; cursor:pointer; color: var(--c3); border-bottom:2px solid color-mix(in srgb, var(--c6) 55%, transparent); padding-bottom:2px;}
+    .link-cta{font-weight:400; font-size:13.5px; cursor:pointer; color: var(--c3); border-bottom:2px solid color-mix(in srgb, var(--c6) 55%, transparent); padding-bottom:2px; font-family: 'Noto Kufi Arabic', sans-serif;}
     
     /* Modal */
     .modal{position:fixed; inset:0; background: color-mix(in srgb, var(--c3) 22%, transparent); backdrop-filter:blur(16px); display:flex; align-items:center; justify-content:center; z-index:100; padding:18px; opacity:0; pointer-events:none; transition: opacity 260ms var(--ease);}
     .modal-card{width:min(980px, 100%); max-height:min(82vh, 860px); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c4) 92%, transparent); box-shadow:0 28px 84px color-mix(in srgb, var(--c3) 20%, transparent); display:grid; grid-template-rows:auto 1fr auto; transform: translateY(12px) scale(0.985); opacity:0; transition: transform 360ms var(--ease), opacity 260ms var(--ease);}
     .modal.open{opacity:1; pointer-events:auto;}
     .modal.open .modal-card{transform: translateY(0) scale(1); opacity:1;}
-    .modal-head{padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent);}
-    .modal-body{padding:14px 16px; overflow:auto;}
+    .modal-head{padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent); direction: rtl;}
+    .modal-body{padding:14px 16px; overflow:auto; direction: rtl; text-align: right;}
     .grid-form{display:grid; grid-template-columns:repeat(12, 1fr); gap:12px;}
     .field{grid-column:span 12;}
     .field.half{grid-column:span 6;}
     .field.third{grid-column:span 4;}
     label{display:block; font-weight:400; font-size:12px; letter-spacing:.01em; color: var(--inkSoft); margin-bottom:6px;}
     
-    input, select, textarea{width:100%; border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:12px; font-size:14px; background: color-mix(in srgb, var(--c4) 86%, transparent); outline:none; transition:box-shadow 180ms var(--ease), border-color 180ms var(--ease); font-weight:300; color: var(--c3);}
+    input, select, textarea{width:100%; border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:12px; font-size:14px; background: color-mix(in srgb, var(--c4) 86%, transparent); outline:none; transition:box-shadow 180ms var(--ease), border-color 180ms var(--ease); font-weight:300; color: var(--c3); text-align: right;}
     input:focus, select:focus, textarea:focus{border-color: color-mix(in srgb, var(--c6) 38%, transparent); background: color-mix(in srgb, var(--c4) 96%, transparent); box-shadow:0 0 0 4px color-mix(in srgb, var(--c5) 55%, transparent);}
     textarea{min-height:110px; resize:vertical;}
     
-    .row{display:flex; gap:10px; align-items:center; width:100%;}
-    select.prefix{flex: 0 0 130px; width:130px !important;}
-    input#phone{flex: 1; width: auto !important;} 
+    /* GÜNCELLENDİ: Telefon Kutusu Sıralaması (Input Solda, Prefix Sağda) */
+    .row{display:flex; gap:10px; align-items:center; width:100%; direction: ltr;} 
+    select.prefix{flex: 0 0 130px; width:130px !important; text-align: left;}
+    input#phone{flex: 1; width: auto !important; text-align: left;} 
 
     .pick-title{margin:10px 0 6px; font-weight:400; font-size:12.5px; color:var(--inkSoft);}
     .pick-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
@@ -241,11 +253,18 @@
     .check input{width:18px; height:18px; margin-top:2px; accent-color: var(--c6); flex-shrink: 0;}
     .check span{font-weight:300; font-size:13.5px; color:var(--inkSoft); line-height:1.35;}
     
-    .modal-foot{padding:12px 16px; border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent); display:flex; align-items:center; justify-content:space-between; gap:12px;}
+    .modal-foot{padding:12px 16px; border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent); display:flex; align-items:center; justify-content:space-between; gap:12px; direction: rtl;}
     .submit{border:1px solid color-mix(in srgb, var(--c6) 35%, transparent); background: color-mix(in srgb, var(--c6) 72%, transparent); color: var(--c4); padding:12px 16px; font-weight:400; font-size:13px; cursor:pointer; transition:transform 180ms var(--ease), background 180ms var(--ease);}
     .submit:hover{transform:translateY(-2px); background: color-mix(in srgb, var(--c6) 84%, transparent);}
     .submit:disabled{opacity:.55; cursor:not-allowed;}
-    .toast{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(var(--footerH) + 12px); background: color-mix(in srgb, var(--c4) 92%, transparent); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:10px 14px; font-weight:400; font-size:13px; color:var(--inkSoft); box-shadow:0 18px 44px color-mix(in srgb, var(--c3) 14%, transparent); display:none; z-index:120;}
+    
+    .toast{
+      position:fixed; left:50%; transform:translateX(-50%); bottom:calc(var(--footerH) + 12px); 
+      background: color-mix(in srgb, var(--c4) 92%, transparent); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
+      padding:10px 14px; font-weight:400; font-size:14px; color:var(--inkSoft); 
+      box-shadow:0 18px 44px color-mix(in srgb, var(--c3) 14%, transparent); display:none; z-index:120;
+      direction: rtl; font-family: 'Noto Kufi Arabic', sans-serif;
+    }
     .toast.show{display:block;}
 
     @media (max-width: 980px){
@@ -265,10 +284,10 @@
   <header>
     <div class="header-inner">
       <nav aria-label="Ana Menü">
-        <a class="nav-item" href="#ben-kimim" data-scroll>Ben kimim</a>
-        <a class="nav-item" href="#tekli-seanslar" data-scroll>Tekli seanslar</a>
-        <a class="nav-item" href="#paketler" data-scroll>Paketler</a>
-        <a class="nav-item" href="#iletisim" id="navContact">İletişim</a>
+        <a class="nav-item" href="#ben-kimim" data-scroll>مين أنا؟</a>
+        <a class="nav-item" href="#tekli-seanslar" data-scroll>اللقاءات - الجلسات الفردية</a>
+        <a class="nav-item" href="#paketler" data-scroll>الرحلات - الباقات</a>
+        <a class="nav-item" href="#iletisim" id="navContact">تواصل</a>
       </nav>
       <div class="nameblock" title="Zîn Elhac">
         <div class="name-top">Zîn Elhac</div>
@@ -307,19 +326,17 @@
   <main id="main">
     <section id="ben-kimim" data-section>
       <div class="wrap">
-        <div class="section-head"><h2>Ben kimim</h2></div>
+        <div class="section-head"><h2>مين أنا؟</h2></div>
         <div class="about">
-          <div class="hero-photo"></div>
           <div class="hero-text">
-            
             <div class="ar-text">
                 <p>قبل عشر سنين، كنت واقفة بنفس المكان اللي إنتي فيه اليوم؛ بعرف تماماً شو يعني يكون الطريق غبش والقلب تقيل. الحياة ما كانت وردية ولا سهلة، والفرص ما انمدت لي على طبق من ذهب، بس أنا اخترت إني حاول وأمشي رغم الخوف.</p>
                 <p>اسمي زين، وخبرتي بالحياة هي اللي علمتني قبل كتبي ودراستي.
 بآمن إنو السعي هو المفتاح، وإنو أصعب تجاربنا هي اللي بتصنع أقوى بداياتنا. شغفي بالحياة بيخليني أشوف الجمال حتى بالأماكن المنسية، ورسالتي اليوم هي إني ساندك لتكتشفي القوة اللي جواتك. إذا كنتِ عم تدوري على مرافقة بتفهمك بصدق وبتاخد بإيدك للعبور بسلام، فأنا هون لنمشي هالطريق سوا</p>
             </div>
-
             <div class="hero-cta"><button class="btn primary" type="button" data-open-contact>Benimle iletişime geç</button></div>
           </div>
+          <div class="hero-photo"></div>
         </div>
       </div>
     </section>
@@ -334,7 +351,7 @@
               <div class="card-media placeholder"></div>
               <div class="card-body">
                 <h3 class="card-title">لقاء "سكينة"</h3>
-                <button class="card-link" type="button" data-detail="session" data-id="1">Detaylı bilgi <span class="chev">›</span></button>
+                <button class="card-link" type="button" data-detail="session" data-id="1">التفاصيل <span class="chev">›</span></button>
               </div>
             </article>
 
@@ -342,7 +359,7 @@
               <div class="card-media placeholder"></div>
               <div class="card-body">
                 <h3 class="card-title">لقاء "بصيرة"</h3>
-                <button class="card-link" type="button" data-detail="session" data-id="2">Detaylı bilgi <span class="chev">›</span></button>
+                <button class="card-link" type="button" data-detail="session" data-id="2">التفاصيل <span class="chev">›</span></button>
               </div>
             </article>
 
@@ -350,7 +367,7 @@
               <div class="card-media placeholder"></div>
               <div class="card-body">
                 <h3 class="card-title">لقاء "العبور"</h3>
-                <button class="card-link" type="button" data-detail="session" data-id="3">Detaylı bilgi <span class="chev">›</span></button>
+                <button class="card-link" type="button" data-detail="session" data-id="3">التفاصيل <span class="chev">›</span></button>
               </div>
             </article>
 
@@ -361,7 +378,7 @@
               <div class="detail-text" id="sessionDetailText"></div>
               <div class="detail-actions">
                 <button class="xbtn" id="closeSessionDetail">×</button>
-                <span class="link-cta" data-open-contact>İletişime geç</span>
+                <span class="link-cta" data-open-contact>تواصلي معي</span>
               </div>
             </div>
           </div>
@@ -374,10 +391,10 @@
         <div class="section-head"><h2>الرحلات - الباقات</h2></div>
         <div class="cards-block">
           <div class="cards-grid cols-4">
-             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "المفتاح"</h3><button class="card-link" data-detail="package" data-id="1">Detaylı bilgi ›</button></div></article>
-             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "انعكاس"</h3><button class="card-link" data-detail="package" data-id="2">Detaylı bilgi ›</button></div></article>
-             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "بوابة النور"</h3><button class="card-link" data-detail="package" data-id="3">Detaylı bilgi ›</button></div></article>
-             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "بوابة الأمان"</h3><button class="card-link" data-detail="package" data-id="4">Detaylı bilgi ›</button></div></article>
+             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "المفتاح"</h3><button class="card-link" data-detail="package" data-id="1">التفاصيل ›</button></div></article>
+             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "انعكاس"</h3><button class="card-link" data-detail="package" data-id="2">التفاصيل ›</button></div></article>
+             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "بوابة النور"</h3><button class="card-link" data-detail="package" data-id="3">التفاصيل ›</button></div></article>
+             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "بوابة الأمان"</h3><button class="card-link" data-detail="package" data-id="4">التفاصيل ›</button></div></article>
           </div>
           
           <div class="detail-wrap" id="packageDetailWrap">
@@ -385,7 +402,7 @@
               <div class="detail-text" id="packageDetailText"></div>
               <div class="detail-actions">
                 <button class="xbtn" id="closePackageDetail">×</button>
-                <span class="link-cta" data-open-contact>İletişime geç</span>
+                <span class="link-cta" data-open-contact>تواصلي معي</span>
               </div>
             </div>
           </div>
@@ -397,34 +414,34 @@
 
   <div class="modal" id="contactModal">
     <div class="modal-card">
-      <div class="modal-head"><strong id="contactTitle">İletişim</strong><button class="xbtn" id="closeModal">×</button></div>
+      <div class="modal-head"><strong id="contactTitle">تواصل</strong><button class="xbtn" id="closeModal">×</button></div>
       <div class="modal-body">
         <form id="contactForm">
           <div class="grid-form">
-            <div class="field half"><label>Ad</label><input id="firstName" name="firstName" required /></div>
-            <div class="field half"><label>Soyad</label><input id="lastName" name="lastName" required /></div>
-            <div class="field third"><label>Ülke</label><select id="country" name="country" required><option value="" disabled selected>Seçiniz</option></select></div>
+            <div class="field half"><label>الاسم الأول</label><input id="firstName" name="firstName" required /></div>
+            <div class="field half"><label>اسم العائلة</label><input id="lastName" name="lastName" required /></div>
+            <div class="field third"><label>الدولة</label><select id="country" name="country" required><option value="" disabled selected>اختر</option></select></div>
             <div class="field" style="grid-column: span 9;">
-              <label>Telefon</label>
+              <label>رقم الهاتف</label>
               <div class="row">
-                <select class="prefix" id="phonePrefix" name="phonePrefix" required></select>
                 <input id="phone" name="phone" type="tel" required placeholder="5xx xxx xx xx" />
+                <select class="prefix" id="phonePrefix" name="phonePrefix" required></select>
               </div>
             </div>
-            <div class="field half"><label>Email</label><input id="email" name="email" type="email" required /></div>
-            <div class="field half"><label>Mesaj</label><textarea id="message" name="message" maxlength="500"></textarea><div class="counter"><span id="msgCount">0/500</span></div></div>
+            <div class="field half"><label>البريد الإلكتروني</label><input id="email" name="email" type="email" required /></div>
+            <div class="field half"><label>الرسالة</label><textarea id="message" name="message" maxlength="500"></textarea><div class="counter"><span id="msgCount">0/500</span></div></div>
 
             <div class="field">
-              <div class="pick-title">Seçimleriniz:</div>
+              <div class="pick-title">خياراتك:</div>
               <div class="pick-grid">
                 <div class="pick-box">
-                  <div class="pick-title">Seanslar</div>
+                  <div class="pick-title">اللقاءات - الجلسات الفردية</div>
                   <label class="check"><input type="checkbox" name="sessions" value="Seans 1" /><span>لقاء "سكينة"</span></label>
                   <label class="check"><input type="checkbox" name="sessions" value="Seans 2" /><span>لقاء "بصيرة"</span></label>
                   <label class="check"><input type="checkbox" name="sessions" value="Seans 3" /><span>لقاء "العبور"</span></label>
                 </div>
                 <div class="pick-box">
-                  <div class="pick-title">Paketler</div>
+                  <div class="pick-title">الرحلات - الباقات</div>
                   <label class="check"><input type="checkbox" name="packages" value="Paket 1" /><span>رحلة "المفتاح"</span></label>
                   <label class="check"><input type="checkbox" name="packages" value="Paket 2" /><span>رحلة "انعكاس"</span></label>
                   <label class="check"><input type="checkbox" name="packages" value="Paket 3" /><span>رحلة "بوابة النور"</span></label>
@@ -435,18 +452,18 @@
               <div class="consent-box" style="margin-top:12px;">
                 <label class="check" style="margin-bottom:6px;">
                     <input id="consentWhatsApp" type="checkbox" required />
-                    <span>WhatsApp üzerinden bilgilendirme mesajı almayı kabul ediyorum.</span>
+                    <span>أوافق على تلقي رسائل معلوماتية عبر تطبيق واتساب.</span>
                 </label>
                 <label class="check">
                     <input id="consentStop" type="checkbox" required /> 
-                    <span>İstediğim zaman "STOP" yazarak iptal edebileceğimi biliyorum.</span>
+                    <span>أعلم أنه يمكنني الإلغاء في أي وقت بكتابة "STOP".</span>
                 </label>
               </div>
             </div>
           </div>
         </form>
       </div>
-      <div class="modal-foot"><div class="foot-note"></div><button class="submit" type="submit" form="contactForm" id="submitBtn">Gönder</button></div>
+      <div class="modal-foot"><div class="foot-note"></div><button class="submit" type="submit" form="contactForm" id="submitBtn">إرسال</button></div>
     </div>
   </div>
 
@@ -455,7 +472,6 @@
   <script>
     const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
     
-    // DETAY İÇERİKLERİ KÜTÜPHANESİ (TÜM METİNLER TAMAMLANDI)
     const SESSION_DETAILS = {
         "1": "نسمة هوا لقلبك. بنتحرر من وجع قديم، وبنفرغ التقل اللي بصدرك لترتاح روحك وتصفى.",
         "2": "لما تضيعي الطريق، بنمسك المرايا سوا لنرتب الكركبة اللي براسك ونشوف خطواتك الجاية بوضوح",
@@ -476,7 +492,6 @@
     }
     document.querySelectorAll('[data-scroll]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const t = document.querySelector(a.getAttribute('href')); if(t) fastScrollTo(t); }));
     
-    // Smooth fade logic
     const sections = Array.from(document.querySelectorAll('[data-section]'));
     function updateMotion(){
        const center = window.innerHeight * 0.52;
@@ -498,9 +513,14 @@
     function closeModal(){ modal.classList.remove('open'); }
     document.querySelectorAll('[data-open-contact]').forEach(b => b.addEventListener('click', openModal));
     document.getElementById('navContact').addEventListener('click', (e)=>{e.preventDefault(); openModal();});
+    
     document.getElementById('closeModal').addEventListener('click', closeModal);
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
 
-    // GELİŞTİRİLMİŞ TOGGLE FONKSİYONU
     function toggleDetail(type, show){
       const wrap = document.getElementById(type+'DetailWrap');
       if(!wrap) return;
@@ -508,14 +528,12 @@
       else wrap.classList.remove('open');
     }
     
-    // BUTON DİNLEYİCİSİ (AKILLI İÇERİK)
     document.querySelectorAll('[data-detail]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const targetBtn = e.target.closest('button');
-        const type = targetBtn.dataset.detail; // session veya package
-        const id = targetBtn.dataset.id; // 1, 2, 3...
+        const type = targetBtn.dataset.detail;
+        const id = targetBtn.dataset.id;
         
-        // İçeriği bul ve yerleştir
         let content = "";
         if(type === 'session') content = SESSION_DETAILS[id] || "";
         else content = PACKAGE_DETAILS[id] || "";
@@ -530,9 +548,8 @@
     document.getElementById('closePackageDetail').addEventListener('click', ()=>toggleDetail('package', false));
 
     const toast = document.getElementById('toast');
-    function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 2500); }
+    function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 3500); }
 
-    // FORM SUBMIT
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
@@ -551,33 +568,33 @@
       };
 
       if (formData.sessions.length === 0 && formData.packages.length === 0) {
-        showToast("Lütfen en az bir seans veya paket seçiniz.");
+        showToast("يرجى اختيار جلسة واحدة أو باقة واحدة على الأقل.");
         return;
       }
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(formData.email)) {
-        showToast("Lütfen geçerli bir e-posta adresi giriniz.");
+        showToast("يرجى إدخال عنوان بريد إلكتروني صالح.");
         return;
       }
 
       if(!document.getElementById('consentWhatsApp').checked || !document.getElementById('consentStop').checked){ 
-          showToast("Lütfen tüm onay kutularını işaretleyin."); 
+          showToast("يرجى الموافقة على جميع الشروط.");
           return; 
       }
       
-      btn.disabled = true; btn.textContent = "Gönderiliyor...";
+      btn.disabled = true; btn.textContent = "جاري الإرسال...";
       
       try{
         await fetch('/api/lead', {
            method:'POST', headers:{'Content-Type':'application/json'},
            body: JSON.stringify(formData)
         });
-        showToast("Başvurunuz başarıyla alındı. Detaylı bilgilendirme WhatsApp üzerinden yapılacaktır.");
+        showToast("تم استلام طلبك بنجاح. سيتم توفير معلومات مفصلة عبر تطبيق واتساب.");
         document.getElementById('contactForm').reset();
-        setTimeout(closeModal, 1000);
+        setTimeout(closeModal, 1500);
       } catch(err){
-        showToast("Talebiniz alındı. En kısa sürede dönüş yapılacaktır.");
+        showToast("حدث خطأ، يرجى المحاولة مرة أخرى.");
         closeModal();
       } finally {
         btn.disabled = false; btn.textContent = old;
