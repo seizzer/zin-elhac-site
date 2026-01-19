@@ -118,8 +118,23 @@
 
     .about{display:grid; grid-template-columns: 1.05fr .95fr; gap:0; align-items:stretch; min-height:calc(100vh - var(--headerH) - var(--footerH) - 64px); padding-bottom:24px;}
     .hero-photo{min-height:100%; border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); border-right:none; position:relative; overflow:hidden; background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);}
+    
+    /* GÜNCELLENEN HERO TEXT STİLİ */
     .hero-text{background: color-mix(in srgb, var(--c4) 62%, transparent); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:22px 22px 20px; display:flex; flex-direction:column; justify-content:center;}
-    .hero-text p{margin:0 0 12px; font-size:16px; line-height:1.85; color: var(--inkSoft); font-weight:300;}
+    .hero-text p{margin:0 0 12px; font-size:15px; line-height:1.75; color: var(--inkSoft); font-weight:300;}
+    
+    /* ARAPÇA METİN STİLİ */
+    .ar-text {
+      direction: rtl; 
+      font-family: 'Noto Kufi Arabic', sans-serif; 
+      font-size: 14px; 
+      line-height: 1.8; 
+      color: var(--c3); 
+      margin-top: 10px; 
+      padding-top: 12px; 
+      border-top: 1px solid color-mix(in srgb, var(--c5) 60%, transparent);
+    }
+
     .hero-cta{margin-top:16px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
     
     .btn{
@@ -258,7 +273,17 @@
         <div class="about">
           <div class="hero-photo placeholder"></div>
           <div class="hero-text">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+            
+            <p>On yıl önce, bugün senin durduğun o yerde ben de vardım; yolun bulanık, kalbin ise yükle dolu olmasının ne demek olduğunu çok iyi biliyorum. Hayat benim için ne tozpembeydi ne de kolay; fırsatlar önüme altın tepside sunulmadı. Ama ben, korkuya rağmen denemeyi ve yürümeyi seçtim.</p>
+            <p>İsmim Zîn. Kitaplarımdan ve eğitimimden önce, bana asıl rehberlik eden şey hayat tecrübem oldu. İnanıyorum ki anahtar "çabalamaktır" ve en zor deneyimlerimiz, aslında en güçlü başlangıçlarımızı inşa eder. Hayata duyduğum tutku, en unutulmuş köşelerde bile güzelliği görmemi sağlıyor.</p>
+            <p>Bugünkü misyonum ise, içindeki o saklı gücü keşfetmen için sana destek olmak. Eğer seni yürekten anlayan ve huzura geçişinde elinden tutacak bir yol arkadaşı arıyorsan, bu yolu birlikte yürümek için buradayım.</p>
+
+            <div class="ar-text">
+                <p>قبل عشر سنين، كنت واقفة بنفس المكان اللي إنتي فيه اليوم؛ بعرف تماماً شو يعني يكون الطريق غبش والقلب تقيل. الحياة ما كانت وردية ولا سهلة، والفرص ما انمدت لي على طبق من ذهب، بس أنا اخترت إني حاول وأمشي رغم الخوف.</p>
+                <p>اسمي زين، وخبرتي بالحياة هي اللي علمتني قبل كتبي ودراستي.
+بآمن إنو السعي هو المفتاح، وإنو أصعب تجاربنا هي اللي بتصنع أقوى بداياتنا. شغفي بالحياة بيخليني أشوف الجمال حتى بالأماكن المنسية، ورسالتي اليوم هي إني ساندك لتكتشفي القوة اللي جواتك. إذا كنتِ عم تدوري على مرافقة بتفهمك بصدق وبتاخد بإيدك للعبور بسلام، فأنا هون لنمشي هالطريق سوا</p>
+            </div>
+
             <div class="hero-cta"><button class="btn primary" type="button" data-open-contact>Benimle iletişime geç</button></div>
           </div>
         </div>
