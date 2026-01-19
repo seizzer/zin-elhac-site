@@ -119,10 +119,8 @@
     .about{display:grid; grid-template-columns: 1.05fr .95fr; gap:0; align-items:stretch; min-height:calc(100vh - var(--headerH) - var(--footerH) - 64px); padding-bottom:24px;}
     .hero-photo{min-height:100%; border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); border-right:none; position:relative; overflow:hidden; background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);}
     
-    /* HERO TEXT STİLİ */
     .hero-text{background: color-mix(in srgb, var(--c4) 62%, transparent); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:22px 22px 20px; display:flex; flex-direction:column; justify-content:center;}
     
-    /* SADECE ARAPÇA METİN STİLİ (DÜZELTİLDİ) */
     .ar-text {
       direction: rtl; 
       font-family: 'Noto Kufi Arabic', sans-serif; 
@@ -166,7 +164,7 @@
     .detail-wrap{border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c4) 62%, transparent); overflow:hidden; max-height:0; opacity:0; transform:translateY(-10px); transition:max-height 640ms var(--ease), opacity 320ms var(--ease), transform 640ms var(--ease);}
     .detail-wrap.open{max-height:340px; opacity:1; transform:translateY(0);}
     .detail-inner{padding:16px; display:flex; gap:16px; align-items:flex-start; justify-content:space-between;}
-    .detail-text{font-size:15px; line-height:1.75; color: var(--inkSoft); overflow:auto; max-height:240px; flex:1; font-weight:300;}
+    .detail-text{font-size:15px; line-height:1.75; color: var(--inkSoft); overflow:auto; max-height:240px; flex:1; font-weight:300; direction:rtl; text-align:right;}
     .detail-actions{display:flex; flex-direction:column; gap:12px; align-items:flex-end; flex:0 0 auto;}
     .xbtn{width:36px; height:36px; border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c4) 78%, transparent); cursor:pointer; font-size:16px; transition:transform 180ms var(--ease), background 180ms var(--ease);}
     .xbtn:hover{transform:translateY(-2px); background: color-mix(in srgb, var(--c4) 92%, transparent);}
@@ -286,7 +284,7 @@
 
     <section id="tekli-seanslar" data-section>
       <div class="wrap">
-        <div class="section-head"><h2>Tekli seanslar</h2></div>
+        <div class="section-head"><h2>اللقاءات - الجلسات الفردية</h2></div>
         <div class="cards-block">
           <div class="cards-grid cols-3" id="sessionCards">
             
@@ -318,7 +316,7 @@
           
           <div class="detail-wrap" id="sessionDetailWrap">
             <div class="detail-inner">
-              <div class="detail-text" id="sessionDetailText">Detay metni buraya gelecek...</div>
+              <div class="detail-text" id="sessionDetailText"></div>
               <div class="detail-actions">
                 <button class="xbtn" id="closeSessionDetail">×</button>
                 <span class="link-cta" data-open-contact>İletişime geç</span>
@@ -331,7 +329,7 @@
 
     <section id="paketler" data-section>
       <div class="wrap">
-        <div class="section-head"><h2>Paketler</h2></div>
+        <div class="section-head"><h2>الرحلات - الباقات</h2></div>
         <div class="cards-block">
           <div class="cards-grid cols-4">
              <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "المفتاح"</h3><button class="card-link" data-detail="package" data-id="1">Detaylı bilgi ›</button></div></article>
@@ -342,7 +340,7 @@
           
           <div class="detail-wrap" id="packageDetailWrap">
             <div class="detail-inner">
-              <div class="detail-text" id="packageDetailText">Paket detay metni...</div>
+              <div class="detail-text" id="packageDetailText"></div>
               <div class="detail-actions">
                 <button class="xbtn" id="closePackageDetail">×</button>
                 <span class="link-cta" data-open-contact>İletişime geç</span>
@@ -415,6 +413,20 @@
   <script>
     const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
     
+    // DETAY İÇERİKLERİ KÜTÜPHANESİ (GÜNCELLENDİ)
+    const SESSION_DETAILS = {
+        "1": "نسمة هوا لقلبك. بنتحرر من وجع قديم، وبنفرغ التقل اللي بصدرك لترتاح روحك وتصفى.",
+        "2": "لما تضيعي الطريق، بنمسك المرايا سوا لنرتب الكركبة اللي براسك ونشوف خطواتك الجاية بوضوح",
+        "3": "الرحلة المتكاملة - لقاء يجمع بين راحة القلب ونور العقل"
+    };
+
+    const PACKAGE_DETAILS = {
+        "1": "أربع لقاءات لطيفة لفتح باب التغيير. بنبدأ بالهدوء، بنفتح شوي شوي، وبنخلي القلب يتنفس.",
+        "2": "ستة لقاءات لتشوفي نفسك بوضوح. بنفك التشابك، بنرتب الأفكار، وبنوصل لمكان فيه نور وفهم.",
+        "3": "ثمانية لقاءات للتحول العميق. بنفتح كل الأبواب اللي كانت مسكرة وبنلاقي الطريق الحقيقي لحياة بتشبهك.",
+        "4": "اثنا عشر لقاء للعودة الكاملة لنفسك. رحلة الأمان الداخلي، السكينة، والحياة اللي طالما حلمتِ فيها."
+    };
+
     function fastScrollTo(el){
        const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--headerH')) || 70;
        const y = el.getBoundingClientRect().top + window.pageYOffset - headerH;
@@ -446,6 +458,7 @@
     document.getElementById('navContact').addEventListener('click', (e)=>{e.preventDefault(); openModal();});
     document.getElementById('closeModal').addEventListener('click', closeModal);
 
+    // GELİŞTİRİLMİŞ TOGGLE FONKSİYONU
     function toggleDetail(type, show){
       const wrap = document.getElementById(type+'DetailWrap');
       if(!wrap) return;
@@ -453,10 +466,20 @@
       else wrap.classList.remove('open');
     }
     
+    // BUTON DİNLEYİCİSİ (AKILLI İÇERİK)
     document.querySelectorAll('[data-detail]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const targetBtn = e.target.closest('button');
-        const type = targetBtn.dataset.detail;
+        const type = targetBtn.dataset.detail; // session veya package
+        const id = targetBtn.dataset.id; // 1, 2, 3...
+        
+        // İçeriği bul ve yerleştir
+        let content = "";
+        if(type === 'session') content = SESSION_DETAILS[id] || "";
+        else content = PACKAGE_DETAILS[id] || "";
+
+        document.getElementById(type+'DetailText').textContent = content;
+
         toggleDetail(type, true);
       });
     });
@@ -485,20 +508,17 @@
         packages: Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x => x.value)
       };
 
-      // 1. ZORUNLU SEÇİM KONTROLÜ
       if (formData.sessions.length === 0 && formData.packages.length === 0) {
         showToast("Lütfen en az bir seans veya paket seçiniz.");
         return;
       }
 
-      // 2. EMAIL REGEX KONTROLÜ
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(formData.email)) {
         showToast("Lütfen geçerli bir e-posta adresi giriniz.");
         return;
       }
 
-      // 3. ONAY KUTULARI KONTROLÜ
       if(!document.getElementById('consentWhatsApp').checked || !document.getElementById('consentStop').checked){ 
           showToast("Lütfen tüm onay kutularını işaretleyin."); 
           return; 
