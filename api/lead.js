@@ -2,14 +2,14 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ÜRÜN KATALOĞU (GÜNCELLENDİ)
+// ÜRÜN KATALOĞU
 const CATALOG = {
   // Seanslar
   "Seans 1": { name: 'لقاء "سكينة"', price: 65 },
   "Seans 2": { name: 'لقاء "بصيرة"', price: 110 },
   "Seans 3": { name: 'لقاء "العبور"', price: 147 },
   
-  // Paketler (YENİ EKLENDİ)
+  // Paketler
   "Paket 1": { name: 'رحلة "المفتاح"', price: 490 },
   "Paket 2": { name: 'رحلة "انعكاس"', price: 695 },
   "Paket 3": { name: 'رحلة "بوابة النور"', price: 888 },
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     const selectedItemsStr = selectedNames.join(", ");
     const totalDetailsStr = `${totalPrice}$`;
 
-    // WHATSAPP
+    // WHATSAPP GÖNDERİMİ
     const waResponse = await fetch(
       `https://graph.facebook.com/v21.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`,
       {
@@ -72,7 +72,7 @@ export default async function handler(req, res) {
           type: "template",
           template: {
             name: process.env.WHATSAPP_TEMPLATE_NAME,
-           language: { code: "ar" },  // Burayı bu şekilde değiştirdik
+            language: { code: "ar" },  // DÜZELTİLDİ: Artık sabit olarak Arapça (ar) gönderiyor
             components: [
               {
                 type: "body",
@@ -89,7 +89,7 @@ export default async function handler(req, res) {
 
     const waData = await waResponse.json();
 
-    // MAIL
+    // MAIL GÖNDERİMİ
     await resend.emails.send({
       from: process.env.RESEND_FROM,
       to: process.env.OWNER_EMAIL,
