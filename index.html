@@ -302,10 +302,10 @@
         <div class="section-head"><h2>Paketler</h2></div>
         <div class="cards-block">
           <div class="cards-grid cols-4">
-             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">Paket 1</h3><button class="card-link" data-detail="package" data-id="1">Detaylı bilgi ›</button></div></article>
-             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">Paket 2</h3><button class="card-link" data-detail="package" data-id="2">Detaylı bilgi ›</button></div></article>
-             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">Paket 3</h3><button class="card-link" data-detail="package" data-id="3">Detaylı bilgi ›</button></div></article>
-             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">Paket 4</h3><button class="card-link" data-detail="package" data-id="4">Detaylı bilgi ›</button></div></article>
+             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "المفتاح"</h3><button class="card-link" data-detail="package" data-id="1">Detaylı bilgi ›</button></div></article>
+             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "انعكاس"</h3><button class="card-link" data-detail="package" data-id="2">Detaylı bilgi ›</button></div></article>
+             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "بوابة النور"</h3><button class="card-link" data-detail="package" data-id="3">Detaylı bilgi ›</button></div></article>
+             <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">رحلة "بوابة الأمان"</h3><button class="card-link" data-detail="package" data-id="4">Detaylı bilgi ›</button></div></article>
           </div>
           
           <div class="detail-wrap" id="packageDetailWrap">
@@ -353,10 +353,10 @@
                 </div>
                 <div class="pick-box">
                   <div class="pick-title">Paketler</div>
-                  <label class="check"><input type="checkbox" name="packages" value="Paket 1" /><span>Paket 1</span></label>
-                  <label class="check"><input type="checkbox" name="packages" value="Paket 2" /><span>Paket 2</span></label>
-                  <label class="check"><input type="checkbox" name="packages" value="Paket 3" /><span>Paket 3</span></label>
-                  <label class="check"><input type="checkbox" name="packages" value="Paket 4" /><span>Paket 4</span></label>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 1" /><span>رحلة "المفتاح"</span></label>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 2" /><span>رحلة "انعكاس"</span></label>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 3" /><span>رحلة "بوابة النور"</span></label>
+                  <label class="check"><input type="checkbox" name="packages" value="Paket 4" /><span>رحلة "بوابة الأمان"</span></label>
                 </div>
               </div>
               
@@ -453,20 +453,17 @@
         packages: Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x => x.value)
       };
 
-      // 1. ZORUNLU SEÇİM KONTROLÜ
       if (formData.sessions.length === 0 && formData.packages.length === 0) {
         showToast("Lütfen en az bir seans veya paket seçiniz.");
         return;
       }
 
-      // 2. EMAIL REGEX KONTROLÜ
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(formData.email)) {
         showToast("Lütfen geçerli bir e-posta adresi giriniz.");
         return;
       }
 
-      // 3. ONAY KUTULARI KONTROLÜ
       if(!document.getElementById('consentWhatsApp').checked || !document.getElementById('consentStop').checked){ 
           showToast("Lütfen tüm onay kutularını işaretleyin."); 
           return; 
