@@ -146,10 +146,11 @@
     .card-media{height:190px; border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent); position:relative; background: radial-gradient(280px 150px at 28% 30%, color-mix(in srgb, var(--c2) 14%, transparent), transparent 74%), linear-gradient(135deg, color-mix(in srgb, var(--c5) 18%, transparent), transparent 74%);}
     .card-body{padding:16px 16px 18px; display:flex; flex-direction:column; gap:8px; flex:1;}
     .card-title{margin:0; font-size:18px; font-weight:500; letter-spacing:0; color: var(--c3); direction: rtl; text-align: right;} /* ARABIC FONT STYLE */
-    .card-price{font-size:14px; font-weight:400; color: var(--c6); text-align: right; margin-bottom: 4px;}
+    /* FİYATLAR KALDIRILDI */
     .card-link{margin-top:auto; align-self:flex-start; background:transparent; border:none; padding:0; cursor:pointer; font-weight:400; font-size:13.5px; color: color-mix(in srgb, var(--c3) 84%, transparent); display:inline-flex; gap:8px; align-items:center; transition:transform 180ms var(--ease), color 180ms var(--ease);}
     .card-link:hover{transform:translateX(3px); color: color-mix(in srgb, var(--c6) 45%, var(--c3));}
 
+    /* DETAIL PANEL */
     .detail-wrap{border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c4) 62%, transparent); overflow:hidden; max-height:0; opacity:0; transform:translateY(-10px); transition:max-height 640ms var(--ease), opacity 320ms var(--ease), transform 640ms var(--ease);}
     .detail-wrap.open{max-height:340px; opacity:1; transform:translateY(0);}
     .detail-inner{padding:16px; display:flex; gap:16px; align-items:flex-start; justify-content:space-between;}
@@ -255,7 +256,6 @@
               <div class="card-media placeholder"></div>
               <div class="card-body">
                 <h3 class="card-title">لقاء "سكينة"</h3>
-                <div class="card-price">65$</div>
                 <button class="card-link" type="button" data-detail="session" data-id="1">Detaylı bilgi <span class="chev">›</span></button>
               </div>
             </article>
@@ -264,7 +264,6 @@
               <div class="card-media placeholder"></div>
               <div class="card-body">
                 <h3 class="card-title">لقاء "بصيرة"</h3>
-                <div class="card-price">110$</div>
                 <button class="card-link" type="button" data-detail="session" data-id="2">Detaylı bilgi <span class="chev">›</span></button>
               </div>
             </article>
@@ -273,13 +272,21 @@
               <div class="card-media placeholder"></div>
               <div class="card-body">
                 <h3 class="card-title">لقاء "العبور"</h3>
-                <div class="card-price">147$</div>
                 <button class="card-link" type="button" data-detail="session" data-id="3">Detaylı bilgi <span class="chev">›</span></button>
               </div>
             </article>
 
           </div>
-          <div class="detail-wrap" id="sessionDetailWrap"><div class="detail-inner"><div class="detail-text" id="sessionDetailText">Detay...</div><div class="detail-actions"><button class="xbtn" id="closeSessionDetail">×</button><span class="link-cta" data-open-contact>İletişime geç</span></div></div></div>
+          
+          <div class="detail-wrap" id="sessionDetailWrap">
+            <div class="detail-inner">
+              <div class="detail-text" id="sessionDetailText">Detay metni buraya gelecek...</div>
+              <div class="detail-actions">
+                <button class="xbtn" id="closeSessionDetail">×</button>
+                <span class="link-cta" data-open-contact>İletişime geç</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -294,7 +301,16 @@
              <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">Paket 3</h3><button class="card-link" data-detail="package" data-id="3">Detaylı bilgi ›</button></div></article>
              <article class="card"><div class="card-media placeholder"></div><div class="card-body"><h3 class="card-title">Paket 4</h3><button class="card-link" data-detail="package" data-id="4">Detaylı bilgi ›</button></div></article>
           </div>
-          <div class="detail-wrap" id="packageDetailWrap"><div class="detail-inner"><div class="detail-text">...</div><div class="detail-actions"><button class="xbtn" id="closePackageDetail">×</button></div></div></div>
+          
+          <div class="detail-wrap" id="packageDetailWrap">
+            <div class="detail-inner">
+              <div class="detail-text" id="packageDetailText">Paket detay metni...</div>
+              <div class="detail-actions">
+                <button class="xbtn" id="closePackageDetail">×</button>
+                <span class="link-cta" data-open-contact>İletişime geç</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -322,9 +338,9 @@
               <div class="pick-grid">
                 <div class="pick-box">
                   <div class="pick-title">Seanslar</div>
-                  <label class="check"><input type="checkbox" name="sessions" value="Seans 1" /><span>لقاء "سكينة" (65$)</span></label>
-                  <label class="check"><input type="checkbox" name="sessions" value="Seans 2" /><span>لقاء "بصيرة" (110$)</span></label>
-                  <label class="check"><input type="checkbox" name="sessions" value="Seans 3" /><span>لقاء "العبور" (147$)</span></label>
+                  <label class="check"><input type="checkbox" name="sessions" value="Seans 1" /><span>لقاء "سكينة"</span></label>
+                  <label class="check"><input type="checkbox" name="sessions" value="Seans 2" /><span>لقاء "بصيرة"</span></label>
+                  <label class="check"><input type="checkbox" name="sessions" value="Seans 3" /><span>لقاء "العبور"</span></label>
                 </div>
                 <div class="pick-box">
                   <div class="pick-title">Paketler</div>
@@ -348,7 +364,6 @@
   <div class="toast" id="toast">Hazır</div>
 
   <script>
-    // JS Logic stays mostly the same
     const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
     
     function fastScrollTo(el){
@@ -375,12 +390,38 @@
     window.addEventListener('resize', updateMotion);
     updateMotion();
 
+    // MODAL
     const modal = document.getElementById('contactModal');
     function openModal(){ modal.classList.add('open'); }
     function closeModal(){ modal.classList.remove('open'); }
     document.querySelectorAll('[data-open-contact]').forEach(b => b.addEventListener('click', openModal));
     document.getElementById('navContact').addEventListener('click', (e)=>{e.preventDefault(); openModal();});
     document.getElementById('closeModal').addEventListener('click', closeModal);
+
+    // --- DETAY KUTUSU DÜZELTME (JS) ---
+    function toggleDetail(type, show){
+      const wrap = document.getElementById(type+'DetailWrap');
+      if(!wrap) return;
+      if(show) wrap.classList.add('open');
+      else wrap.classList.remove('open');
+    }
+    
+    document.querySelectorAll('[data-detail]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        // Butonu bul
+        const targetBtn = e.target.closest('button');
+        const type = targetBtn.dataset.detail; // session veya package
+        toggleDetail(type, true);
+        
+        // İçeriği burada güncelleyebiliriz (Şimdilik sabit kalıyor)
+        // const id = targetBtn.dataset.id;
+        // document.getElementById(type+'DetailText').textContent = "Seçilen ID: " + id + " hakkında detaylı bilgi...";
+      });
+    });
+
+    document.getElementById('closeSessionDetail').addEventListener('click', ()=>toggleDetail('session', false));
+    document.getElementById('closePackageDetail').addEventListener('click', ()=>toggleDetail('package', false));
+    // ----------------------------------
 
     const toast = document.getElementById('toast');
     function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 2500); }
@@ -423,7 +464,6 @@
       }
     });
 
-    // Load countries
     async function loadCountries(){
        const res = await fetch(COUNTRIES_URL); const list = await res.json();
        list.sort((a,b)=>a.name.localeCompare(b.name));
