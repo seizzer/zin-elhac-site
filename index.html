@@ -117,7 +117,27 @@
     .section-head h2{margin:0; font-size:30px; letter-spacing:.01em; font-weight:400; color: color-mix(in srgb, var(--c3) 92%, transparent);}
 
     .about{display:grid; grid-template-columns: 1.05fr .95fr; gap:0; align-items:stretch; min-height:calc(100vh - var(--headerH) - var(--footerH) - 64px); padding-bottom:24px;}
-    .hero-photo{min-height:100%; border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); border-right:none; position:relative; overflow:hidden; background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);}
+    
+    /* GÜNCELLENEN FOTOĞRAF ALANI */
+    .hero-photo {
+      min-height: 100%;
+      border: 1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      border-right: none;
+      position: relative;
+      overflow: hidden;
+      
+      /* FOTOĞRAF AYARLARI */
+      background-image: url('zin.jpg'); 
+      background-size: cover;
+      background-position: center top;
+      
+      /* SOFT EFEKTLER */
+      filter: sepia(10%) contrast(95%);
+      transition: filter 0.3s ease;
+    }
+    .hero-photo:hover {
+      filter: sepia(0%) contrast(100%);
+    }
     
     .hero-text{background: color-mix(in srgb, var(--c4) 62%, transparent); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:22px 22px 20px; display:flex; flex-direction:column; justify-content:center;}
     
@@ -413,7 +433,7 @@
   <script>
     const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
     
-    // DETAY İÇERİKLERİ KÜTÜPHANESİ (GÜNCELLENDİ)
+    // DETAY İÇERİKLERİ KÜTÜPHANESİ (TÜM METİNLER TAMAMLANDI)
     const SESSION_DETAILS = {
         "1": "نسمة هوا لقلبك. بنتحرر من وجع قديم، وبنفرغ التقل اللي بصدرك لترتاح روحك وتصفى.",
         "2": "لما تضيعي الطريق، بنمسك المرايا سوا لنرتب الكركبة اللي براسك ونشوف خطواتك الجاية بوضوح",
