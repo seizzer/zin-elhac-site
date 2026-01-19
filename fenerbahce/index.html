@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@200;300;400;500&display=swap" rel="stylesheet">
   
-  <link rel="icon" href="favicon.png?v=2" type="image/png">
+  <link rel="icon" href="favicon.png?v=3" type="image/png">
 
   <style>
     :root{
@@ -403,7 +403,7 @@
                <div class="card-body"><h3 class="card-title">رحلة "بوابة الأمان"</h3><button class="card-link" onclick="toggleDetail(this, 'p4')">التفاصيل ›</button></div>
                <div class="detail-wrap" id="detail-p4">
                  <div class="detail-inner">
-                   <div class="detail-text">اثna عشر لقاء للعودة الكاملة لنفسك. رحلة الأمان الداخلي.</div>
+                   <div class="detail-text">اثنا عشر لقاء للعودة الكاملة لنفسك. رحلة الأمان الداخلي.</div>
                    <div class="detail-actions"><span class="link-cta" data-open-contact>تواصلي معي</span><button class="xbtn" onclick="closeAllDetails()">×</button></div>
                  </div>
                </div>
@@ -498,8 +498,16 @@
     const modal = document.getElementById('contactModal');
     function openModal(){ modal.classList.add('open'); }
     function closeModal(){ modal.classList.remove('open'); }
+    
     document.querySelectorAll('[data-open-contact]').forEach(b => b.addEventListener('click', openModal));
     document.getElementById('navContact').addEventListener('click', (e)=>{e.preventDefault(); openModal();});
+    
+    // YENİ EKLENEN KISIM: Modal dışına tıklayınca kapatma
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
     
     function toggleDetail(btn, id) {
       const targetWrap = document.getElementById('detail-' + id);
@@ -545,14 +553,14 @@
         phoneRaw: document.getElementById('phone').value,
         email: document.getElementById('email').value,
         message: document.getElementById('message').value,
-        sessions: Array.from(document.querySelectorAll('input[name=\"sessions\"]:checked')).map(x => x.value),
-        packages: Array.from(document.querySelectorAll('input[name=\"packages\"]:checked')).map(x => x.value)
+        sessions: Array.from(document.querySelectorAll('input[name="sessions"]:checked')).map(x => x.value),
+        packages: Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x => x.value)
       };
       
       btn.disabled = true; btn.textContent = "جاري الإرسال...";
       try{
         await fetch('/api/lead', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(formData) });
-        showToast("تم الإرسal بنجاح!");
+        showToast("تم الإرسال بنجاح!");
         document.getElementById('contactForm').reset();
         setTimeout(closeModal, 1500);
       } catch(err){
