@@ -8,13 +8,13 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@200;300;400;500;600&display=swap" rel="stylesheet">
   
   <link rel="icon" href="favicon.png?v=3" type="image/png">
 
   <style>
     :root{
-      /* PALETTE */
+      /* PALETTE - AYNEN KORUNDU */
       --c1:#f5f0eb; --c2:#b36932; --c3:#626a48; --c4:#faf7f5; --c5:#e7dbd0; --c6:#c65c75;
       --ink: var(--c3);
       --inkSoft: color-mix(in srgb, var(--c3) 70%, transparent);
@@ -44,6 +44,7 @@
       backdrop-filter: blur(10px);
     }
 
+    /* HEADER & NAV */
     header{
       position:fixed; inset:0 0 auto 0; height:var(--headerH); z-index:50;
       background: color-mix(in srgb, var(--c4) 14%, transparent);
@@ -58,12 +59,10 @@
     nav{display:flex; gap:12px; align-items:center; justify-content:center; flex:1;}
     .nav-item{
       position:relative; padding:12px 2px; font-weight:400; 
-      font-size: clamp(11px, 1.8vw, 14px);
-      letter-spacing:.01em;
+      font-size: clamp(11px, 1.8vw, 14px); letter-spacing:.01em;
       color: color-mix(in srgb, var(--c3) 78%, transparent);
       transition:color 180ms var(--ease), transform 180ms var(--ease), opacity 180ms var(--ease);
-      outline:none; opacity:.95;
-      white-space: nowrap;
+      outline:none; opacity:.95; white-space: nowrap;
     }
     .nav-item::after{
       content:""; position:absolute; left:0; right:0; bottom:3px; height:2px;
@@ -86,6 +85,7 @@
       direction:rtl; margin-top:-1px;
     }
 
+    /* FOOTER */
     footer{
       position:fixed; inset:auto 0 0 0; height:var(--footerH); z-index:50;
       background: color-mix(in srgb, var(--c4) 18%, transparent);
@@ -106,6 +106,7 @@
     .icon{width:22px; height:22px; display:block; fill:currentColor;}
     .footer-text{font-size:11.5px; font-weight:300; color: color-mix(in srgb, var(--c3) 72%, transparent); letter-spacing:.02em;}
 
+    /* MAIN & SECTIONS */
     main{min-height:100vh; padding-top:var(--headerH); padding-bottom:var(--footerH);}
     section{
       min-height:calc(100vh - var(--headerH) - var(--footerH));
@@ -120,91 +121,115 @@
 
     .wrap{width:min(var(--max), calc(100% - 40px)); margin:0 auto; padding:0; display:flex; flex-direction:column; justify-content:center; flex:1;}
     
-    .section-head{display:flex; align-items:baseline; justify-content:flex-start; gap:16px; margin:0 0 18px; padding:28px 0 0;}
+    .section-head{display:flex; align-items:baseline; justify-content:flex-start; gap:16px; margin:0 0 24px; padding:28px 0 0;}
     .section-head h2{margin:0; font-size:30px; letter-spacing:.01em; font-weight:400; color: color-mix(in srgb, var(--c3) 92%, transparent); text-align: right;}
 
+    /* ABOUT SECTION */
     .about{display:grid; grid-template-columns: 0.95fr 1.05fr; gap:0; align-items:stretch; min-height:calc(100vh - var(--headerH) - var(--footerH) - 64px); padding-bottom:24px;}
-    
     .hero-photo {
       min-height: 100%;
       border: 1px solid color-mix(in srgb, var(--c5) 55%, transparent);
       border-left: none; 
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
       background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);
       background-image: url('zin.jpg'); 
-      background-repeat: no-repeat;
-      background-size: 477px 543px; 
-      background-position: center center;
+      background-repeat: no-repeat; background-size: 477px 543px; background-position: center center;
     }
-
     .hero-text{
         background: color-mix(in srgb, var(--c4) 62%, transparent); 
-        border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
-        border-right: none;
-        padding:22px 22px 20px; 
-        display: flex; 
-        flex-direction: column; 
-        justify-content: center; 
-        height: 100%; 
+        border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); border-right: none;
+        padding:22px 22px 20px; display: flex; flex-direction: column; justify-content: center; height: 100%; 
     }
-
     .ar-text {
-      direction: rtl; 
-      font-family: 'Noto Kufi Arabic', sans-serif; 
-      font-size: 15px; 
-      line-height: 1.8; 
-      color: var(--inkSoft); 
-      margin-bottom: 20px;
+      direction: rtl; font-family: 'Noto Kufi Arabic', sans-serif; font-size: 15px; line-height: 1.8; color: var(--inkSoft); margin-bottom: 20px;
     }
     .ar-text p { margin-bottom: 12px; }
-
     .hero-cta{margin-top:4px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content: flex-end;}
     
     .btn{
       border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
       background: color-mix(in srgb, var(--c4) 18%, transparent);
-      padding:13px 16px; font-weight:400; font-size:13px; cursor:pointer; letter-spacing:.01em;
+      padding:13px 24px; font-weight:500; font-size:14px; cursor:pointer; letter-spacing:.01em;
       transition:transform 180ms var(--ease), background 220ms var(--ease), border-color 220ms var(--ease);
+      border-radius: 4px;
     }
     .btn:hover{transform:translateY(-2px); background: color-mix(in srgb, var(--c4) 34%, transparent);}
     .btn.primary{background: color-mix(in srgb, var(--c6) 14%, transparent); border-color: color-mix(in srgb, var(--c6) 32%, var(--c5));}
 
-    .cards-block{background: color-mix(in srgb, var(--c4) 56%, transparent); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:0; margin:0 0 24px;}
-    .cards-grid{display:grid; gap:0;}
-    .cards-grid.cols-3{grid-template-columns:repeat(3, 1fr);}
-    .cards-grid.cols-4{grid-template-columns:repeat(4, 1fr);}
-
-    .card{
-      min-height:320px; border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); display:flex; flex-direction:column; background: color-mix(in srgb, var(--c1) 18%, transparent);
-      transition: transform 240ms var(--ease), background 240ms var(--ease);
-    }
-    .card:hover{transform: translateY(-6px) scale(1.01); z-index:2;}
-    .card-media{height:190px; border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent);}
-    .card-body{padding:16px 16px 18px; display:flex; flex-direction:column; gap:8px; flex:1;}
-    .card-title{margin:0; font-size:18px; font-weight:500; color: var(--c3); direction: rtl; text-align: right;} 
-    
-    .card-link{
-      margin-top:auto; align-self:flex-start; background:transparent; border:none; padding:0; cursor:pointer; 
-      font-weight:400; font-size:13.5px; color: color-mix(in srgb, var(--c3) 84%, transparent); 
-      display:inline-flex; gap:8px; align-items:center; transition:color 180ms var(--ease);
-    }
-    .chev { display: inline-block; transform: scaleX(-1); }
-
-    .detail-wrap{
-      border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent); 
-      background: color-mix(in srgb, var(--c4) 62%, transparent); 
-      overflow:hidden; max-height:0; opacity:0; transform:translateY(-5px); 
-      transition:max-height 500ms var(--ease), opacity 300ms var(--ease), transform 500ms var(--ease);
+    /* --- YENİ KART TASARIMI (HOVER & SLIDE) --- */
+    .cards-grid {
+      display: grid; gap: 24px; /* Kartlar arası boşluk arttırıldı, daha ferah */
       width: 100%;
     }
-    .detail-wrap.open{max-height:500px; opacity:1; transform:translateY(0);}
-    .detail-inner{padding:16px; display:flex; flex-direction:column; gap:12px;}
-    .detail-text{font-size:14px; line-height:1.75; color: var(--inkSoft); font-weight:300; direction:rtl; text-align:right;}
-    .detail-actions{display:flex; justify-content: space-between; align-items:center;}
-    .xbtn{width:32px; height:32px; border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c4) 78%, transparent); cursor:pointer;}
-    .link-cta{font-weight:400; font-size:13px; cursor:pointer; color: var(--c3); border-bottom:2px solid color-mix(in srgb, var(--c6) 55%, transparent);}
+    .cards-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .cards-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+    .card {
+      position: relative;
+      height: 420px; /* Sabit yükseklik, referans görseldeki gibi */
+      background: #fff; /* Daha temiz bir beyaz */
+      border-radius: 16px; /* Yumuşak köşeler */
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03); /* Çok hafif gölge */
+      border: 1px solid rgba(0,0,0,0.04);
+      cursor: pointer;
+    }
+
+    /* Ön Yüz (Görsel + Başlık) */
+    .card .front {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      transition: transform 0.4s var(--ease), opacity 0.3s var(--ease);
+      z-index: 2; background: #fff;
+    }
+
+    .card-media {
+      height: 70%; /* Kartın %70'i görsel */
+      width: 100%;
+      background-size: cover; background-position: center;
+    }
     
+    .card-info {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 16px; text-align: center; gap: 6px;
+    }
+    .card-title {
+      font-size: 18px; font-weight: 600; color: var(--c3); margin: 0;
+    }
+    .card-subtitle {
+      font-size: 13px; color: var(--inkSoft); opacity: 0.8;
+    }
+
+    /* Arka Yüz (Detay Metni) */
+    .card .back {
+      position: absolute; inset: 0;
+      background: color-mix(in srgb, var(--c1) 30%, #fff); /* Hafif krem arka plan */
+      padding: 32px 24px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+      opacity: 0;
+      transform: translateY(20px); /* Aşağıdan gelecek */
+      transition: transform 0.4s var(--ease), opacity 0.4s var(--ease);
+      z-index: 1;
+    }
+    
+    .back-text {
+      font-size: 15px; line-height: 1.8; color: var(--ink); margin-bottom: 24px;
+      direction: rtl; font-weight: 400;
+    }
+
+    /* HOVER ANIMASYONU */
+    .card:hover .front {
+      transform: translateY(-15px);
+      opacity: 0;
+      pointer-events: none; /* Arkadaki butona tıklanabilsin diye */
+    }
+    .card:hover .back {
+      opacity: 1;
+      transform: translateY(0);
+      z-index: 3; /* Üste çıksın */
+    }
+
+    /* --- FORM & MODAL --- */
     .modal{position:fixed; inset:0; background: color-mix(in srgb, var(--c3) 22%, transparent); backdrop-filter:blur(16px); display:flex; align-items:center; justify-content:center; z-index:100; padding:18px; opacity:0; pointer-events:none; transition: opacity 260ms var(--ease);}
     .modal-card{width:min(980px, 100%); max-height:min(82vh, 860px); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c4) 92%, transparent); display:grid; grid-template-rows:auto 1fr auto; transform: translateY(12px) scale(0.985); opacity:0; transition: transform 360ms var(--ease), opacity 260ms var(--ease);}
     .modal.open{opacity:1; pointer-events:auto;}
@@ -247,20 +272,23 @@
       .about{grid-template-columns:1fr;} 
       .hero-photo{border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); min-height:320px; background-size: cover;}
       .hero-text{border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); border-left:1px solid color-mix(in srgb, var(--c5) 55%, transparent);}
-      .cards-grid.cols-3, .cards-grid.cols-4, .pick-grid{grid-template-columns:1fr;}
+      
+      .cards-grid.cols-3, .cards-grid.cols-4 { grid-template-columns:1fr; gap: 16px; }
+      .card { height: 380px; } /* Mobilde biraz daha kısa olabilir */
+      
+      .pick-grid{grid-template-columns:1fr;}
       .field.half, .field.third{grid-column:span 12;}
       select.prefix {flex: 0 0 100px;}
-      .card{border-right:none; border-bottom: 1px solid color-mix(in srgb, var(--c5) 55%, transparent);}
     }
 
     /* GÖRSEL AYARLARI */
-    #media-session-1 { background-image: url('seans 1.jpg'); background-size: cover; background-position: center; }
-    #media-session-2 { background-image: url('seans 2.jpg'); background-size: cover; background-position: center; }
-    #media-session-3 { background-image: url('seans 3.jpg'); background-size: cover; background-position: center; }
-    #media-package-1 { background-image: url('paket 1.jpg'); background-size: cover; background-position: center; }
-    #media-package-2 { background-image: url('paket 2.jpg'); background-size: cover; background-position: center; }
-    #media-package-3 { background-image: url('paket 3.jpg'); background-size: cover; background-position: center; }
-    #media-package-4 { background-image: url('paket 4.jpg'); background-size: cover; background-position: center; }
+    #media-session-1 { background-image: url('seans 1.jpg'); }
+    #media-session-2 { background-image: url('seans 2.jpg'); }
+    #media-session-3 { background-image: url('seans 3.jpg'); }
+    #media-package-1 { background-image: url('paket 1.jpg'); }
+    #media-package-2 { background-image: url('paket 2.jpg'); }
+    #media-package-3 { background-image: url('paket 3.jpg'); }
+    #media-package-4 { background-image: url('paket 4.jpg'); }
   </style>
 </head>
 
@@ -315,50 +343,50 @@
     <section id="tekli-seanslar" data-section>
       <div class="wrap">
         <div class="section-head"><h2>اللقاءات الفردية</h2></div>
-        <div class="cards-block">
-          <div class="cards-grid cols-3">
+        <div class="cards-grid cols-3">
+            
             <article class="card">
-              <div class="card-media" id="media-session-1"></div>
-              <div class="card-body">
-                <h3 class="card-title">لقاء "سكينة"</h3>
-                <button class="card-link" onclick="toggleDetail(this, 's1')">التفاصيل <span class="chev">›</span></button>
-              </div>
-              <div class="detail-wrap" id="detail-s1">
-                <div class="detail-inner">
-                  <div class="detail-text">نسمة هوا لقلبك. بنتحرر من وجع قديم، وبنفرغ التقل اللي بصدرك لترتاح روحك وتصفى.</div>
-                  <div class="detail-actions"><span class="link-cta" data-open-contact>تواصلي معي</span><button class="xbtn" onclick="closeAllDetails()">×</button></div>
+              <div class="front">
+                <div class="card-media" id="media-session-1"></div>
+                <div class="card-info">
+                  <h3 class="card-title">لقاء "سكينة"</h3>
+                  <span class="card-subtitle">تفريغ وحرية</span>
                 </div>
+              </div>
+              <div class="back">
+                <p class="back-text">نسمة هوا لقلبك. بنتحرر من وجع قديم، وبنفرغ التقل اللي بصدرك لترتاح روحك وتصفى.</p>
+                <button class="btn primary" data-open-contact>احجزي الآن</button>
               </div>
             </article>
 
             <article class="card">
-              <div class="card-media" id="media-session-2"></div>
-              <div class="card-body">
-                <h3 class="card-title">لقاء "بصيرة"</h3>
-                <button class="card-link" onclick="toggleDetail(this, 's2')">التفاصيل <span class="chev">›</span></button>
-              </div>
-              <div class="detail-wrap" id="detail-s2">
-                <div class="detail-inner">
-                  <div class="detail-text">لما تضيعي الطريق، بنمسك المرايا سوا لنرتب الكركبة اللي براسك ونشوف خطواتك الجاية بوضوح.</div>
-                  <div class="detail-actions"><span class="link-cta" data-open-contact>تواصلي معي</span><button class="xbtn" onclick="closeAllDetails()">×</button></div>
+              <div class="front">
+                <div class="card-media" id="media-session-2"></div>
+                <div class="card-info">
+                  <h3 class="card-title">لقاء "بصيرة"</h3>
+                  <span class="card-subtitle">وضوح ورؤية</span>
                 </div>
+              </div>
+              <div class="back">
+                <p class="back-text">لما تضيعي الطريق، بنمسك المرايا سوا لنرتب الكركبة اللي براسك ونشوف خطواتك الجاية بوضوح.</p>
+                <button class="btn primary" data-open-contact>احجزي الآن</button>
               </div>
             </article>
 
             <article class="card">
-              <div class="card-media" id="media-session-3"></div>
-              <div class="card-body">
-                <h3 class="card-title">لقاء "العبور"</h3>
-                <button class="card-link" onclick="toggleDetail(this, 's3')">التفاصيل <span class="chev">›</span></button>
-              </div>
-              <div class="detail-wrap" id="detail-s3">
-                <div class="detail-inner">
-                  <div class="detail-text">الرحلة المتكاملة - لقاء يجمع بين راحة القلب ونور العقل.</div>
-                  <div class="detail-actions"><span class="link-cta" data-open-contact>تواصلي معي</span><button class="xbtn" onclick="closeAllDetails()">×</button></div>
+              <div class="front">
+                <div class="card-media" id="media-session-3"></div>
+                <div class="card-info">
+                  <h3 class="card-title">لقاء "العبور"</h3>
+                  <span class="card-subtitle">الرحلة المتكاملة</span>
                 </div>
               </div>
+              <div class="back">
+                <p class="back-text">لقاء يجمع بين راحة القلب ونور العقل. خطوة كبيرة نحو نسختك الجديدة.</p>
+                <button class="btn primary" data-open-contact>احجزي الآن</button>
+              </div>
             </article>
-          </div>
+
         </div>
       </div>
     </section>
@@ -366,49 +394,64 @@
     <section id="paketler" data-section>
       <div class="wrap">
         <div class="section-head"><h2>الرحلات - الباقات</h2></div>
-        <div class="cards-block">
-          <div class="cards-grid cols-4">
+        <div class="cards-grid cols-4">
+             
              <article class="card">
-               <div class="card-media" id="media-package-1"></div>
-               <div class="card-body"><h3 class="card-title">رحلة "المفتاح"</h3><button class="card-link" onclick="toggleDetail(this, 'p1')">التفاصيل ›</button></div>
-               <div class="detail-wrap" id="detail-p1">
-                 <div class="detail-inner">
-                   <div class="detail-text">أربع لقاءات لطيفة لفتح باب التغيير. بنبدأ بالهدوء، بنفتح شوي شوي.</div>
-                   <div class="detail-actions"><span class="link-cta" data-open-contact>تواصلي معي</span><button class="xbtn" onclick="closeAllDetails()">×</button></div>
+               <div class="front">
+                 <div class="card-media" id="media-package-1"></div>
+                 <div class="card-info">
+                   <h3 class="card-title">رحلة "المفتاح"</h3>
+                   <span class="card-subtitle">٤ لقاءات</span>
                  </div>
                </div>
-             </article>
-             <article class="card">
-               <div class="card-media" id="media-package-2"></div>
-               <div class="card-body"><h3 class="card-title">رحلة "انعكاس"</h3><button class="card-link" onclick="toggleDetail(this, 'p2')">التفاصيل ›</button></div>
-               <div class="detail-wrap" id="detail-p2">
-                 <div class="detail-inner">
-                   <div class="detail-text">ستة لقاءات لتشوفي نفسك بوضوح. بنفك التشابك، بنرتب الأفكار.</div>
-                   <div class="detail-actions"><span class="link-cta" data-open-contact>تواصلي معي</span><button class="xbtn" onclick="closeAllDetails()">×</button></div>
-                 </div>
+               <div class="back">
+                 <p class="back-text">أربع لقاءات لطيفة لفتح باب التغيير. بنبدأ بالهدوء، بنفتح شوي شوي.</p>
+                 <button class="btn primary" data-open-contact>ابدئي الرحلة</button>
                </div>
              </article>
+
              <article class="card">
-               <div class="card-media" id="media-package-3"></div>
-               <div class="card-body"><h3 class="card-title">رحلة "بوابة النور"</h3><button class="card-link" onclick="toggleDetail(this, 'p3')">التفاصيل ›</button></div>
-               <div class="detail-wrap" id="detail-p3">
-                 <div class="detail-inner">
-                   <div class="detail-text">ثمانية لقاءات للتحول العميق. بنفتح كل الأبواب اللي كانت مسكرة.</div>
-                   <div class="detail-actions"><span class="link-cta" data-open-contact>تواصلي معي</span><button class="xbtn" onclick="closeAllDetails()">×</button></div>
+               <div class="front">
+                 <div class="card-media" id="media-package-2"></div>
+                 <div class="card-info">
+                   <h3 class="card-title">رحلة "انعكاس"</h3>
+                   <span class="card-subtitle">٦ لقاءات</span>
                  </div>
                </div>
-             </article>
-             <article class="card">
-               <div class="card-media" id="media-package-4"></div>
-               <div class="card-body"><h3 class="card-title">رحلة "بوابة الأمان"</h3><button class="card-link" onclick="toggleDetail(this, 'p4')">التفاصيل ›</button></div>
-               <div class="detail-wrap" id="detail-p4">
-                 <div class="detail-inner">
-                   <div class="detail-text">اثنا عشر لقاء للعودة الكاملة لنفسك. رحلة الأمان الداخلي.</div>
-                   <div class="detail-actions"><span class="link-cta" data-open-contact>تواصلي معي</span><button class="xbtn" onclick="closeAllDetails()">×</button></div>
-                 </div>
+               <div class="back">
+                 <p class="back-text">ستة لقاءات لتشوفي نفسك بوضوح. بنفك التشابك، بنرتب الأفكار.</p>
+                 <button class="btn primary" data-open-contact>ابدئي الرحلة</button>
                </div>
              </article>
-          </div>
+
+             <article class="card">
+               <div class="front">
+                 <div class="card-media" id="media-package-3"></div>
+                 <div class="card-info">
+                   <h3 class="card-title">رحلة "بوابة النور"</h3>
+                   <span class="card-subtitle">٨ لقاءات</span>
+                 </div>
+               </div>
+               <div class="back">
+                 <p class="back-text">ثمانية لقاءات للتحول العميق. بنفتح كل الأبواب اللي كانت مسكرة.</p>
+                 <button class="btn primary" data-open-contact>ابدئي الرحلة</button>
+               </div>
+             </article>
+
+             <article class="card">
+               <div class="front">
+                 <div class="card-media" id="media-package-4"></div>
+                 <div class="card-info">
+                   <h3 class="card-title">رحلة "بوابة الأمان"</h3>
+                   <span class="card-subtitle">١٢ لقاء</span>
+                 </div>
+               </div>
+               <div class="back">
+                 <p class="back-text">اثنا عشر لقاء للعودة الكاملة لنفسك. رحلة الأمان الداخلي والاستقرار.</p>
+                 <button class="btn primary" data-open-contact>ابدئي الرحلة</button>
+               </div>
+             </article>
+
         </div>
       </div>
     </section>
@@ -502,23 +545,13 @@
     document.querySelectorAll('[data-open-contact]').forEach(b => b.addEventListener('click', openModal));
     document.getElementById('navContact').addEventListener('click', (e)=>{e.preventDefault(); openModal();});
     
-    // YENİ EKLENEN KISIM: Modal dışına tıklayınca kapatma
     window.addEventListener('click', (e) => {
       if (e.target === modal) {
         closeModal();
       }
     });
     
-    function toggleDetail(btn, id) {
-      const targetWrap = document.getElementById('detail-' + id);
-      const isOpen = targetWrap.classList.contains('open');
-      closeAllDetails();
-      if(!isOpen) {
-        targetWrap.classList.add('open');
-        setTimeout(() => { targetWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 300);
-      }
-    }
-    function closeAllDetails() { document.querySelectorAll('.detail-wrap').forEach(w => w.classList.remove('open')); }
+    // NOT: Eski toggleDetail fonksiyonu silindi çünkü artık hover ile çalışıyor.
 
     const toEasternArabic = (n) => n.toString().replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
     document.getElementById('message').addEventListener('input', e => {
@@ -560,6 +593,7 @@
       btn.disabled = true; btn.textContent = "جاري الإرسال...";
       try{
         await fetch('/api/lead', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(formData) });
+        // GÜNCELLENMİŞ BAŞARI MESAJI
         showToast("شكراً لتواصلك الطيب! ✨ التفاصيل وصلتك الآن عبر واتساب.");
         document.getElementById('contactForm').reset();
         setTimeout(closeModal, 1500);
