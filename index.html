@@ -16,14 +16,18 @@
     :root{
       /* PALETTE */
       --c1:#f5f0eb; --c2:#b36932; --c3:#626a48; --c4:#faf7f5; --c5:#e7dbd0; --c6:#c65c75;
-      --bg-cream: #FCFBF9; /* İstenen özel arka plan rengi */
+      --bg-cream: #FCFBF9;
       --ink: var(--c3);
       --inkSoft: color-mix(in srgb, var(--c3) 70%, transparent);
-      --headerH:70px; --footerH:64px; 
+      --headerH:70px; --footerH:80px; /* Footer yüksekliği biraz arttı */
       --ease: cubic-bezier(.16,.92,.18,1); 
       
-      /* Responsive Margin Hesabı (1920px'de 100px ise %5.2 civarı) */
-      --side-margin: 5.2vw; 
+      /* Kenar Boşlukları: Mobilde 20px, PC'de 275px */
+      --side-margin: 20px;
+    }
+
+    @media (min-width: 1200px) {
+      :root{ --side-margin: 275px; }
     }
 
     *{box-sizing:border-box;}
@@ -44,7 +48,7 @@
       background: color-mix(in srgb, var(--bg-cream) 85%, transparent);
       backdrop-filter: blur(12px);
       border-bottom:1px solid rgba(0,0,0,0.03);
-      padding: 0 var(--side-margin); /* 100px boşluk kuralı */
+      padding: 0 var(--side-margin);
       transition: padding 0.3s ease;
     }
     .header-inner{
@@ -52,12 +56,11 @@
       display:flex; align-items:center; justify-content:space-between;
     }
     
-    /* LOGO: Tıklanamaz, Seçilemez, Sadece Zin | Zin */
     .logo-block{
       display:flex; flex-direction:column; align-items:center; justify-content:center;
       gap:2px; line-height:1; text-align:center;
-      user-select: none; pointer-events: none; /* Tıklanamaz ve Seçilemez */
-      margin-right: 12px; /* Hafif sağa çekildi */
+      user-select: none; pointer-events: none;
+      margin-right: 12px;
     }
     .logo-top{font-weight:400; font-size:17px; letter-spacing:.02em; color:var(--c3);}
     .logo-sep{
@@ -65,42 +68,42 @@
     }
     .logo-ar{font-weight:400; font-size:16px; color: color-mix(in srgb, var(--c3) 80%, transparent);}
 
-    /* NAV: Sola Yaslı, Font Büyük */
     nav{
-        display:flex; gap:24px; align-items:center; justify-content:flex-start; /* Sola yaslı */
-        flex:1; margin-right: 60px; /* Logo ile araya mesafe */
+        display:flex; gap:24px; align-items:center; justify-content:flex-start;
+        flex:1; margin-right: 60px;
     }
     .nav-item{
       position:relative; padding:10px 0; font-weight:400; 
-      font-size: 17px; /* Font büyütüldü */
-      letter-spacing:.01em;
+      font-size: 17px; letter-spacing:.01em;
       color: color-mix(in srgb, var(--c3) 78%, transparent);
       transition:color 180ms var(--ease);
       cursor: pointer;
     }
     .nav-item:hover{color: var(--c3);}
 
-    /* FOOTER (Değişmedi) */
+    /* FOOTER */
     footer{
       position:fixed; inset:auto 0 0 0; height:var(--footerH); z-index:50;
       background: color-mix(in srgb, var(--bg-cream) 80%, transparent);
       backdrop-filter: blur(16px); border-top:1px solid rgba(0,0,0,0.03);
     }
     .footer-inner{
-      height:100%; width:min(1260px, calc(100% - 40px)); margin:0 auto;
-      display:flex; align-items:center; justify-content:center;
+      height:100%; width:100%; padding: 0 40px; margin:0 auto;
+      display:flex; flex-direction: column; align-items:center; justify-content:center; gap: 6px;
     }
-    .social{display:flex; gap:14px;}
-    .icon-btn{width:24px; height:24px; color:var(--c3); opacity:.8; transition:opacity .2s;}
+    .social{display:flex; gap:16px; align-items: center;}
+    .footer-sep { width: 40px; height: 1px; background: color-mix(in srgb, var(--c3) 30%, transparent); margin: 2px 0; }
+    .icon-btn{width:20px; height:20px; color:var(--c3); opacity:.8; transition:opacity .2s; display: block;}
     .icon-btn:hover{opacity:1;}
-    .icon{width:100%; height:100%; fill:currentColor;}
+    .icon-btn svg { width: 100%; height: 100%; fill: currentColor; }
+    .footer-text { font-size: 11px; color: var(--inkSoft); letter-spacing: 0.05em; }
     
     main{padding-top:0; padding-bottom:var(--footerH);}
 
-    /* ORTAK SECTION YAPISI */
+    /* SECTION YAPISI */
     section{
       min-height: 100vh; position: relative;
-      padding: 60px var(--side-margin); /* Yanlardan 100px boşluk */
+      padding: 60px var(--side-margin);
       display: flex; flex-direction: column; justify-content: center;
     }
 
@@ -110,7 +113,7 @@
         padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); display: inline-block;
     }
 
-    /* 1. SECTION: HERO (MOTTO) */
+    /* HERO */
     #hero {
         padding: 0; align-items: center; justify-content: center; overflow: hidden;
         background-color: var(--c1);
@@ -122,17 +125,17 @@
     }
     .hero-overlay {
         position: absolute; inset: 0;
-        background: rgba(255,255,255,0.05); /* Şeffaf */
-        backdrop-filter: blur(4px); /* Hafif flu */
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(4px);
         z-index: 1;
     }
     .hero-content {
-        position: relative; z-index: 2; text-align: center; color: #fff; /* Motto rengi */
+        position: relative; z-index: 2; text-align: center; color: #fff;
         max-width: 800px; padding: 20px;
     }
     .motto-text {
         font-size: clamp(24px, 4vw, 42px); font-weight: 600; line-height: 1.4;
-        color: var(--c3); /* Arka plan açıksa koyu renk yazı */
+        color: var(--c3);
         text-shadow: 0 2px 10px rgba(255,255,255,0.5);
     }
     .scroll-btn {
@@ -143,121 +146,144 @@
     }
     .scroll-btn:hover { background: var(--c3); color: #fff; }
 
-    /* 2. SECTION: SEANSLAR */
-    #seanslar {
-        background-color: var(--bg-cream);
-    }
-    .sessions-grid {
-        display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;
-    }
+    /* SEANSLAR */
+    #seanslar { background-color: var(--bg-cream); }
+    .sessions-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
     .session-card {
-        flex: 0 1 450px; /* Geniş kartlar */
-        background: var(--bg-cream); /* Section ile aynı renk */
-        border: 1px solid rgba(0,0,0,0.08); /* İnce çerçeve */
+        flex: 0 1 450px;
+        background: var(--bg-cream);
+        border: 1px solid rgba(0,0,0,0.08);
         border-radius: 12px; overflow: hidden;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         cursor: pointer; position: relative;
     }
-    .session-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(98, 106, 72, 0.15); /* Orta kuvvet gölge */
-    }
+    .session-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(98, 106, 72, 0.15); }
     .card-img {
-        width: 100%; aspect-ratio: 1/1; /* Kare Fotoğraf */
+        width: 100%; aspect-ratio: 1/1;
         background-size: cover; background-position: center;
         border-bottom: 1px solid rgba(0,0,0,0.05);
     }
-    #img-s1 { background-image: url('seans 1.jpg'); } /* Sağdaki */
-    #img-s2 { background-image: url('seans 2.jpg'); } /* Soldaki */
-
-    .card-meta {
-        padding: 24px; text-align: center;
-    }
-    .card-title {
-        font-size: 24px; font-weight: 600; color: var(--c3); margin-bottom: 8px;
-    }
+    #img-s1 { background-image: url('seans 1.jpg'); }
+    #img-s2 { background-image: url('seans 2.jpg'); }
+    .card-meta { padding: 24px; text-align: center; }
+    .card-title { font-size: 24px; font-weight: 600; color: var(--c3); margin-bottom: 8px; }
     .card-desc { font-size: 14px; color: var(--inkSoft); line-height: 1.6; }
 
-    /* 3. SECTION: HAKKIMDA (Paketler yerine geldi) */
-    #hakkimda {
-        background-color: var(--c4); /* Hafif farklı ton ayrışması için */
-    }
+    /* HAKKIMDA */
+    #hakkimda { background-color: var(--c4); }
     .about-layout {
         display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
-        position: relative; min-height: 700px; /* Fotoğraf için alan */
+        position: relative; min-height: 700px;
     }
     .about-text {
         direction: rtl; text-align: right; padding-top: 40px;
+        max-width: 550px; /* Yazının resme binmemesi için genişlik kısıtlaması */
     }
     .about-p { margin-bottom: 20px; font-size: 16px; line-height: 1.9; color: var(--inkSoft); }
-    
-    .about-img-wrapper {
-        position: relative; height: 100%; width: 100%;
-    }
+    .about-img-wrapper { position: relative; height: 100%; width: 100%; }
     .about-photo {
         width: 650px; height: 650px;
         background-image: url('zin.jpg'); background-size: cover; background-position: center;
         position: absolute;
-        /* İstenen Milimetrik Konum */
         left: 224px; top: 27.5px;
         box-shadow: 10px 10px 0px rgba(0,0,0,0.03);
     }
 
-    /* MODAL & FORM */
+    /* MODAL (İLETİŞİM FORMU) */
     .modal{position:fixed; inset:0; background: rgba(98, 106, 72, 0.2); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:100; opacity:0; pointer-events:none; transition: opacity .3s;}
     .modal.open{opacity:1; pointer-events:auto;}
-    .modal-card{width:min(900px, 94%); background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1); transform: translateY(20px); transition: transform .3s;}
-    .modal.open .modal-card{transform: translateY(0);}
+    .modal-card{width:min(900px, 94%); background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1); transform: translateY(20px); transition: transform .3s; display: flex; flex-direction: column; max-height: 90vh;}
     .modal-head{padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; direction: rtl;}
-    .modal-body{padding: 30px; direction: rtl; text-align: right; max-height: 70vh; overflow-y: auto;}
+    .modal-body{padding: 30px; direction: rtl; text-align: right; overflow-y: auto; flex: 1;}
 
-    /* YENİ SEÇİM YAPISI */
-    .selection-area {
-        background: #f9f9f9; padding: 20px; border-radius: 8px; margin-top: 20px;
-        display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-    }
+    /* INFO POPUP (KART DETAYI) */
+    .info-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+    .info-modal.open { opacity: 1; pointer-events: auto; }
+    .info-card { width: min(600px, 90%); background: #fff; border-radius: 12px; padding: 40px; text-align: center; position: relative; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+    .info-modal.open .info-card { transform: scale(1); }
+    .info-close { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--c3); padding: 5px; }
+    .info-title { font-size: 24px; color: var(--c3); margin-bottom: 20px; font-weight: 600; }
+    .info-text { font-size: 15px; color: var(--inkSoft); line-height: 1.8; text-align: justify; direction: rtl; }
+
+    /* FORM ELEMANLARI */
+    .selection-area { background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .sel-group-title { font-size: 14px; color: var(--c3); margin-bottom: 10px; font-weight: 600; }
-    
-    .check-item {
-        display: flex; align-items: center; gap: 10px; padding: 12px; background: #fff; 
-        border: 1px solid #eee; border-radius: 6px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s;
-    }
+    .check-item { display: flex; align-items: center; gap: 10px; padding: 12px; background: #fff; border: 1px solid #eee; border-radius: 6px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
     .check-item:hover { border-color: var(--c2); }
-    .check-item input { width: 18px; height: 18px; accent-color: var(--c2); margin: 0; }
-    
+    .check-item input { width: 18px; height: 18px; accent-color: var(--c2); margin: 0; flex-shrink: 0; }
     .hidden { display: none; }
     .price-tag { font-weight: bold; color: var(--c2); margin-right: auto; font-size: 14px; }
+    .btn-submit { width: 100%; padding: 16px; background: var(--c3); color: #fff; border: none; font-size: 16px; cursor: pointer; margin-top: 20px; border-radius: 4px; }
 
-    .btn-submit {
-        width: 100%; padding: 16px; background: var(--c3); color: #fff; border: none; font-size: 16px; cursor: pointer; margin-top: 20px;
+    /* SORU CEVAP ALANI */
+    .qa-area { margin-top: 25px; border-top: 1px solid #eee; padding-top: 20px; }
+    .qa-group { margin-bottom: 20px; }
+    .qa-label { font-weight: 500; font-size: 14px; color: var(--c3); margin-bottom: 10px; display: block; }
+    .qa-radio-group { display: flex; flex-direction: column; gap: 8px; }
+    .qa-radio-label { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: var(--inkSoft); }
+    .qa-radio-label input { width: 16px; height: 16px; accent-color: var(--c2); margin: 0; }
+    .char-count { font-size: 11px; color: #999; text-align: left; margin-top: 4px; direction: ltr; }
+
+    input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+        width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 6px;
+        font-family: inherit; text-align: right; font-size: 14px;
+    }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* Telefon Seçici Özelleştirme */
+    select#phonePrefix {
+        width: 90px; /* Sadece kodu gösterecek kadar dar */
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding-left: 5px; padding-right: 25px; /* Ok için yer */
+        text-align: left; direction: ltr;
     }
 
     /* RESPONSIVE */
     @media (max-width: 1200px) {
-        :root{ --side-margin: 20px; } /* Mobilde boşluğu düşür */
-        .about-photo { width: 100%; height: auto; aspect-ratio: 1/1; position: static; }
+        .about-photo { width: 100%; height: auto; aspect-ratio: 1/1; position: static; box-shadow: none;}
         .about-layout { grid-template-columns: 1fr; }
         .sessions-grid { flex-direction: column; align-items: center; }
         .session-card { width: 100%; flex: auto; }
-        nav { display: none; } /* Mobilde menü gizle (basitlik için) veya hamburger yap */
-    }
-
-    /* INPUT STYLES */
-    input[type="text"], input[type="email"], input[type="tel"], textarea, select {
-        width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 12px;
-        font-family: inherit; text-align: right;
+        nav { display: none; }
+        .selection-area { grid-template-columns: 1fr; }
+        .about-text { max-width: 100%; padding-top: 0; }
     }
   </style>
 </head>
 
 <body>
 
+  <div class="info-modal" id="infoModal1">
+      <div class="info-card">
+          <button class="info-close" onclick="closeInfoModal('infoModal1')">✕</button>
+          <div class="info-title">لقاء "سكينة"</div>
+          <div class="info-text">
+            لوريم إيبسوم هو نص وهمي يستخدم في صناعة المطابع والتنضيد. لوريم إيبسوم كان النص الوهمي القياسي في الصناعة منذ القرن الخامس عشر، عندما أخذت طابعة مجهولة لوحاً من النوع وتدافعته لصنع كتاب عينات النوع. لقد نجت ليس فقط خمسة قرون، ولكن أيضاً القفزة إلى التنضيد الإلكتروني، وبقيت دون تغيير جوهري.
+            <br><br>
+            تم تشرها في الستينيات من القرن الماضي مع إصدار أوراق ليتراسيت التي تحتوي على مقاطع لوريم إيبسوم، ومؤخراً مع برامج النشر المكتبي مثل ألدوس بايج مايكر التي تتضمن إصدارات من لوريم إيبسوم.
+          </div>
+      </div>
+  </div>
+
+  <div class="info-modal" id="infoModal2">
+      <div class="info-card">
+          <button class="info-close" onclick="closeInfoModal('infoModal2')">✕</button>
+          <div class="info-title">لقاء "العبور"</div>
+          <div class="info-text">
+            هنالك العديد من الأنواع المتوفرة لنصوص لوريم إيبسوم، ولكن الغالبية تم تعديلها بشكل ما عبر إدخال بعض النوادر أو الكلمات العشوائية إلى النص. إن كنت تريد أن تستخدم نص لوريم إيبسوم، عليك أن تتحقق أولاً أن ليس هناك أي كلمات محرحة أو عبارات غير لائقة مخبأة في هذا النص.
+            <br><br>
+            كل مولدات لوريم إيبسوم على الإنترنت تميل لتكرار مقتطفات من النص كلما اقتضت الحاجة، مما يجعل هذا أول مولد حقيقي على الإنترنت. يستخدم قاموساً من أكثر من 200 كلمة لاتينية، مقترنة بنماذج جمل عديدة.
+          </div>
+      </div>
+  </div>
+
   <header>
     <div class="header-inner">
       <nav>
         <a class="nav-item" href="#hero">مين أنا؟</a>
         <a class="nav-item" href="#seanslar">اللقاءات الفردية</a>
-        <a class="nav-item" onclick="openModal()">تواصل</a>
+        <a class="nav-item" onclick="openContactModal()">تواصل</a>
       </nav>
 
       <div class="logo-block">
@@ -285,7 +311,7 @@
     <section id="seanslar">
         <div class="section-head"><h2>اللقاءات الفردية</h2></div>
         <div class="sessions-grid">
-            <div class="session-card" onclick="openModal('seans1')">
+            <div class="session-card" onclick="openInfoModal('infoModal1')">
                 <div class="card-img" id="img-s1"></div>
                 <div class="card-meta">
                     <div class="card-title">لقاء "سكينة"</div>
@@ -293,7 +319,7 @@
                 </div>
             </div>
 
-            <div class="session-card" onclick="openModal('seans2')">
+            <div class="session-card" onclick="openInfoModal('infoModal2')">
                 <div class="card-img" id="img-s2"></div>
                 <div class="card-meta">
                     <div class="card-title">لقاء "العبور"</div>
@@ -309,7 +335,7 @@
             <div class="about-text">
                 <p class="about-p">قبل عشر سنين، كنت واقفة بنفس المكان اللي إنتي فيه اليوم؛ بعرف تماماً شو يعني يكون الطريق غبش والقلب تقيل. الحياة ما كانت وردية ولا سهلة، والفرص ما انمدت لي على طبق من ذهب، بس أنا اخترت إني حاول وأمشي رغم الخوف.</p>
                 <p class="about-p">اسمي زين، وخبرتي بالحياة هي اللي علمتني قبل كتبي ودراستي. بآمن إنو السعي هو المفتاح، وإنو أصعب تجاربنا هي اللي بتصنع أقوى بداياتنا. شغفي بالحياة بيخليني أشوف الجمال حتى بالأماكن المنسية، ورسالتي اليوم هي إني ساندك لتكتشفي القوة اللي جواتك.</p>
-                <button class="btn-submit" style="width: auto; margin-top: 20px;" onclick="openModal()">تواصلي معي</button>
+                <button class="btn-submit" style="width: auto; margin-top: 20px;" onclick="openContactModal()">تواصلي معي</button>
             </div>
             <div class="about-img-wrapper">
                 <div class="about-photo"></div>
@@ -322,7 +348,7 @@
     <div class="modal-card">
       <div class="modal-head">
         <strong>حجز موعد</strong>
-        <button onclick="closeModal()" style="border:none; bg:none; cursor:pointer;">✕</button>
+        <button onclick="closeContactModal()" style="border:none; background:none; cursor:pointer; font-size:20px;">✕</button>
       </div>
       <div class="modal-body">
         <form id="contactForm">
@@ -333,7 +359,7 @@
           
           <label>الدولة & الهاتف</label>
           <div style="display:flex; gap:10px;">
-             <select id="phonePrefix" style="width:120px;"></select>
+             <select id="phonePrefix" required></select>
              <input id="phone" required type="tel" placeholder="5xx xxx xx xx">
           </div>
           
@@ -342,7 +368,7 @@
 
           <div class="selection-area">
              <div class="step-1">
-                <div class="sel-group-title">1. اختر اللقاء (Seans Seçin)</div>
+                <div class="sel-group-title">1. اختر اللقاء</div>
                 <label class="check-item">
                     <input type="checkbox" name="main_session" value="seans1" onchange="handleSessionChange(this)">
                     <span>لقاء "سكينة"</span>
@@ -354,24 +380,84 @@
              </div>
 
              <div class="step-2 hidden" id="typeSelection">
-                <div class="sel-group-title">2. اختر النوع (Tip Seçin)</div>
+                <div class="sel-group-title">2. اختر النوع</div>
                 <label class="check-item">
                     <input type="checkbox" name="sub_type" value="tekli" onchange="handleTypeChange(this)">
-                    <span>جلسة واحدة (Tekli)</span>
+                    <span>جلسة واحدة</span>
                     <span class="price-tag" id="price-tekli"></span>
                 </label>
                 <label class="check-item">
                     <input type="checkbox" name="sub_type" value="uclu" onchange="handleTypeChange(this)">
-                    <span>باقة 3 جلسات (3'lü Paket)</span>
+                    <span>باقة 3 جلسات</span>
                     <span class="price-tag" id="price-uclu"></span>
                 </label>
              </div>
           </div>
 
-          <label style="margin-top:15px;">رسالة (اختياري)</label>
-          <textarea id="message" rows="3"></textarea>
+          <div class="qa-area hidden" id="qaArea">
+            <div class="qa-group">
+                <label class="qa-label">ما هي الأعراض أو التحديات الرئيسية التي تواجهك حالياً؟</label>
+                <textarea id="q1" maxlength="500" oninput="updateCount(this, 'c1')" required></textarea>
+                <div class="char-count" id="c1">٠/٥٠٠</div>
+            </div>
 
-          <button type="submit" class="btn-submit" id="submitBtn">إرسال (Gönder)</button>
+            <div class="qa-group">
+                <label class="qa-label">متى بدأت هذه الأعراض أو التحديات لأول مرة؟</label>
+                <textarea id="q2" maxlength="500" oninput="updateCount(this, 'c2')" required></textarea>
+                <div class="char-count" id="c2">٠/٥٠٠</div>
+            </div>
+
+            <div class="qa-group">
+                <label class="qa-label">ما هي المواقف أو الأوقات التي تشعر فيها بأنك تزداد سوءاً؟</label>
+                <textarea id="q3" maxlength="500" oninput="updateCount(this, 'c3')" required></textarea>
+                <div class="char-count" id="c3">٠/٥٠٠</div>
+            </div>
+
+            <div class="qa-group">
+                <label class="qa-label">هل سبق وتم تشخيصك من قبل؟</label>
+                <div class="qa-radio-group">
+                    <label class="qa-radio-label"><input type="radio" name="q4" value="نعم" required> نعم</label>
+                    <label class="qa-radio-label"><input type="radio" name="q4" value="لا" required> لا</label>
+                </div>
+            </div>
+
+            <div class="qa-group">
+                <label class="qa-label">هل تتناول أي أدوية حالياً مرتبطة بالحالة النفسية؟</label>
+                <div class="qa-radio-group">
+                    <label class="qa-radio-label"><input type="radio" name="q5" value="نعم" required> نعم</label>
+                    <label class="qa-radio-label"><input type="radio" name="q5" value="لا" required> لا</label>
+                </div>
+            </div>
+
+            <div class="qa-group">
+                <label class="qa-label">هل سبق وخضعت لجلسات علاج نفسي أو إرشاد مع معالج أو كوتش؟</label>
+                <div class="qa-radio-group">
+                    <label class="qa-radio-label"><input type="radio" name="q6" value="نعم، كانت تجربة إيجابية" required> نعم، كانت تجربة إيجابية</label>
+                    <label class="qa-radio-label"><input type="radio" name="q6" value="نعم، كانت تجربة غير مرضية" required> نعم، كانت تجربة غير مرضية</label>
+                    <label class="qa-radio-label"><input type="radio" name="q6" value="لا، هذه هي المرة الأولى" required> لا، هذه هي المرة الأولى</label>
+                </div>
+            </div>
+
+            <div class="qa-group">
+                <label class="qa-label">ما هي توقعاتك و أهدافك من الجلسات؟</label>
+                <textarea id="q7" maxlength="500" oninput="updateCount(this, 'c7')" required></textarea>
+                <div class="char-count" id="c7">٠/٥٠٠</div>
+            </div>
+
+            <div class="qa-group">
+                <label class="qa-label">هل لديك الوقت والعزم لحضور الجلسات بشكل منتظم؟</label>
+                <textarea id="q8" maxlength="500" oninput="updateCount(this, 'c8')" required></textarea>
+                <div class="char-count" id="c8">٠/٥٠٠</div>
+            </div>
+
+            <div class="qa-group" style="margin-top:20px;">
+                <label class="qa-label">رسالة إضافية (اختياري)</label>
+                <textarea id="message" rows="3"></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">إرسال</button>
+          </div>
+          
         </form>
       </div>
     </div>
@@ -380,50 +466,74 @@
   <footer>
      <div class="footer-inner">
         <div class="social">
-            <a href="#" class="icon-btn">IG</a>
-            <a href="#" class="icon-btn">TT</a>
+            <a href="https://www.instagram.com/zin.diary/" target="_blank" class="icon-btn">
+                <svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Z"/><path d="M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/><path d="M17.5 6.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg>
+            </a>
+            <a href="https://tiktok.com/@lifecoach.zin" target="_blank" class="icon-btn">
+                <svg viewBox="0 0 24 24"><path d="M14 3v10.3a4.7 4.7 0 1 1-4.1-4.63v2.18a2.7 2.7 0 1 0 2.1 2.63V3h2Z"/><path d="M14 3c.9 2.9 3.4 5 7 5v2c-2.9 0-5.4-1.2-7-3V3Z"/></svg>
+            </a>
         </div>
+        <div class="footer-sep"></div>
+        <div class="footer-text">Zin Diary - 2026</div>
      </div>
   </footer>
 
   <script>
-    // ÜLKE KODLARI
+    // --- INFO MODAL LOGIC ---
+    function openInfoModal(id) {
+        document.getElementById(id).classList.add('open');
+    }
+    function closeInfoModal(id) {
+        document.getElementById(id).classList.remove('open');
+    }
+    // Backdrop click close
+    document.querySelectorAll('.info-modal').forEach(m => {
+        m.addEventListener('click', (e) => {
+            if(e.target === m) m.classList.remove('open');
+        });
+    });
+
+    // --- CONTACT MODAL LOGIC ---
+    const modal = document.getElementById('contactModal');
+    function openContactModal(){ modal.classList.add('open'); }
+    function closeContactModal(){ modal.classList.remove('open'); resetSelection(); document.getElementById('contactForm').reset(); }
+    
+    // YENİ EKLENEN KISIM: Modal dışına tıklayınca kapatma
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeContactModal();
+      }
+    });
+
+    // --- CHARACTER COUNTER (Arabic) ---
+    const toEasternArabic = (n) => n.toString().replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
+    function updateCount(el, countId) {
+        document.getElementById(countId).textContent = toEasternArabic(el.value.length) + "/٥٠٠";
+    }
+
+    // --- COUNTRY LOADING ---
     const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
     async function loadCountries(){
        const res = await fetch(COUNTRIES_URL); const list = await res.json();
        list.sort((a,b)=>a.name.localeCompare(b.name));
        const pSel = document.getElementById('phonePrefix');
        list.forEach(c => {
+          // Görünen değer hem kod hem isim ama CSS ile kesiyoruz
           pSel.innerHTML += `<option value="${c.dial_code}">${c.dial_code} - ${c.name}</option>`;
        });
        pSel.value="+90";
     }
     loadCountries();
 
-    // MODAL İŞLEMLERİ
-    const modal = document.getElementById('contactModal');
-    function openModal(preselect){ 
-        modal.classList.add('open'); 
-        if(preselect) {
-            // İstenirse karttan tıklanınca otomatik seçtirilebilir
-            const checkbox = document.querySelector(`input[value="${preselect}"]`);
-            if(checkbox) { checkbox.checked = true; handleSessionChange(checkbox); }
-        }
-    }
-    function closeModal(){ modal.classList.remove('open'); document.getElementById('contactForm').reset(); resetSelection(); }
-    window.onclick = function(e){ if(e.target == modal) closeModal(); }
-
-    // SEÇİM MANTIĞI (CHECKBOX DAVRANIŞLI RADIO)
+    // --- SELECTION LOGIC ---
     let selectedSession = null;
     let selectedType = null;
-
     const PRICES = {
         'seans1': { tekli: 110, uclu: 295 },
         'seans2': { tekli: 147, uclu: 395 }
     };
 
     function handleSessionChange(checkbox) {
-        // Sadece bir tane seçilmesine izin ver
         document.querySelectorAll('input[name="main_session"]').forEach(cb => {
             if(cb !== checkbox) cb.checked = false;
         });
@@ -432,13 +542,12 @@
             selectedSession = checkbox.value;
             document.getElementById('typeSelection').classList.remove('hidden');
             
-            // Fiyatları güncelle
             document.getElementById('price-tekli').textContent = PRICES[selectedSession].tekli + '$';
             document.getElementById('price-uclu').textContent = PRICES[selectedSession].uclu + '$';
             
-            // Alt seçimleri sıfırla
             document.querySelectorAll('input[name="sub_type"]').forEach(cb => cb.checked = false);
             selectedType = null;
+            document.getElementById('qaArea').classList.add('hidden'); // Tip değişirse anketi gizle
         } else {
             resetSelection();
         }
@@ -449,16 +558,28 @@
             if(cb !== checkbox) cb.checked = false;
         });
         selectedType = checkbox.checked ? checkbox.value : null;
+        
+        // Sadece tip seçildiğinde soruları göster
+        if(selectedType) {
+            document.getElementById('qaArea').classList.remove('hidden');
+            // Otomatik scroll
+            setTimeout(() => {
+                document.getElementById('qaArea').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        } else {
+            document.getElementById('qaArea').classList.add('hidden');
+        }
     }
 
     function resetSelection() {
         selectedSession = null;
         selectedType = null;
         document.getElementById('typeSelection').classList.add('hidden');
+        document.getElementById('qaArea').classList.add('hidden');
         document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     }
 
-    // FORM GÖNDERİMİ
+    // --- FORM SUBMIT ---
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -467,13 +588,17 @@
             return;
         }
 
-        // Backend'in beklediği formatta anahtar oluştur (Örn: seans-1-tekli)
-        // seans1 -> seans-1 dönüşümü
         const sKey = selectedSession === 'seans1' ? 'seans-1' : 'seans-2';
-        const finalKey = `${sKey}-${selectedType}`; // seans-1-tekli
+        const finalKey = `${sKey}-${selectedType}`;
 
         const btn = document.getElementById('submitBtn');
         btn.disabled = true; btn.textContent = "...";
+
+        // Radio buton değerlerini al
+        const getRadio = (name) => {
+            const el = document.querySelector(`input[name="${name}"]:checked`);
+            return el ? el.value : 'Belirtilmedi';
+        };
 
         const formData = {
             firstName: document.getElementById('firstName').value,
@@ -482,8 +607,17 @@
             phoneRaw: document.getElementById('phone').value,
             email: document.getElementById('email').value,
             message: document.getElementById('message').value,
-            sessions: [finalKey], // Backend bu anahtarı tanıyacak
-            packages: []
+            sessions: [finalKey],
+            
+            // Yeni Anket Soruları
+            q1: document.getElementById('q1').value,
+            q2: document.getElementById('q2').value,
+            q3: document.getElementById('q3').value,
+            q4: getRadio('q4'),
+            q5: getRadio('q5'),
+            q6: getRadio('q6'),
+            q7: document.getElementById('q7').value,
+            q8: document.getElementById('q8').value,
         };
 
         try {
@@ -492,12 +626,12 @@
                 headers:{'Content-Type':'application/json'},
                 body: JSON.stringify(formData)
             });
-            alert("شكراً لتواصلك الطيب! ✨ (Mesajınız alındı)");
-            closeModal();
+            alert("شكراً لتواصلك الطيب! ✨ التفاصيل وصلتك الآن عبر واتساب.");
+            closeContactModal();
         } catch(err) {
             alert("Hata oluştu.");
         } finally {
-            btn.disabled = false; btn.textContent = "إرسال (Gönder)";
+            btn.disabled = false; btn.textContent = "إرسال";
         }
     });
 
