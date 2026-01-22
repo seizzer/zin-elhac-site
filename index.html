@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Zin Elhac | زين الحاج</title>
+  <title>Zin Diary | زين الحاج</title>
   <meta name="description" content="Zîn Elhac — yaşam koçluğu seans ve paketleri" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,20 +14,23 @@
 
   <style>
     :root{
-      /* PALETTE - AYNEN KORUNDU */
+      /* PALETTE */
       --c1:#f5f0eb; --c2:#b36932; --c3:#626a48; --c4:#faf7f5; --c5:#e7dbd0; --c6:#c65c75;
+      --bg-cream: #FCFBF9; /* İstenen özel arka plan rengi */
       --ink: var(--c3);
       --inkSoft: color-mix(in srgb, var(--c3) 70%, transparent);
-      --veil: color-mix(in srgb, var(--c4) 86%, transparent);
-      --headerH:70px; --footerH:64px; --max:1260px;
+      --headerH:70px; --footerH:64px; 
       --ease: cubic-bezier(.16,.92,.18,1); 
+      
+      /* Responsive Margin Hesabı (1920px'de 100px ise %5.2 civarı) */
+      --side-margin: 5.2vw; 
     }
 
     *{box-sizing:border-box;}
     html,body{height:100%;}
     html{scroll-behavior:smooth;}
     body{
-      margin:0; color:var(--ink); background: var(--c4);
+      margin:0; color:var(--ink); background: var(--bg-cream);
       font-family: "Noto Kufi Arabic", Arial, sans-serif;
       font-weight: 300; overflow-x:hidden;
     }
@@ -35,574 +38,469 @@
     button{font-family:inherit; color:inherit;}
     ::selection{background: color-mix(in srgb, var(--c6) 20%, transparent);}
 
-    .bg-veil{
-      position:fixed; inset:0; z-index:-1;
-      background:
-        radial-gradient(1200px 720px at 18% 16%, color-mix(in srgb, var(--c2) 16%, transparent), transparent 62%),
-        radial-gradient(1200px 720px at 82% 18%, color-mix(in srgb, var(--c6) 12%, transparent), transparent 66%),
-        linear-gradient(180deg, color-mix(in srgb, var(--c4) 86%, transparent), color-mix(in srgb, var(--c1) 62%, transparent));
-      backdrop-filter: blur(10px);
-    }
-
-    /* HEADER & NAV */
+    /* HEADER */
     header{
       position:fixed; inset:0 0 auto 0; height:var(--headerH); z-index:50;
-      background: color-mix(in srgb, var(--c4) 14%, transparent);
-      backdrop-filter: blur(16px);
-      border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
+      background: color-mix(in srgb, var(--bg-cream) 85%, transparent);
+      backdrop-filter: blur(12px);
+      border-bottom:1px solid rgba(0,0,0,0.03);
+      padding: 0 var(--side-margin); /* 100px boşluk kuralı */
+      transition: padding 0.3s ease;
     }
     .header-inner{
-      height:100%; width:min(var(--max), calc(100% - 40px)); margin:0 auto;
-      display:flex; align-items:center; justify-content:space-between; gap:18px;
+      height:100%; width:100%; margin:0;
+      display:flex; align-items:center; justify-content:space-between;
     }
     
-    nav{display:flex; gap:12px; align-items:center; justify-content:center; flex:1;}
+    /* LOGO: Tıklanamaz, Seçilemez, Sadece Zin | Zin */
+    .logo-block{
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:2px; line-height:1; text-align:center;
+      user-select: none; pointer-events: none; /* Tıklanamaz ve Seçilemez */
+      margin-right: 12px; /* Hafif sağa çekildi */
+    }
+    .logo-top{font-weight:400; font-size:17px; letter-spacing:.02em; color:var(--c3);}
+    .logo-sep{
+      width:60px; height:1px; background: linear-gradient(90deg, transparent, var(--c3), transparent); opacity: .6; margin: 2px 0;
+    }
+    .logo-ar{font-weight:400; font-size:16px; color: color-mix(in srgb, var(--c3) 80%, transparent);}
+
+    /* NAV: Sola Yaslı, Font Büyük */
+    nav{
+        display:flex; gap:24px; align-items:center; justify-content:flex-start; /* Sola yaslı */
+        flex:1; margin-right: 60px; /* Logo ile araya mesafe */
+    }
     .nav-item{
-      position:relative; padding:12px 2px; font-weight:400; 
-      font-size: clamp(11px, 1.8vw, 14px); letter-spacing:.01em;
+      position:relative; padding:10px 0; font-weight:400; 
+      font-size: 17px; /* Font büyütüldü */
+      letter-spacing:.01em;
       color: color-mix(in srgb, var(--c3) 78%, transparent);
-      transition:color 180ms var(--ease), transform 180ms var(--ease), opacity 180ms var(--ease);
-      outline:none; opacity:.95; white-space: nowrap;
-    }
-    .nav-item::after{
-      content:""; position:absolute; left:0; right:0; bottom:3px; height:2px;
-      background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);
-      transform:scaleX(0); transform-origin:center; transition:transform 260ms var(--ease);
-    }
-    .nav-item:hover{color: var(--c3); transform:translateY(-1px); opacity:1;}
-    .nav-item:hover::after{transform:scaleX(1);}
-    
-    .nameblock{
-      min-width:190px; display:flex; flex-direction:column; align-items:center; justify-content:center;
-      gap:6px; line-height:1.05; text-align:center;
-    }
-    .name-top{font-weight:400; font-size:15px; letter-spacing:.01em;}
-    .name-sep{
-      width:124px; height:1px; background: linear-gradient(90deg, #e7dbd0 0%, #626a48 50%, #e7dbd0 100%); opacity: .8;
-    }
-    .name-ar{
-      font-weight:400; font-size:14px; color: color-mix(in srgb, var(--c3) 76%, transparent);
-      direction:rtl; margin-top:-1px;
-    }
-
-    /* FOOTER */
-    footer{
-      position:fixed; inset:auto 0 0 0; height:var(--footerH); z-index:50;
-      background: color-mix(in srgb, var(--c4) 18%, transparent);
-      backdrop-filter: blur(16px); border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
-    }
-    .footer-inner{
-      height:100%; width:min(var(--max), calc(100% - 40px)); margin:0 auto;
-      display:flex; align-items:center; justify-content:center;
-    }
-    .footer-col{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;}
-    .social{display:flex; align-items:center; justify-content:center; gap:14px; line-height:0;}
-    .icon-btn{
-      width:26px; height:26px; padding:0; border:none; background:transparent; cursor:pointer;
-      opacity:.9; transition:opacity 180ms var(--ease), transform 180ms var(--ease);
-      display:inline-flex; align-items:center; justify-content:center; color: color-mix(in srgb, var(--c3) 84%, transparent);
-    }
-    .icon-btn:hover{opacity:1; transform:translateY(-1px); color: color-mix(in srgb, var(--c6) 55%, var(--c3));}
-    .icon{width:22px; height:22px; display:block; fill:currentColor;}
-    .footer-text{font-size:11.5px; font-weight:300; color: color-mix(in srgb, var(--c3) 72%, transparent); letter-spacing:.02em;}
-
-    /* MAIN & SECTIONS */
-    main{min-height:100vh; padding-top:var(--headerH); padding-bottom:var(--footerH);}
-    section{
-      min-height:calc(100vh - var(--headerH) - var(--footerH));
-      display:flex; align-items:stretch; justify-content:center; padding:0; position:relative;
-      opacity:0.30; transform:translateY(18px) scale(0.990); filter: blur(2.6px);
-      transition:opacity 120ms linear, transform 120ms linear, filter 120ms linear;
-      will-change:opacity, transform, filter;
-    }
-    #ben-kimim{ background: color-mix(in srgb, var(--c4) 18%, transparent); }
-    #tekli-seanslar{ background: color-mix(in srgb, var(--c1) 22%, transparent); }
-    #paketler{ background: color-mix(in srgb, var(--c5) 22%, transparent); }
-
-    .wrap{width:min(var(--max), calc(100% - 40px)); margin:0 auto; padding:0; display:flex; flex-direction:column; justify-content:center; flex:1;}
-    
-    .section-head{display:flex; align-items:baseline; justify-content:flex-start; gap:16px; margin:0 0 24px; padding:28px 0 0;}
-    .section-head h2{margin:0; font-size:30px; letter-spacing:.01em; font-weight:400; color: color-mix(in srgb, var(--c3) 92%, transparent); text-align: right;}
-
-    /* ABOUT SECTION */
-    .about{display:grid; grid-template-columns: 0.95fr 1.05fr; gap:0; align-items:stretch; min-height:calc(100vh - var(--headerH) - var(--footerH) - 64px); padding-bottom:24px;}
-    .hero-photo {
-      min-height: 100%;
-      border: 1px solid color-mix(in srgb, var(--c5) 55%, transparent);
-      border-left: none; 
-      position: relative; overflow: hidden;
-      background: linear-gradient(180deg, #faf7f5 0%, #f5f0eb 40%, #e7dbd0 100%);
-      background-image: url('zin.jpg'); 
-      background-repeat: no-repeat; background-size: 477px 543px; background-position: center center;
-    }
-    .hero-text{
-        background: color-mix(in srgb, var(--c4) 62%, transparent); 
-        border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); border-right: none;
-        padding:22px 22px 20px; display: flex; flex-direction: column; justify-content: center; height: 100%; 
-    }
-    .ar-text {
-      direction: rtl; font-family: 'Noto Kufi Arabic', sans-serif; font-size: 15px; line-height: 1.8; color: var(--inkSoft); margin-bottom: 20px;
-    }
-    .ar-text p { margin-bottom: 12px; }
-    .hero-cta{margin-top:4px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content: flex-end;}
-    
-    .btn{
-      border:1px solid color-mix(in srgb, var(--c5) 55%, transparent);
-      background: color-mix(in srgb, var(--c4) 18%, transparent);
-      padding:13px 24px; font-weight:500; font-size:14px; cursor:pointer; letter-spacing:.01em;
-      transition:transform 180ms var(--ease), background 220ms var(--ease), border-color 220ms var(--ease);
-      border-radius: 4px;
-    }
-    .btn:hover{transform:translateY(-2px); background: color-mix(in srgb, var(--c4) 34%, transparent);}
-    .btn.primary{background: color-mix(in srgb, var(--c6) 14%, transparent); border-color: color-mix(in srgb, var(--c6) 32%, var(--c5));}
-
-    /* --- YENİ KART TASARIMI (HOVER & SLIDE) --- */
-    .cards-grid {
-      display: grid; gap: 24px; /* Kartlar arası boşluk arttırıldı, daha ferah */
-      width: 100%;
-    }
-    .cards-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
-    .cards-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
-
-    .card {
-      position: relative;
-      height: 420px; /* Sabit yükseklik, referans görseldeki gibi */
-      background: #fff; /* Daha temiz bir beyaz */
-      border-radius: 16px; /* Yumuşak köşeler */
-      overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.03); /* Çok hafif gölge */
-      border: 1px solid rgba(0,0,0,0.04);
+      transition:color 180ms var(--ease);
       cursor: pointer;
     }
+    .nav-item:hover{color: var(--c3);}
 
-    /* Ön Yüz (Görsel + Başlık) */
-    .card .front {
-      position: absolute; inset: 0;
-      display: flex; flex-direction: column;
-      transition: transform 0.4s var(--ease), opacity 0.3s var(--ease);
-      z-index: 2; background: #fff;
+    /* FOOTER (Değişmedi) */
+    footer{
+      position:fixed; inset:auto 0 0 0; height:var(--footerH); z-index:50;
+      background: color-mix(in srgb, var(--bg-cream) 80%, transparent);
+      backdrop-filter: blur(16px); border-top:1px solid rgba(0,0,0,0.03);
     }
-
-    .card-media {
-      height: 70%; /* Kartın %70'i görsel */
-      width: 100%;
-      background-size: cover; background-position: center;
+    .footer-inner{
+      height:100%; width:min(1260px, calc(100% - 40px)); margin:0 auto;
+      display:flex; align-items:center; justify-content:center;
     }
+    .social{display:flex; gap:14px;}
+    .icon-btn{width:24px; height:24px; color:var(--c3); opacity:.8; transition:opacity .2s;}
+    .icon-btn:hover{opacity:1;}
+    .icon{width:100%; height:100%; fill:currentColor;}
     
-    .card-info {
-      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 16px; text-align: center; gap: 6px;
+    main{padding-top:0; padding-bottom:var(--footerH);}
+
+    /* ORTAK SECTION YAPISI */
+    section{
+      min-height: 100vh; position: relative;
+      padding: 60px var(--side-margin); /* Yanlardan 100px boşluk */
+      display: flex; flex-direction: column; justify-content: center;
+    }
+
+    .section-head{margin-bottom: 40px; text-align: right;}
+    .section-head h2{
+        font-size: 36px; font-weight: 400; margin: 0; color: var(--c3);
+        padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); display: inline-block;
+    }
+
+    /* 1. SECTION: HERO (MOTTO) */
+    #hero {
+        padding: 0; align-items: center; justify-content: center; overflow: hidden;
+        background-color: var(--c1);
+    }
+    .hero-bg {
+        position: absolute; inset: 0; 
+        background-image: url('motto.jpg'); background-size: cover; background-position: center;
+        z-index: 0;
+    }
+    .hero-overlay {
+        position: absolute; inset: 0;
+        background: rgba(255,255,255,0.05); /* Şeffaf */
+        backdrop-filter: blur(4px); /* Hafif flu */
+        z-index: 1;
+    }
+    .hero-content {
+        position: relative; z-index: 2; text-align: center; color: #fff; /* Motto rengi */
+        max-width: 800px; padding: 20px;
+    }
+    .motto-text {
+        font-size: clamp(24px, 4vw, 42px); font-weight: 600; line-height: 1.4;
+        color: var(--c3); /* Arka plan açıksa koyu renk yazı */
+        text-shadow: 0 2px 10px rgba(255,255,255,0.5);
+    }
+    .scroll-btn {
+        position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 10;
+        padding: 14px 32px; border: 1px solid var(--c3); color: var(--c3);
+        font-size: 16px; background: rgba(255,255,255,0.3); backdrop-filter: blur(4px);
+        border-radius: 50px; cursor: pointer; transition: all 0.3s ease;
+    }
+    .scroll-btn:hover { background: var(--c3); color: #fff; }
+
+    /* 2. SECTION: SEANSLAR */
+    #seanslar {
+        background-color: var(--bg-cream);
+    }
+    .sessions-grid {
+        display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;
+    }
+    .session-card {
+        flex: 0 1 450px; /* Geniş kartlar */
+        background: var(--bg-cream); /* Section ile aynı renk */
+        border: 1px solid rgba(0,0,0,0.08); /* İnce çerçeve */
+        border-radius: 12px; overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer; position: relative;
+    }
+    .session-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(98, 106, 72, 0.15); /* Orta kuvvet gölge */
+    }
+    .card-img {
+        width: 100%; aspect-ratio: 1/1; /* Kare Fotoğraf */
+        background-size: cover; background-position: center;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    #img-s1 { background-image: url('seans 1.jpg'); } /* Sağdaki */
+    #img-s2 { background-image: url('seans 2.jpg'); } /* Soldaki */
+
+    .card-meta {
+        padding: 24px; text-align: center;
     }
     .card-title {
-      font-size: 18px; font-weight: 600; color: var(--c3); margin: 0;
+        font-size: 24px; font-weight: 600; color: var(--c3); margin-bottom: 8px;
     }
-    .card-subtitle {
-      font-size: 13px; color: var(--inkSoft); opacity: 0.8;
-    }
+    .card-desc { font-size: 14px; color: var(--inkSoft); line-height: 1.6; }
 
-    /* Arka Yüz (Detay Metni) */
-    .card .back {
-      position: absolute; inset: 0;
-      background: color-mix(in srgb, var(--c1) 30%, #fff); /* Hafif krem arka plan */
-      padding: 32px 24px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
-      opacity: 0;
-      transform: translateY(20px); /* Aşağıdan gelecek */
-      transition: transform 0.4s var(--ease), opacity 0.4s var(--ease);
-      z-index: 1;
+    /* 3. SECTION: HAKKIMDA (Paketler yerine geldi) */
+    #hakkimda {
+        background-color: var(--c4); /* Hafif farklı ton ayrışması için */
     }
+    .about-layout {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+        position: relative; min-height: 700px; /* Fotoğraf için alan */
+    }
+    .about-text {
+        direction: rtl; text-align: right; padding-top: 40px;
+    }
+    .about-p { margin-bottom: 20px; font-size: 16px; line-height: 1.9; color: var(--inkSoft); }
     
-    .back-text {
-      font-size: 15px; line-height: 1.8; color: var(--ink); margin-bottom: 24px;
-      direction: rtl; font-weight: 400;
+    .about-img-wrapper {
+        position: relative; height: 100%; width: 100%;
+    }
+    .about-photo {
+        width: 650px; height: 650px;
+        background-image: url('zin.jpg'); background-size: cover; background-position: center;
+        position: absolute;
+        /* İstenen Milimetrik Konum */
+        left: 224px; top: 27.5px;
+        box-shadow: 10px 10px 0px rgba(0,0,0,0.03);
     }
 
-    /* HOVER ANIMASYONU */
-    .card:hover .front {
-      transform: translateY(-15px);
-      opacity: 0;
-      pointer-events: none; /* Arkadaki butona tıklanabilsin diye */
-    }
-    .card:hover .back {
-      opacity: 1;
-      transform: translateY(0);
-      z-index: 3; /* Üste çıksın */
-    }
-
-    /* --- FORM & MODAL --- */
-    .modal{position:fixed; inset:0; background: color-mix(in srgb, var(--c3) 22%, transparent); backdrop-filter:blur(16px); display:flex; align-items:center; justify-content:center; z-index:100; padding:18px; opacity:0; pointer-events:none; transition: opacity 260ms var(--ease);}
-    .modal-card{width:min(980px, 100%); max-height:min(82vh, 860px); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c4) 92%, transparent); display:grid; grid-template-rows:auto 1fr auto; transform: translateY(12px) scale(0.985); opacity:0; transition: transform 360ms var(--ease), opacity 260ms var(--ease);}
+    /* MODAL & FORM */
+    .modal{position:fixed; inset:0; background: rgba(98, 106, 72, 0.2); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:100; opacity:0; pointer-events:none; transition: opacity .3s;}
     .modal.open{opacity:1; pointer-events:auto;}
-    .modal.open .modal-card{transform: translateY(0) scale(1); opacity:1;}
-    .modal-head{padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid color-mix(in srgb, var(--c5) 55%, transparent); direction: rtl;}
-    .modal-body{padding:14px 16px; overflow:auto; direction: rtl; text-align: right;}
-    .grid-form{display:grid; grid-template-columns:repeat(12, 1fr); gap:12px;}
-    .field{grid-column:span 12;}
-    .field.half{grid-column:span 6;}
-    .field.third{grid-column:span 4;}
-    label{display:block; font-weight:400; font-size:12px; color: var(--inkSoft); margin-bottom:6px;}
-    
-    input, select, textarea{width:100%; border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:12px; font-size:14px; background: color-mix(in srgb, var(--c4) 86%, transparent); outline:none; text-align: right;}
-    textarea{min-height:110px; resize:vertical;}
-    
-    .row{display:flex; gap:10px; align-items:center; width:100%; direction: ltr;} 
-    select.prefix{flex: 0 0 130px; text-align: left;}
-    input#phone{flex: 1; text-align: left;} 
+    .modal-card{width:min(900px, 94%); background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1); transform: translateY(20px); transition: transform .3s;}
+    .modal.open .modal-card{transform: translateY(0);}
+    .modal-head{padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; direction: rtl;}
+    .modal-body{padding: 30px; direction: rtl; text-align: right; max-height: 70vh; overflow-y: auto;}
 
-    .pick-title{margin:10px 0 6px; font-weight:400; font-size:12.5px; color:var(--inkSoft);}
-    .pick-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
-    .pick-box{border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); background: color-mix(in srgb, var(--c1) 22%, transparent); padding:10px 12px;}
-    .check{display:flex; align-items:flex-start; gap:10px; padding:8px 6px;}
-    .check input{width:18px; height:18px; margin-top:2px; accent-color: var(--c6); flex-shrink: 0;}
-    .check span{font-weight:300; font-size:13.5px; color:var(--inkSoft); line-height:1.35;}
+    /* YENİ SEÇİM YAPISI */
+    .selection-area {
+        background: #f9f9f9; padding: 20px; border-radius: 8px; margin-top: 20px;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .sel-group-title { font-size: 14px; color: var(--c3); margin-bottom: 10px; font-weight: 600; }
     
-    .consent-box { margin-top: 12px; }
-    .consent-box label { margin-bottom: 8px; }
-
-    .modal-foot{padding:12px 16px; border-top:1px solid color-mix(in srgb, var(--c5) 55%, transparent); display:flex; align-items:center; justify-content:space-between; gap:12px; direction: rtl;}
-    .submit{border:1px solid color-mix(in srgb, var(--c6) 35%, transparent); background: color-mix(in srgb, var(--c6) 72%, transparent); color: var(--c4); padding:12px 16px; font-weight:400; font-size:13px; cursor:pointer;}
+    .check-item {
+        display: flex; align-items: center; gap: 10px; padding: 12px; background: #fff; 
+        border: 1px solid #eee; border-radius: 6px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s;
+    }
+    .check-item:hover { border-color: var(--c2); }
+    .check-item input { width: 18px; height: 18px; accent-color: var(--c2); margin: 0; }
     
-    .toast{position:fixed; left:50%; transform:translateX(-50%); bottom:70px; background: color-mix(in srgb, var(--c4) 92%, transparent); border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); padding:10px 14px; font-size:14px; display:none; z-index:120; direction: rtl;}
-    .toast.show{display:block;}
+    .hidden { display: none; }
+    .price-tag { font-weight: bold; color: var(--c2); margin-right: auto; font-size: 14px; }
 
-    @media (max-width: 980px){
-      :root{--headerH:64px; --footerH:58px;}
-      .nameblock{display:none;} 
-      nav{justify-content:center; padding: 0 10px; gap: 8px;} 
-      .about{grid-template-columns:1fr;} 
-      .hero-photo{border:1px solid color-mix(in srgb, var(--c5) 55%, transparent); min-height:320px; background-size: cover;}
-      .hero-text{border-right:1px solid color-mix(in srgb, var(--c5) 55%, transparent); border-left:1px solid color-mix(in srgb, var(--c5) 55%, transparent);}
-      
-      .cards-grid.cols-3, .cards-grid.cols-4 { grid-template-columns:1fr; gap: 16px; }
-      .card { height: 380px; } /* Mobilde biraz daha kısa olabilir */
-      
-      .pick-grid{grid-template-columns:1fr;}
-      .field.half, .field.third{grid-column:span 12;}
-      select.prefix {flex: 0 0 100px;}
+    .btn-submit {
+        width: 100%; padding: 16px; background: var(--c3); color: #fff; border: none; font-size: 16px; cursor: pointer; margin-top: 20px;
     }
 
-    /* GÖRSEL AYARLARI */
-    #media-session-1 { background-image: url('seans 1.jpg'); }
-    #media-session-2 { background-image: url('seans 2.jpg'); }
-    #media-session-3 { background-image: url('seans 3.jpg'); }
-    #media-package-1 { background-image: url('paket 1.jpg'); }
-    #media-package-2 { background-image: url('paket 2.jpg'); }
-    #media-package-3 { background-image: url('paket 3.jpg'); }
-    #media-package-4 { background-image: url('paket 4.jpg'); }
+    /* RESPONSIVE */
+    @media (max-width: 1200px) {
+        :root{ --side-margin: 20px; } /* Mobilde boşluğu düşür */
+        .about-photo { width: 100%; height: auto; aspect-ratio: 1/1; position: static; }
+        .about-layout { grid-template-columns: 1fr; }
+        .sessions-grid { flex-direction: column; align-items: center; }
+        .session-card { width: 100%; flex: auto; }
+        nav { display: none; } /* Mobilde menü gizle (basitlik için) veya hamburger yap */
+    }
+
+    /* INPUT STYLES */
+    input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+        width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 12px;
+        font-family: inherit; text-align: right;
+    }
   </style>
 </head>
 
 <body>
-  <div class="bg-veil" aria-hidden="true"></div>
 
   <header>
     <div class="header-inner">
-      <div class="nameblock" title="Zîn Elhac">
-        <div class="name-top">Zîn Elhac</div>
-        <div class="name-sep"></div>
-        <div class="name-ar">زين الحاج</div>
-      </div>
-      <nav aria-label="Ana Menü">
-        <a class="nav-item" href="#ben-kimim" data-scroll>مين أنا؟</a>
-        <a class="nav-item" href="#tekli-seanslar" data-scroll>اللقاءات الفردية</a>
-        <a class="nav-item" href="#paketler" data-scroll>الرحلات - الباقات</a>
-        <a class="nav-item" href="#iletisim" id="navContact">تواصل</a>
+      <nav>
+        <a class="nav-item" href="#hero">مين أنا؟</a>
+        <a class="nav-item" href="#seanslar">اللقاءات الفردية</a>
+        <a class="nav-item" onclick="openModal()">تواصل</a>
       </nav>
+
+      <div class="logo-block">
+        <div class="logo-top">Zîn</div>
+        <div class="logo-sep"></div>
+        <div class="logo-ar">زين</div>
+      </div>
     </div>
   </header>
 
-  <footer>
-    <div class="footer-inner">
-      <div class="footer-col">
-        <div class="social">
-            <a href="https://www.instagram.com/zin.diary/" target="_blank" class="icon-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Z"/><path d="M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/><path d="M17.5 6.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg></a>
-            <a href="https://tiktok.com/@lifecoach.zin" target="_blank" class="icon-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M14 3v10.3a4.7 4.7 0 1 1-4.1-4.63v2.18a2.7 2.7 0 1 0 2.1 2.63V3h2Z"/><path d="M14 3c.9 2.9 3.4 5 7 5v2c-2.9 0-5.4-1.2-7-3V3Z"/></svg></a>
+  <main>
+    <section id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="motto-text">
+                "السكون هو المفتاح الذي يفتح كل الأبواب المغلقة في داخلك."
+                <br>
+                <span style="font-size: 0.6em; font-weight: 300; opacity: 0.8;">(Sessizlik, içindeki tüm kapalı kapıları açan anahtardır.)</span>
+            </h1>
         </div>
-        <div class="footer-text">Zin Diary - 2026</div>
-      </div>
-    </div>
-  </footer>
-
-  <main id="main">
-    <section id="ben-kimim" data-section>
-      <div class="wrap">
-        <div class="section-head"><h2>مين أنا؟</h2></div>
-        <div class="about">
-          <div class="hero-text">
-            <div class="ar-text">
-                <p>قبل عشر سنين، كنت واقفة بنفس المكان اللي إنتي فيه اليوم؛ بعرف تماماً شو يعني يكون الطريق غبش والقلب تقيل. الحياة ما كانت وردية ولا سهلة، والفرص ما انمدت لي على طبق من ذهب، بس أنا اخترت إني حاول وأمشي رغم الخوف.</p>
-                <p>اسمي زين، وخبرتي بالحياة هي اللي علمتني قبل كتبي ودراستي. بآمن إنو السعي هو المفتاح، وإنو أصعب تجاربنا هي اللي بتصنع أقوى بداياتنا. شغفي بالحياة بيخليني أشوف الجمال حتى بالأماكن المنسية، ورسالتي اليوم هي إني ساندك لتكتشفي القوة اللي جواتك.</p>
-            </div>
-            <div class="hero-cta"><button class="btn primary" type="button" data-open-contact>تواصلي معي</button></div>
-          </div>
-          <div class="hero-photo"></div>
-        </div>
-      </div>
+        <button class="scroll-btn" onclick="document.getElementById('seanslar').scrollIntoView()">اللقاءات الفردية</button>
     </section>
 
-    <section id="tekli-seanslar" data-section>
-      <div class="wrap">
+    <section id="seanslar">
         <div class="section-head"><h2>اللقاءات الفردية</h2></div>
-        <div class="cards-grid cols-3">
-            
-            <article class="card">
-              <div class="front">
-                <div class="card-media" id="media-session-1"></div>
-                <div class="card-info">
-                  <h3 class="card-title">لقاء "سكينة"</h3>
-                  <span class="card-subtitle">تفريغ وحرية</span>
+        <div class="sessions-grid">
+            <div class="session-card" onclick="openModal('seans1')">
+                <div class="card-img" id="img-s1"></div>
+                <div class="card-meta">
+                    <div class="card-title">لقاء "سكينة"</div>
+                    <div class="card-desc">نسمة هوا لقلبك. بنتحرر من وجع قديم، وبنفرغ التقل اللي بصدرك لترتاح روحك وتصفى.</div>
                 </div>
-              </div>
-              <div class="back">
-                <p class="back-text">نسمة هوا لقلبك. بنتحرر من وجع قديم، وبنفرغ التقل اللي بصدرك لترتاح روحك وتصفى.</p>
-                <button class="btn primary" data-open-contact>احجزي الآن</button>
-              </div>
-            </article>
+            </div>
 
-            <article class="card">
-              <div class="front">
-                <div class="card-media" id="media-session-2"></div>
-                <div class="card-info">
-                  <h3 class="card-title">لقاء "بصيرة"</h3>
-                  <span class="card-subtitle">وضوح ورؤية</span>
+            <div class="session-card" onclick="openModal('seans2')">
+                <div class="card-img" id="img-s2"></div>
+                <div class="card-meta">
+                    <div class="card-title">لقاء "العبور"</div>
+                    <div class="card-desc">الرحلة المتكاملة. لقاء يجمع بين راحة القلب ونور العقل لخطوة كبيرة نحو نسختك الجديدة.</div>
                 </div>
-              </div>
-              <div class="back">
-                <p class="back-text">لما تضيعي الطريق، بنمسك المرايا سوا لنرتب الكركبة اللي براسك ونشوف خطواتك الجاية بوضوح.</p>
-                <button class="btn primary" data-open-contact>احجزي الآن</button>
-              </div>
-            </article>
-
-            <article class="card">
-              <div class="front">
-                <div class="card-media" id="media-session-3"></div>
-                <div class="card-info">
-                  <h3 class="card-title">لقاء "العبور"</h3>
-                  <span class="card-subtitle">الرحلة المتكاملة</span>
-                </div>
-              </div>
-              <div class="back">
-                <p class="back-text">لقاء يجمع بين راحة القلب ونور العقل. خطوة كبيرة نحو نسختك الجديدة.</p>
-                <button class="btn primary" data-open-contact>احجزي الآن</button>
-              </div>
-            </article>
-
+            </div>
         </div>
-      </div>
     </section>
 
-    <section id="paketler" data-section>
-      <div class="wrap">
-        <div class="section-head"><h2>الرحلات - الباقات</h2></div>
-        <div class="cards-grid cols-4">
-             
-             <article class="card">
-               <div class="front">
-                 <div class="card-media" id="media-package-1"></div>
-                 <div class="card-info">
-                   <h3 class="card-title">رحلة "المفتاح"</h3>
-                   <span class="card-subtitle">٤ لقاءات</span>
-                 </div>
-               </div>
-               <div class="back">
-                 <p class="back-text">أربع لقاءات لطيفة لفتح باب التغيير. بنبدأ بالهدوء، بنفتح شوي شوي.</p>
-                 <button class="btn primary" data-open-contact>ابدئي الرحلة</button>
-               </div>
-             </article>
-
-             <article class="card">
-               <div class="front">
-                 <div class="card-media" id="media-package-2"></div>
-                 <div class="card-info">
-                   <h3 class="card-title">رحلة "انعكاس"</h3>
-                   <span class="card-subtitle">٦ لقاءات</span>
-                 </div>
-               </div>
-               <div class="back">
-                 <p class="back-text">ستة لقاءات لتشوفي نفسك بوضوح. بنفك التشابك، بنرتب الأفكار.</p>
-                 <button class="btn primary" data-open-contact>ابدئي الرحلة</button>
-               </div>
-             </article>
-
-             <article class="card">
-               <div class="front">
-                 <div class="card-media" id="media-package-3"></div>
-                 <div class="card-info">
-                   <h3 class="card-title">رحلة "بوابة النور"</h3>
-                   <span class="card-subtitle">٨ لقاءات</span>
-                 </div>
-               </div>
-               <div class="back">
-                 <p class="back-text">ثمانية لقاءات للتحول العميق. بنفتح كل الأبواب اللي كانت مسكرة.</p>
-                 <button class="btn primary" data-open-contact>ابدئي الرحلة</button>
-               </div>
-             </article>
-
-             <article class="card">
-               <div class="front">
-                 <div class="card-media" id="media-package-4"></div>
-                 <div class="card-info">
-                   <h3 class="card-title">رحلة "بوابة الأمان"</h3>
-                   <span class="card-subtitle">١٢ لقاء</span>
-                 </div>
-               </div>
-               <div class="back">
-                 <p class="back-text">اثنا عشر لقاء للعودة الكاملة لنفسك. رحلة الأمان الداخلي والاستقرار.</p>
-                 <button class="btn primary" data-open-contact>ابدئي الرحلة</button>
-               </div>
-             </article>
-
+    <section id="hakkimda">
+        <div class="section-head"><h2>مين أنا؟</h2></div>
+        <div class="about-layout">
+            <div class="about-text">
+                <p class="about-p">قبل عشر سنين، كنت واقفة بنفس المكان اللي إنتي فيه اليوم؛ بعرف تماماً شو يعني يكون الطريق غبش والقلب تقيل. الحياة ما كانت وردية ولا سهلة، والفرص ما انمدت لي على طبق من ذهب، بس أنا اخترت إني حاول وأمشي رغم الخوف.</p>
+                <p class="about-p">اسمي زين، وخبرتي بالحياة هي اللي علمتني قبل كتبي ودراستي. بآمن إنو السعي هو المفتاح، وإنو أصعب تجاربنا هي اللي بتصنع أقوى بداياتنا. شغفي بالحياة بيخليني أشوف الجمال حتى بالأماكن المنسية، ورسالتي اليوم هي إني ساندك لتكتشفي القوة اللي جواتك.</p>
+                <button class="btn-submit" style="width: auto; margin-top: 20px;" onclick="openModal()">تواصلي معي</button>
+            </div>
+            <div class="about-img-wrapper">
+                <div class="about-photo"></div>
+            </div>
         </div>
-      </div>
     </section>
   </main>
 
   <div class="modal" id="contactModal">
     <div class="modal-card">
-      <div class="modal-head"><strong>تواصل</strong><button class="xbtn" onclick="closeModal()">×</button></div>
+      <div class="modal-head">
+        <strong>حجز موعد</strong>
+        <button onclick="closeModal()" style="border:none; bg:none; cursor:pointer;">✕</button>
+      </div>
       <div class="modal-body">
         <form id="contactForm">
-          <div class="grid-form">
-            <div class="field half"><label>الاسم الأول</label><input id="firstName" name="firstName" required /></div>
-            <div class="field half"><label>اسم العائلة</label><input id="lastName" name="lastName" required /></div>
-            <div class="field third"><label>الدولة</label><select id="country" name="country" required></select></div>
-            <div class="field" style="grid-column: span 9;">
-              <label>رقم الهاتف</label>
-              <div class="row">
-                <select class="prefix" id="phonePrefix" name="phonePrefix" required></select>
-                <input id="phone" name="phone" type="tel" required placeholder="5xx xxx xx xx" />
-              </div>
-            </div>
-            <div class="field half"><label>البريد الإلكتروني</label><input id="email" name="email" type="email" required /></div>
-            <div class="field half"><label>الرسالة</label><textarea id="message" name="message" maxlength="500"></textarea><div class="counter"><span id="msgCount">٠/٥٠٠</span></div></div>
-
-            <div class="field">
-              <div class="pick-title">خياراتك:</div>
-              <div class="pick-grid">
-                <div class="pick-box">
-                  <div class="pick-title">اللقاءات الفردية</div>
-                  <label class="check"><input type="checkbox" name="sessions" value="Seans 1" /><span>لقاء "سكينة"</span></label>
-                  <label class="check"><input type="checkbox" name="sessions" value="Seans 2" /><span>لقاء "بصيرة"</span></label>
-                  <label class="check"><input type="checkbox" name="sessions" value="Seans 3" /><span>لقاء "العبور"</span></label>
-                </div>
-                <div class="pick-box">
-                  <div class="pick-title">الرحلات - الباقات</div>
-                  <label class="check"><input type="checkbox" name="packages" value="Paket 1" /><span>رحلة "المفتاح"</span></label>
-                  <label class="check"><input type="checkbox" name="packages" value="Paket 2" /><span>رحلة "انعكاس"</span></label>
-                  <label class="check"><input type="checkbox" name="packages" value="Paket 3" /><span>رحلة "بوابة النور"</span></label>
-                  <label class="check"><input type="checkbox" name="packages" value="Paket 4" /><span>رحلة "بوابة الأمان"</span></label>
-                </div>
-              </div>
-              
-              <div class="consent-box">
-                <label class="check"><input id="consentWhatsApp" type="checkbox" required /><span>أوافق على تلقي رسائل معلوماتية عبر تطبيق واتساب.</span></label>
-                <label class="check"><input id="consentStop" type="checkbox" required /><span>أعلم أنه يمكنني الإلغاء في أي وقت بكتابة "STOP".</span></label>
-                <label class="check"><input id="consentPrivacy" type="checkbox" required /><span>قرأت ووافقت على <a href="legal.html" target="_blank" style="text-decoration:underline">سياسة الخصوصية وحماية البيانات</a>.</span></label>
-              </div>
-            </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+             <div><label>الاسم</label><input id="firstName" required type="text"></div>
+             <div><label>الكنية</label><input id="lastName" required type="text"></div>
           </div>
+          
+          <label>الدولة & الهاتف</label>
+          <div style="display:flex; gap:10px;">
+             <select id="phonePrefix" style="width:120px;"></select>
+             <input id="phone" required type="tel" placeholder="5xx xxx xx xx">
+          </div>
+          
+          <label>البريد الإلكتروني</label>
+          <input id="email" required type="email">
+
+          <div class="selection-area">
+             <div class="step-1">
+                <div class="sel-group-title">1. اختر اللقاء (Seans Seçin)</div>
+                <label class="check-item">
+                    <input type="checkbox" name="main_session" value="seans1" onchange="handleSessionChange(this)">
+                    <span>لقاء "سكينة"</span>
+                </label>
+                <label class="check-item">
+                    <input type="checkbox" name="main_session" value="seans2" onchange="handleSessionChange(this)">
+                    <span>لقاء "العبور"</span>
+                </label>
+             </div>
+
+             <div class="step-2 hidden" id="typeSelection">
+                <div class="sel-group-title">2. اختر النوع (Tip Seçin)</div>
+                <label class="check-item">
+                    <input type="checkbox" name="sub_type" value="tekli" onchange="handleTypeChange(this)">
+                    <span>جلسة واحدة (Tekli)</span>
+                    <span class="price-tag" id="price-tekli"></span>
+                </label>
+                <label class="check-item">
+                    <input type="checkbox" name="sub_type" value="uclu" onchange="handleTypeChange(this)">
+                    <span>باقة 3 جلسات (3'lü Paket)</span>
+                    <span class="price-tag" id="price-uclu"></span>
+                </label>
+             </div>
+          </div>
+
+          <label style="margin-top:15px;">رسالة (اختياري)</label>
+          <textarea id="message" rows="3"></textarea>
+
+          <button type="submit" class="btn-submit" id="submitBtn">إرسال (Gönder)</button>
         </form>
       </div>
-      <div class="modal-foot"><button class="submit" type="submit" form="contactForm" id="submitBtn">إرسال</button></div>
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <footer>
+     <div class="footer-inner">
+        <div class="social">
+            <a href="#" class="icon-btn">IG</a>
+            <a href="#" class="icon-btn">TT</a>
+        </div>
+     </div>
+  </footer>
 
   <script>
+    // ÜLKE KODLARI
     const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
-
-    document.querySelectorAll('[data-scroll]').forEach(a => a.addEventListener('click', e => { 
-      e.preventDefault(); 
-      const t = document.querySelector(a.getAttribute('href')); 
-      if(t) window.scrollTo({top: t.offsetTop - 70, behavior: 'smooth'}); 
-    }));
-    
-    const sections = Array.from(document.querySelectorAll('[data-section]'));
-    function updateMotion(){
-       if(window.innerWidth < 768) {
-         sections.forEach(sec => { sec.style.opacity = "1"; sec.style.transform = "none"; sec.style.filter = "none"; });
-         return;
-       }
-       const center = window.innerHeight * 0.52;
-       sections.forEach(sec => {
-         const r = sec.getBoundingClientRect();
-         const d = Math.abs((r.top + r.height/2) - center);
-         const t = 1 - Math.min(d / (window.innerHeight * 1.15), 1);
-         sec.style.opacity = (0.3 + t*0.7).toFixed(3);
-         sec.style.transform = `translateY(${(18 - t*18).toFixed(1)}px) scale(${(0.99 + t*0.01).toFixed(4)})`;
-         sec.style.filter = `blur(${(2.6 - t*2.6).toFixed(2)}px)`;
-       });
-    }
-    window.addEventListener('scroll', () => requestAnimationFrame(updateMotion));
-    window.addEventListener('resize', updateMotion);
-    updateMotion();
-
-    const modal = document.getElementById('contactModal');
-    function openModal(){ modal.classList.add('open'); }
-    function closeModal(){ modal.classList.remove('open'); }
-    
-    document.querySelectorAll('[data-open-contact]').forEach(b => b.addEventListener('click', openModal));
-    document.getElementById('navContact').addEventListener('click', (e)=>{e.preventDefault(); openModal();});
-    
-    window.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        closeModal();
-      }
-    });
-    
-    // NOT: Eski toggleDetail fonksiyonu silindi çünkü artık hover ile çalışıyor.
-
-    const toEasternArabic = (n) => n.toString().replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
-    document.getElementById('message').addEventListener('input', e => {
-        document.getElementById('msgCount').textContent = toEasternArabic(e.target.value.length) + "/٥٠٠";
-    });
-
     async function loadCountries(){
        const res = await fetch(COUNTRIES_URL); const list = await res.json();
        list.sort((a,b)=>a.name.localeCompare(b.name));
-       const cSel = document.getElementById('country'); const pSel = document.getElementById('phonePrefix');
+       const pSel = document.getElementById('phonePrefix');
        list.forEach(c => {
-          cSel.innerHTML += `<option value="${c.code}">${c.name}</option>`;
           pSel.innerHTML += `<option value="${c.dial_code}">${c.dial_code} - ${c.name}</option>`;
        });
-       cSel.value="TR"; pSel.value="+90";
+       pSel.value="+90";
     }
     loadCountries();
 
-    function showToast(msg){ 
-      const t = document.getElementById('toast');
-      t.textContent = msg; t.classList.add('show'); 
-      setTimeout(()=>t.classList.remove('show'), 3500); 
+    // MODAL İŞLEMLERİ
+    const modal = document.getElementById('contactModal');
+    function openModal(preselect){ 
+        modal.classList.add('open'); 
+        if(preselect) {
+            // İstenirse karttan tıklanınca otomatik seçtirilebilir
+            const checkbox = document.querySelector(`input[value="${preselect}"]`);
+            if(checkbox) { checkbox.checked = true; handleSessionChange(checkbox); }
+        }
+    }
+    function closeModal(){ modal.classList.remove('open'); document.getElementById('contactForm').reset(); resetSelection(); }
+    window.onclick = function(e){ if(e.target == modal) closeModal(); }
+
+    // SEÇİM MANTIĞI (CHECKBOX DAVRANIŞLI RADIO)
+    let selectedSession = null;
+    let selectedType = null;
+
+    const PRICES = {
+        'seans1': { tekli: 110, uclu: 295 },
+        'seans2': { tekli: 147, uclu: 395 }
+    };
+
+    function handleSessionChange(checkbox) {
+        // Sadece bir tane seçilmesine izin ver
+        document.querySelectorAll('input[name="main_session"]').forEach(cb => {
+            if(cb !== checkbox) cb.checked = false;
+        });
+
+        if(checkbox.checked) {
+            selectedSession = checkbox.value;
+            document.getElementById('typeSelection').classList.remove('hidden');
+            
+            // Fiyatları güncelle
+            document.getElementById('price-tekli').textContent = PRICES[selectedSession].tekli + '$';
+            document.getElementById('price-uclu').textContent = PRICES[selectedSession].uclu + '$';
+            
+            // Alt seçimleri sıfırla
+            document.querySelectorAll('input[name="sub_type"]').forEach(cb => cb.checked = false);
+            selectedType = null;
+        } else {
+            resetSelection();
+        }
     }
 
+    function handleTypeChange(checkbox) {
+        document.querySelectorAll('input[name="sub_type"]').forEach(cb => {
+            if(cb !== checkbox) cb.checked = false;
+        });
+        selectedType = checkbox.checked ? checkbox.value : null;
+    }
+
+    function resetSelection() {
+        selectedSession = null;
+        selectedType = null;
+        document.getElementById('typeSelection').classList.add('hidden');
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    }
+
+    // FORM GÖNDERİMİ
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById('submitBtn');
-      const formData = {
-        firstName: document.getElementById('firstName').value,
-        lastName: document.getElementById('lastName').value,
-        phonePrefix: document.getElementById('phonePrefix').value,
-        phoneRaw: document.getElementById('phone').value,
-        email: document.getElementById('email').value,
-        message: document.getElementById('message').value,
-        sessions: Array.from(document.querySelectorAll('input[name="sessions"]:checked')).map(x => x.value),
-        packages: Array.from(document.querySelectorAll('input[name="packages"]:checked')).map(x => x.value)
-      };
-      
-      btn.disabled = true; btn.textContent = "جاري الإرسال...";
-      try{
-        await fetch('/api/lead', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(formData) });
-        // GÜNCELLENMİŞ BAŞARI MESAJI
-        showToast("شكراً لتواصلك الطيب! ✨ التفاصيل وصلتك الآن عبر واتساب.");
-        document.getElementById('contactForm').reset();
-        setTimeout(closeModal, 1500);
-      } catch(err){
-        showToast("خطأ!");
-      } finally {
-        btn.disabled = false; btn.textContent = "إرسال";
-      }
+        e.preventDefault();
+        
+        if(!selectedSession || !selectedType) {
+            alert("الرجاء اختيار نوع الجلسة (Lütfen seans ve paket tipini seçiniz.)");
+            return;
+        }
+
+        // Backend'in beklediği formatta anahtar oluştur (Örn: seans-1-tekli)
+        // seans1 -> seans-1 dönüşümü
+        const sKey = selectedSession === 'seans1' ? 'seans-1' : 'seans-2';
+        const finalKey = `${sKey}-${selectedType}`; // seans-1-tekli
+
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true; btn.textContent = "...";
+
+        const formData = {
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            phonePrefix: document.getElementById('phonePrefix').value,
+            phoneRaw: document.getElementById('phone').value,
+            email: document.getElementById('email').value,
+            message: document.getElementById('message').value,
+            sessions: [finalKey], // Backend bu anahtarı tanıyacak
+            packages: []
+        };
+
+        try {
+            await fetch('/api/lead', {
+                method:'POST', 
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify(formData)
+            });
+            alert("شكراً لتواصلك الطيب! ✨ (Mesajınız alındı)");
+            closeModal();
+        } catch(err) {
+            alert("Hata oluştu.");
+        } finally {
+            btn.disabled = false; btn.textContent = "إرسال (Gönder)";
+        }
     });
+
   </script>
 </body>
 </html>
