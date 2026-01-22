@@ -88,6 +88,7 @@ export default async function handler(req, res) {
     );
 
     const waData = await waResponse.json();
+    console.log("FACEBOOK DETAYLI CEVAP:", JSON.stringify(waData, null, 2));
 
     // MAIL GÖNDERİMİ
     await resend.emails.send({
