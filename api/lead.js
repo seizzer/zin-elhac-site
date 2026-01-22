@@ -2,18 +2,15 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ÜRÜN KATALOĞU
+// YENİ ÜRÜN KATALOĞU (İstenen fiyat ve kombinasyonlar)
 const CATALOG = {
-  // Seanslar
-  "Seans 1": { name: 'لقاء "سكينة"', price: 65 },
-  "Seans 2": { name: 'لقاء "بصيرة"', price: 110 },
-  "Seans 3": { name: 'لقاء "العبور"', price: 147 },
-  
-  // Paketler
-  "Paket 1": { name: 'رحلة "المفتاح"', price: 490 },
-  "Paket 2": { name: 'رحلة "انعكاس"', price: 695 },
-  "Paket 3": { name: 'رحلة "بوابة النور"', price: 888 },
-  "Paket 4": { name: 'رحلة "بوابة الأمان"', price: 1200 }
+  // Seans 1: Sakina
+  "seans-1-tekli": { name: 'لقاء "سكينة" (Single)', price: 110 },
+  "seans-1-uclu":  { name: 'لقاء "سكينة" (3 Sessions)', price: 295 },
+
+  // Seans 2: Abur (Al-Ubur)
+  "seans-2-tekli": { name: 'لقاء "العبور" (Single)', price: 147 },
+  "seans-2-uclu":  { name: 'لقاء "العبور" (3 Sessions)', price: 395 }
 };
 
 export default async function handler(req, res) {
@@ -38,6 +35,7 @@ export default async function handler(req, res) {
     let selectedNames = [];
     let totalPrice = 0;
 
+    // Frontend'den gelen 'sessions' dizisi artık ["seans-1-tekli"] gibi anahtarlar içeriyor
     const allItems = [...(sessions || []), ...(packages || [])];
 
     if (allItems.length > 0) {
@@ -47,6 +45,7 @@ export default async function handler(req, res) {
           selectedNames.push(product.name);
           totalPrice += product.price;
         } else {
+          // Katalogda yoksa (eski veri vs) olduğu gibi ekle
           selectedNames.push(itemKey);
         }
       });
@@ -72,7 +71,7 @@ export default async function handler(req, res) {
           type: "template",
           template: {
             name: process.env.WHATSAPP_TEMPLATE_NAME,
-            language: { code: "ar" },  // DÜZELTİLDİ: Artık sabit olarak Arapça (ar) gönderiyor
+            language: { code: "ar" },
             components: [
               {
                 type: "body",
@@ -88,8 +87,7 @@ export default async function handler(req, res) {
     );
 
     const waData = await waResponse.json();
-    console.log("FACEBOOK DETAYLI CEVAP:", JSON.stringify(waData, null, 2));
-
+    
     // MAIL GÖNDERİMİ
     await resend.emails.send({
       from: process.env.RESEND_FROM,
@@ -97,22 +95,18 @@ export default async function handler(req, res) {
       subject: `Yeni Kayıt: ${name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
-            <div style="background-color: #D4A373; padding: 20px; text-align: center;">
+            <div style="background-color: #626a48; padding: 20px; text-align: center;">
                 <h2 style="color: #ffffff; margin: 0;">Yeni Başvuru Alındı 🎉</h2>
             </div>
-            <div style="padding: 20px;">
-                <p style="color: #555;">Web sitenizden yeni bir form dolduruldu.</p>
+            <div style="padding: 20px; background-color: #fcfbf9;">
                 <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                    <tr style="background-color: #f9f9f9;"><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">👤 Ad Soyad</td><td style="padding:12px; border:1px solid #ddd;">${name}</td></tr>
-                    <tr><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">📱 Telefon</td><td style="padding:12px; border:1px solid #ddd;">${phone}</td></tr>
-                    <tr style="background-color: #f9f9f9;"><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">📧 E-posta</td><td style="padding:12px; border:1px solid #ddd;">${clientEmail}</td></tr>
-                    <tr><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">📌 Seçimler</td><td style="padding:12px; border:1px solid #ddd; color:#d35400; font-weight:bold;">${selectedItemsStr}</td></tr>
-                    <tr style="background-color: #f9f9f9;"><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">💰 Toplam Tutar</td><td style="padding:12px; border:1px solid #ddd;">${totalDetailsStr}</td></tr>
-                    <tr><td style="padding:12px; border:1px solid #ddd; font-weight:bold;">📝 Mesaj</td><td style="padding:12px; border:1px solid #ddd; font-style:italic;">"${clientMessage}"</td></tr>
+                    <tr><td style="padding:12px; border-bottom:1px solid #ddd; font-weight:bold;">👤 Ad Soyad</td><td style="padding:12px; border-bottom:1px solid #ddd;">${name}</td></tr>
+                    <tr><td style="padding:12px; border-bottom:1px solid #ddd; font-weight:bold;">📱 Telefon</td><td style="padding:12px; border-bottom:1px solid #ddd;">${phone}</td></tr>
+                    <tr><td style="padding:12px; border-bottom:1px solid #ddd; font-weight:bold;">📧 E-posta</td><td style="padding:12px; border-bottom:1px solid #ddd;">${clientEmail}</td></tr>
+                    <tr><td style="padding:12px; border-bottom:1px solid #ddd; font-weight:bold;">📌 Seçim</td><td style="padding:12px; border-bottom:1px solid #ddd; color:#b36932; font-weight:bold;">${selectedItemsStr}</td></tr>
+                    <tr><td style="padding:12px; border-bottom:1px solid #ddd; font-weight:bold;">💰 Tutar</td><td style="padding:12px; border-bottom:1px solid #ddd;">${totalDetailsStr}</td></tr>
+                    <tr><td style="padding:12px; border-bottom:1px solid #ddd; font-weight:bold;">📝 Mesaj</td><td style="padding:12px; border-bottom:1px solid #ddd;">"${clientMessage}"</td></tr>
                 </table>
-                <div style="margin-top: 30px; text-align: center;">
-                    <a href="mailto:${clientEmail}" style="background-color: #D4A373; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Yanıtla</a>
-                </div>
             </div>
         </div>
       `,
