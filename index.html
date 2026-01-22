@@ -560,7 +560,7 @@
       btn.disabled = true; btn.textContent = "جاري الإرسال...";
       try{
         await fetch('/api/lead', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(formData) });
-        showToast("تم الإرسال بنجاح!");
+        showToast("شكراً لتواصلك الطيب! ✨ التفاصيل وصلتك الآن عبر واتساب.");
         document.getElementById('contactForm').reset();
         setTimeout(closeModal, 1500);
       } catch(err){
