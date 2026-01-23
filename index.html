@@ -59,7 +59,7 @@
       display:flex; align-items:center; justify-content:space-between;
     }
     
-    /* LOGO: SOLA ALINDI (RTL'de SON eleman SOLDA durur) */
+    /* LOGO: Sola Alındı */
     .logo-block{
       display:flex; flex-direction:column; align-items:center; justify-content:center;
       gap:2px; line-height:1; text-align:center;
@@ -67,15 +67,20 @@
       margin-right: 20px; 
     }
     .logo-top{font-weight:400; font-size:17px; letter-spacing:.02em; color:var(--c3);}
+    
+    /* LOGO ÇİZGİSİ (Referans Stil) */
     .logo-sep{
-      width:60px; height:1px; background: linear-gradient(90deg, transparent, var(--c3), transparent); opacity: .6; margin: 2px 0;
+      width:60px; height:1px; 
+      background: linear-gradient(90deg, transparent, var(--c3), transparent); 
+      opacity: .6; 
+      margin: 2px 0;
     }
     .logo-ar{font-weight:400; font-size:16px; color: color-mix(in srgb, var(--c3) 80%, transparent);}
 
-    /* NAV: SAĞA ALINDI (RTL'de İLK eleman SAĞDA durur) */
+    /* NAV: Sağa Alındı */
     nav{
         display:flex; gap:32px; align-items:center; 
-        justify-content:flex-start; /* SAĞ */
+        justify-content:flex-start; 
         flex:1; 
     }
     .nav-item{
@@ -98,7 +103,16 @@
       display:flex; flex-direction: column; align-items:center; justify-content:center; gap: 6px;
     }
     .social{display:flex; gap:16px; align-items: center;}
-    .footer-sep { width: 40px; height: 1px; background: color-mix(in srgb, var(--c3) 30%, transparent); margin: 2px 0; }
+    
+    /* FOOTER ÇİZGİSİ - ARTIK LOGO İLE AYNI */
+    .footer-sep { 
+        width: 60px; /* Genişlik logo ile aynı yapıldı (Eskiden 40px idi) */
+        height: 1px; 
+        background: linear-gradient(90deg, transparent, var(--c3), transparent); /* Aynı gradyan */
+        opacity: .6; 
+        margin: 2px 0; 
+    }
+    
     .icon-btn{width:20px; height:20px; color:var(--c3); opacity:.8; transition:opacity .2s; display: block;}
     .icon-btn:hover{opacity:1;}
     .icon-btn svg { width: 100%; height: 100%; fill: currentColor; }
@@ -127,9 +141,8 @@
         padding: 0; align-items: center; justify-content: center; overflow: hidden;
         background-color: var(--c1);
         height: 100vh;
-        /* REVİZYON: Alttan 11px kısaltma etkisi için margin/height ayarı */
-        /* Normalde 100vh tam ekrandır, padding ile içerik yukarı itilir */
         padding-bottom: 11px; 
+        margin-bottom: 0;
     }
     .hero-bg {
         position: absolute; inset: 0; 
@@ -165,7 +178,6 @@
     #seanslar { 
         background-color: var(--bg-cream); 
         padding-top: 60px;
-        /* REVİZYON: Normalden 6px daha az padding */
         padding-bottom: 54px; 
     }
     .sessions-grid { 
@@ -195,9 +207,8 @@
     /* HAKKIMDA (BEN KİMİM) */
     #hakkimda { 
         background-color: var(--c4); 
-        padding-top: 60px;
+        padding-top: 87px; 
         min-height: auto;
-        /* Alttan 120px kısaltılmış hali */
         padding-bottom: 0px; 
     }
     .about-layout {
@@ -213,7 +224,6 @@
     
     .about-img-wrapper { position: relative; height: 100%; width: 100%; }
     
-    /* FOTOĞRAF KONUMU - 120px Yukarı */
     .about-photo {
         width: 600px; height: 600px;
         background-image: url('zin.jpg'); background-size: cover; background-position: center;
@@ -223,7 +233,7 @@
         box-shadow: 10px 10px 0px rgba(0,0,0,0.03);
     }
 
-    /* MODAL (İLETİŞİM FORMU) - SCROLL FIX */
+    /* MODAL */
     .modal{
         position:fixed; inset:0; 
         background: rgba(98, 106, 72, 0.2); 
@@ -240,7 +250,7 @@
         box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
         transform: translateY(20px); transition: transform .3s; 
         display: flex; flex-direction: column; 
-        max-height: 90vh; /* Ekranın %90'ını geçmesin */
+        max-height: 90vh; 
         height: auto;
     }
     .modal.open .modal-card { transform: translateY(0); }
@@ -251,10 +261,9 @@
         flex-shrink: 0; 
     }
     
-    /* İÇERİK KAYDIRMA ALANI */
     .modal-body{
         padding: 30px; direction: rtl; text-align: right; 
-        overflow-y: auto; /* Kaydırma çubuğu burada çıkacak */
+        overflow-y: auto; 
         flex: 1;
         scrollbar-width: thin;
         scrollbar-color: var(--c2) #eee;
@@ -302,22 +311,42 @@
     textarea { resize: vertical; min-height: 80px; }
     select#phonePrefix { width: 90px; text-overflow: ellipsis; white-space: nowrap; padding-left: 5px; padding-right: 25px; text-align: left; direction: ltr; }
 
+    /* --- RESPONSIVE & MOBILE FIX --- */
     @media (max-width: 1200px) {
         .about-photo { width: 100%; height: auto; aspect-ratio: 1/1; position: static; box-shadow: none; margin-left:0; margin-top:0;}
         .about-layout { grid-template-columns: 1fr; min-height: auto;}
         .sessions-grid { flex-direction: column; align-items: center; }
         .session-card { width: 100%; flex: auto; }
-        /* MOBILDE MENÜYÜ GÖSTERME DÜZELTMESİ */
-        nav { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 10px; margin-right: 0; gap: 15px; }
-        .nav-item { font-size: 14px; }
-        .header-inner { flex-direction: column; height: auto; padding: 10px 20px; }
-        header { height: auto; }
         
         .selection-area { grid-template-columns: 1fr; }
         .about-text { max-width: 100%; padding-top: 0; }
         .modal-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; margin-top: 0; }
         .modal { padding: 0; }
         
+        /* HEADER DÜZELTMESİ (Tek Satır) */
+        header { height: var(--headerH); } 
+        .header-inner {
+            flex-direction: row; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 0 15px; 
+            height: 100%;
+        }
+
+        .logo-block { margin: 0; }
+
+        nav { 
+            display: flex; 
+            gap: 12px; 
+            margin: 0; 
+            justify-content: flex-start;
+            flex-wrap: nowrap;
+        }
+        .nav-item { 
+            font-size: 12px; 
+            padding: 5px 0;
+        }
+
         /* MOBİLDE BUTON AYARI */
         .scroll-btn { bottom: 160px !important; }
     }
@@ -529,7 +558,6 @@
         resetSelection(); 
         document.getElementById('contactForm').reset(); 
     }
-    // Dışarı tıklayınca kapatma
     window.addEventListener('click', (e) => { 
         if (e.target === modal) closeContactModal(); 
     });
