@@ -58,7 +58,7 @@
       display:flex; align-items:center; justify-content:space-between;
     }
     
-    /* LOGO */
+    /* LOGO: Sola Alındı */
     .logo-block{
       display:flex; flex-direction:column; align-items:center; justify-content:center;
       gap:2px; line-height:1; text-align:center;
@@ -71,7 +71,7 @@
     }
     .logo-ar{font-weight:400; font-size:16px; color: color-mix(in srgb, var(--c3) 80%, transparent);}
 
-    /* NAV */
+    /* NAV: Sağa Alındı */
     nav{
         display:flex; gap:32px; align-items:center; 
         justify-content:flex-start; 
@@ -109,7 +109,7 @@
     
     main{padding-top:0; padding-bottom:var(--footerH);}
 
-    /* SECTION */
+    /* SECTION GENEL AYARLARI */
     section {
       position: relative;
       min-height: auto; 
@@ -290,7 +290,7 @@
     .info-title { font-size: 24px; color: var(--c3); margin-bottom: 20px; font-weight: 600; text-align: center;}
     .info-text { font-size: 15px; color: var(--inkSoft); line-height: 1.8; text-align: justify; direction: rtl; }
 
-    /* POPUP BUTONU (GÜNCELLENDİ) */
+    /* POPUP BUTONU */
     .info-cta-btn {
         position: absolute;
         bottom: 20px; right: 20px; z-index: 10;
@@ -343,9 +343,11 @@
         font-family: inherit; text-align: right; font-size: 14px;
     }
     textarea { resize: vertical; min-height: 80px; }
+    
+    /* Telefon Seçici Özelleştirme: Sola yaslandı */
     select#phonePrefix { width: 90px; text-overflow: ellipsis; white-space: nowrap; padding-left: 5px; padding-right: 25px; text-align: left; direction: ltr; }
 
-    /* MOBILE */
+    /* --- RESPONSIVE & MOBILE FIX --- */
     @media (max-width: 1200px) {
         .about-photo { width: 100%; height: auto; aspect-ratio: 1/1; position: static; box-shadow: none; margin-left:0; margin-top:0;}
         .about-layout { grid-template-columns: 1fr; min-height: auto;}
@@ -627,7 +629,10 @@
        const res = await fetch(COUNTRIES_URL); const list = await res.json();
        list.sort((a,b)=>a.name.localeCompare(b.name));
        const pSel = document.getElementById('phonePrefix');
-       list.forEach(c => { pSel.innerHTML += `<option value="${c.dial_code}">${c.dial_code} - ${c.name}</option>`; });
+       list.forEach(c => {
+          // Görünen değer hem kod hem isim ama CSS ile kesiyoruz
+          pSel.innerHTML += `<option value="${c.dial_code}">${c.dial_code} - ${c.name}</option>`;
+       });
        pSel.value="+90";
     }
     loadCountries();
@@ -700,3 +705,4 @@
   </script>
 </body>
 </html>
+}
