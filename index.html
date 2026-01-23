@@ -8,6 +8,8 @@
   
   <meta name="color-scheme" content="light only">
   <meta name="supported-color-schemes" content="light">
+  
+  <meta name="theme-color" content="#FCFBF9" id="meta-theme-color">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +19,7 @@
 
   <style>
     :root{
-      /* SİSTEM AYARLARINI EZEN RENK ZORLAMASI */
+      /* SİSTEM AYARLARINI EZME */
       color-scheme: light; 
       
       /* SABİT PALET */
@@ -430,8 +432,7 @@
         z-index: 1; pointer-events: none;
     }
 
-    /* --- RESPONSIVE & MOBILE FIX (TABLET DAHİL) --- */
-    /* BREAKPOINT: 1400px (Güvenli Sınır) */
+    /* --- RESPONSIVE & MOBILE FIX --- */
     @media (max-width: 1400px) {
         .about-photo { 
             width: 100%; max-width: 500px; 
@@ -696,12 +697,19 @@
   </footer>
 
   <script>
-    // --- DARK MODE LOGIC ---
+    // --- DARK MODE LOGIC (Dinamik Meta Tag) ---
     function toggleTheme() {
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
+        
+        // İkonları Değiştir
         document.getElementById('icon-moon').style.display = isDark ? 'none' : 'block';
         document.getElementById('icon-sun').style.display = isDark ? 'block' : 'none';
+
+        // Android/Samsung Zorla Dark Mode Engeli: Meta Rengini Güncelle
+        // Light moddaysa #FCFBF9, Dark moddaysa #1a1b16 olarak tarayıcıya bildirir.
+        const metaThemeColor = document.getElementById('meta-theme-color');
+        metaThemeColor.setAttribute('content', isDark ? '#1a1b16' : '#FCFBF9');
     }
 
     // --- JS ---
