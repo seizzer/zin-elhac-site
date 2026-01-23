@@ -24,8 +24,6 @@
       --bg-img-main: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Crect width='10' height='10' fill='%23FCFBF9'/%3E%3C/svg%3E");
       --bg-img-alt: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Crect width='10' height='10' fill='%23FAF7F5'/%3E%3C/svg%3E");
       --bg-img-header: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='%23FCFBF9' opacity='0.95'/%3E%3C/svg%3E");
-
-      /* --- BUTON ARKAPLAN HİLESİ (Kahverengi) --- */
       --bg-img-btn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='%23626a48'/%3E%3C/svg%3E");
 
       /* --- DEĞİŞKENLER --- */
@@ -85,8 +83,7 @@
       forced-color-adjust: none;
     }
 
-    /* --- SAMSUNG TABLET TEXT FIX (THE GHOST TEXT HACK - REFINED) --- */
-    /* Sadece METİN elemanlarını hedef al, butonlara DOKUNMA */
+    /* --- SAMSUNG TABLET TEXT FIX --- */
     body:not(.dark-mode) h1, 
     body:not(.dark-mode) h2, 
     body:not(.dark-mode) h3, 
@@ -100,7 +97,6 @@
         text-shadow: 0 0 0 var(--text-main);
     }
 
-    /* Soft textler için özel gölge */
     body:not(.dark-mode) .about-p, 
     body:not(.dark-mode) .card-desc,
     body:not(.dark-mode) .footer-text,
@@ -108,15 +104,12 @@
         text-shadow: 0 0 0 var(--text-soft);
     }
 
-    /* --- ETKİLEŞİMLİ ÖGE KORUMA KALKANI (Butonlar Görünür Olsun) --- */
-    button, input, select, textarea, .btn-submit, .info-cta-btn, .scroll-btn, .icon-btn, .info-close {
-        color: initial; /* Rengi sıfırla */
-        text-shadow: none !important; /* Gölge hilesini kaldır */
+    /* --- ETKİLEŞİMLİ ÖGE KORUMA KALKANI --- */
+    button, input, select, textarea, .btn-submit, .info-cta-btn, .scroll-btn, .icon-btn, .info-close, .modal-head button, .theme-btn {
+        text-shadow: none !important;
         opacity: 1 !important;
-        -webkit-text-fill-color: initial;
     }
 
-    /* 1. X Butonları (Kapatma) */
     .info-close, .modal-head button {
         color: #333333 !important;
         -webkit-text-fill-color: #333333 !important;
@@ -126,41 +119,30 @@
         -webkit-text-fill-color: #fff !important;
     }
 
-    /* 2. Ana Butonlar (Gönder / Twasoli) */
     .btn-submit, .info-cta-btn {
         background-color: var(--c3) !important;
-        background-image: var(--bg-img-btn) !important; /* Arka planı koru */
+        background-image: var(--bg-img-btn) !important;
         background-size: cover;
-        
         color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important; /* iPhone için beyaz zorla */
+        -webkit-text-fill-color: #ffffff !important;
     }
     .info-cta-btn:hover, .btn-submit:hover {
         background-color: var(--c2) !important;
         background-image: none !important; 
     }
 
-    /* 3. Checkbox ve Radio Butonları Görünür Yap */
     input[type="checkbox"], input[type="radio"] {
-        -webkit-appearance: auto;
-        appearance: auto;
-        opacity: 1 !important;
+        -webkit-appearance: auto; appearance: auto; opacity: 1 !important;
     }
 
-    /* 4. Hero Motto (Beyaz Kalmalı) */
+    /* Hero Motto */
     body:not(.dark-mode) .motto-text {
         color: var(--c3) !important;
         text-shadow: 0 2px 10px rgba(255,255,255,0.5) !important;
         -webkit-text-fill-color: var(--c3) !important;
     }
-    body:not(.dark-mode) .hero-content span {
-        color: #fff !important; 
-        text-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
-        -webkit-text-fill-color: #fff !important;
-    }
 
     body.modal-open { overflow: hidden; }
-
     a{color:inherit; text-decoration:none;}
     button{font-family:inherit; color:inherit;}
     ::selection{background: #c65c75; color: #fff; text-shadow: none;}
@@ -171,7 +153,6 @@
       background-color: var(--bg-header);
       background-image: var(--bg-img-header) !important;
       background-repeat: repeat;
-      
       backdrop-filter: blur(12px);
       border-bottom:1px solid var(--border-color);
       padding: 0 var(--side-margin);
@@ -195,9 +176,7 @@
     .logo-ar{font-weight:400; font-size:16px;}
 
     nav{
-        display:flex; gap:32px; align-items:center; 
-        justify-content:flex-start; 
-        flex:1; 
+        display:flex; gap:32px; align-items:center; justify-content:flex-start; flex:1; 
     }
     .nav-item{
       position:relative; padding:10px 0; font-weight:400; 
@@ -211,7 +190,6 @@
         color: var(--text-main); opacity: 0.8;
         padding: 5px; display: flex; align-items: center; justify-content: center;
         transition: opacity 0.2s, transform 0.2s;
-        /* İkonlar için text-shadow sıfırlama */
         text-shadow: none !important;
     }
     .theme-btn:hover { opacity: 1; transform: rotate(15deg); }
@@ -223,7 +201,6 @@
       background-color: var(--bg-header);
       background-image: var(--bg-img-header) !important;
       background-repeat: repeat;
-      
       backdrop-filter: blur(16px); border-top:1px solid var(--border-color);
       transition: background 0.4s ease, border 0.4s ease;
     }
@@ -283,8 +260,14 @@
         position: relative; z-index: 2; text-align: center; color: #fff;
         max-width: 800px; padding: 20px;
     }
-    /* Hero içindeki yazıların text-shadow hilesine ihtiyacı yok, zaten beyaz */
     .hero-content * { color: #fff !important; text-shadow: 0 2px 10px rgba(255,255,255,0.5) !important; }
+
+    /* YENİ MOTTO BOYUTU: Daha büyük */
+    .motto-text {
+        font-size: clamp(28px, 5vw, 54px); 
+        font-weight: 600; line-height: 1.4;
+        color: var(--c3);
+    }
 
     .scroll-btn {
         position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%); z-index: 10;
@@ -293,41 +276,30 @@
         border-radius: 50px; cursor: pointer; transition: all 0.3s ease;
     }
     
-    /* Scroll Button Renk Ayarları */
     body:not(.dark-mode) .scroll-btn {
-        color: #626a48 !important;
-        -webkit-text-fill-color: #626a48 !important;
-        text-shadow: none !important;
+        color: #626a48 !important; -webkit-text-fill-color: #626a48 !important; text-shadow: none !important;
     }
     body.dark-mode .scroll-btn {
-        color: #e7dbd0 !important;
-        -webkit-text-fill-color: #e7dbd0 !important;
+        color: #e7dbd0 !important; -webkit-text-fill-color: #e7dbd0 !important;
     }
     .scroll-btn:hover {
-        background-color: var(--c3) !important;
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
+        background-color: var(--c3) !important; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;
     }
 
     /* SEANSLAR */
     #seanslar { 
         background-color: var(--bg-body);
         background-image: var(--bg-img-main);
-        
-        padding-top: 60px;
-        padding-bottom: 54px;
-        min-height: 80vh; 
+        padding-top: 60px; padding-bottom: 54px; min-height: 80vh; 
         transition: background-color 0.4s ease;
     }
     .sessions-grid { 
-        display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; 
-        margin-top: 10px;
+        display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 10px;
     }
     .session-card {
         flex: 0 1 450px;
         background-color: var(--bg-card);
         background-image: var(--bg-img-main);
-        
         border: 1px solid var(--border-color);
         border-radius: 12px; overflow: hidden;
         transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease, border 0.4s ease;
@@ -349,43 +321,32 @@
     #hakkimda { 
         background-color: var(--bg-alt); 
         background-image: var(--bg-img-alt);
-        
-        padding-top: 119px; 
-        min-height: 85vh; 
-        padding-bottom: 40px; 
+        padding-top: 119px; min-height: 85vh; padding-bottom: 40px; 
         transition: background-color 0.4s ease;
     }
     .about-layout {
         display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
-        position: relative; 
-        min-height: 600px; 
+        position: relative; min-height: 600px; 
     }
     .about-text {
         direction: rtl; text-align: right; padding-top: 40px;
         max-width: 550px;
     }
     .about-p { margin-bottom: 20px; font-size: 16px; line-height: 1.9; }
-    
     .about-img-wrapper { position: relative; height: 100%; width: 100%; }
-    
     .about-photo {
         width: 600px; height: 600px;
         background-image: url('zin.jpg'); background-size: cover; background-position: center;
-        position: absolute;
-        left: 61.5px; 
-        top: -120px; 
+        position: absolute; left: 61.5px; top: -120px; 
         box-shadow: 10px 10px 0px rgba(0,0,0,0.03);
         border-radius: 12px; 
     }
 
     /* MODAL */
     .modal{
-        position:fixed; inset:0; 
-        background: rgba(0, 0, 0, 0.4); 
-        backdrop-filter:blur(8px); 
-        display:flex; align-items:center; justify-content:center; 
-        z-index:100; opacity:0; pointer-events:none; transition: opacity .3s;
-        padding: 20px; 
+        position:fixed; inset:0; background: rgba(0, 0, 0, 0.4); 
+        backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; 
+        z-index:100; opacity:0; pointer-events:none; transition: opacity .3s; padding: 20px; 
     }
     .modal.open{opacity:1; pointer-events:auto;}
     
@@ -393,29 +354,21 @@
         width: min(900px, 100%); 
         background-color: var(--bg-card); 
         background-image: var(--bg-img-main);
-        
         border-radius: 8px; 
         box-shadow: 0 20px 50px rgba(0,0,0,0.3); 
         transform: translateY(20px); transition: transform .3s; 
         display: flex; flex-direction: column; 
-        max-height: 90vh; 
-        height: auto;
-        color: var(--text-main);
+        max-height: 90vh; height: auto; color: var(--text-main);
     }
     .modal.open .modal-card { transform: translateY(0); }
 
     .modal-head{
         padding: 20px; border-bottom: 1px solid var(--border-color); 
-        display: flex; justify-content: space-between; direction: rtl; 
-        flex-shrink: 0; 
+        display: flex; justify-content: space-between; direction: rtl; flex-shrink: 0; 
     }
-    
     .modal-body{
-        padding: 30px; direction: rtl; text-align: right; 
-        overflow-y: auto; 
-        flex: 1;
-        scrollbar-width: thin;
-        scrollbar-color: var(--c2) var(--border-color);
+        padding: 30px; direction: rtl; text-align: right; overflow-y: auto; flex: 1;
+        scrollbar-width: thin; scrollbar-color: var(--c2) var(--border-color);
     }
     .modal-body::-webkit-scrollbar { width: 8px; }
     .modal-body::-webkit-scrollbar-track { background: var(--bg-body); }
@@ -429,14 +382,9 @@
         width: min(600px, 90%); 
         background-color: var(--bg-card); 
         background-image: var(--bg-img-main);
-        
-        border-radius: 12px; 
-        display: flex; flex-direction: column;
-        position: relative; 
-        max-height: 85vh; 
-        transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3); 
-        overflow: hidden; 
+        border-radius: 12px; display: flex; flex-direction: column; position: relative; 
+        max-height: 85vh; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; 
     }
     .info-modal.open .info-card { transform: scale(1); }
     
@@ -446,18 +394,14 @@
     }
     
     .info-scroll-area {
-        padding: 40px;
-        overflow-y: auto;
-        padding-bottom: 80px; 
+        padding: 40px; overflow-y: auto; padding-bottom: 80px; 
         scrollbar-width: thin; scrollbar-color: var(--c2) var(--border-color);
     }
     .info-title { font-size: 24px; margin-bottom: 20px; font-weight: 600; text-align: center;}
     .info-text { font-size: 15px; line-height: 1.8; text-align: justify; direction: rtl; }
 
     .info-cta-btn {
-        position: absolute;
-        bottom: 20px; right: 20px; z-index: 10;
-        /* Renkler yukarıda .btn-submit bloğunda ayarlandı */
+        position: absolute; bottom: 20px; right: 20px; z-index: 10;
         border: none; padding: 12px 24px; border-radius: 50px;
         font-family: inherit; font-size: 14px; font-weight: 500;
         cursor: pointer; box-shadow: 0 4px 15px rgba(98, 106, 72, 0.3);
@@ -473,10 +417,8 @@
         font-size: 15px; z-index: 200; opacity: 0;
         transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         pointer-events: none; text-align: center;
-        width: max-content; max-width: 90%;
-        direction: rtl;
-        text-shadow: none !important;
-        -webkit-text-fill-color: #fff !important;
+        width: max-content; max-width: 90%; direction: rtl;
+        text-shadow: none !important; -webkit-text-fill-color: #fff !important;
     }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
@@ -484,7 +426,6 @@
     .selection-area { 
         background-color: var(--bg-alt); 
         background-image: var(--bg-img-alt);
-        
         padding: 20px; border-radius: 8px; margin: 20px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; 
     }
     .sel-group-title { font-size: 14px; margin-bottom: 10px; font-weight: 600; }
@@ -492,9 +433,7 @@
         display: flex; align-items: center; gap: 10px; padding: 12px; 
         background-color: var(--bg-card); 
         background-image: var(--bg-img-main);
-        
-        border: 1px solid var(--border-color); 
-        border-radius: 6px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; 
+        border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; 
     }
     .check-item:hover { border-color: var(--c2); }
     .check-item input { width: 18px; height: 18px; accent-color: var(--c2); margin: 0; flex-shrink: 0; }
@@ -515,8 +454,7 @@
     .consent-box .check-item:hover { border-color: #eee; }
 
     input[type="text"], input[type="email"], input[type="tel"], select {
-        width: 100%; padding: 0 12px;
-        height: 50px; 
+        width: 100%; padding: 0 12px; height: 50px; 
         border: 1px solid #ddd; border-radius: 4px; margin-bottom: 6px;
         font-family: inherit; text-align: right; font-size: 14px;
         box-sizing: border-box; 
@@ -528,84 +466,44 @@
         resize: vertical; min-height: 80px; 
         background: #fff; color: #333 !important; text-shadow: none !important; -webkit-text-fill-color: #333 !important;
     }
-    
     .custom-select-wrapper {
-        position: relative; 
-        width: 90px; 
-        height: 50px; 
-        border: 1px solid #ddd; 
-        border-radius: 4px; 
-        background: #fff;
-        display: flex; align-items: center;
-        margin-bottom: 6px; 
-        box-sizing: border-box; 
+        position: relative; width: 90px; height: 50px; 
+        border: 1px solid #ddd; border-radius: 4px; background: #fff;
+        display: flex; align-items: center; margin-bottom: 6px; box-sizing: border-box; 
     }
     .selected-display {
-        width: 100%; height: 100%;
-        display: flex; align-items: center; justify-content: flex-start;
-        padding-left: 10px; 
-        font-size: 14px;
-        direction: ltr; 
-        pointer-events: none; 
-        z-index: 1;
+        width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start;
+        padding-left: 10px; font-size: 14px; direction: ltr; pointer-events: none; z-index: 1;
         color: #333 !important; text-shadow: none !important; -webkit-text-fill-color: #333 !important;
     }
     #phonePrefix {
-        position: absolute; inset: 0;
-        opacity: 0; 
-        width: 100%; height: 100%;
-        cursor: pointer;
-        z-index: 2;
+        position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2;
     }
     .select-arrow {
-        position: absolute; right: 8px; 
-        font-size: 10px; color: #666; 
-        z-index: 1; pointer-events: none;
+        position: absolute; right: 8px; font-size: 10px; color: #666; z-index: 1; pointer-events: none;
     }
 
     /* --- RESPONSIVE & MOBILE FIX --- */
     @media (max-width: 1400px) {
         .about-photo { 
-            width: 100%; max-width: 500px; 
-            height: auto; aspect-ratio: 1/1; 
-            position: static; 
-            margin-left: auto; margin-right: auto; margin-top:0;
+            width: 100%; max-width: 500px; height: auto; aspect-ratio: 1/1; 
+            position: static; margin-left: auto; margin-right: auto; margin-top:0;
             box-shadow: 0 0 20px rgba(0,0,0,0.08); 
         }
-        
-        .about-layout {
-            display: flex;
-            flex-direction: column;
-            min-height: auto;
-        }
-        .about-img-wrapper {
-            order: -1; 
-            margin-bottom: 5px; 
-            text-align: center; 
-        }
-        
+        .about-layout { display: flex; flex-direction: column; min-height: auto; }
+        .about-img-wrapper { order: -1; margin-bottom: 5px; text-align: center; }
         #hakkimda { padding-top: 20px; }
         #seanslar { padding-top: 20px; } 
-
         .hero-content { transform: translateY(-30px); }
-
         .sessions-grid { flex-direction: column; align-items: center; }
         .session-card { width: 100%; flex: auto; }
-        
         .selection-area { grid-template-columns: 1fr; }
         .about-text { max-width: 100%; padding-top: 0; }
         .modal-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; margin-top: 0; }
         .modal { padding: 0; }
         .info-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; transform: none !important;}
-        
         header { height: var(--headerH); } 
-        .header-inner {
-            flex-direction: row; 
-            justify-content: space-between; 
-            align-items: center;
-            padding: 0 15px; 
-            height: 100%;
-        }
+        .header-inner { flex-direction: row; justify-content: space-between; align-items: center; padding: 0 15px; height: 100%; }
         .logo-block { margin: 0; }
         nav { display: flex; gap: 12px; margin: 0; justify-content: flex-start; flex-wrap: nowrap; }
         .nav-item { font-size: 12px; padding: 5px 0; }
@@ -622,14 +520,22 @@
           <button class="info-close" onclick="closeInfoModal('infoModal1')">✕</button>
           
           <div class="info-scroll-area">
-              <div class="info-title">لقاء "سكينة"</div>
+              <div class="info-title">لقاء "العبور"</div>
               <div class="info-text">
-                لوريم إيبسوم هو نص وهمي يستخدم في صناعة المطابع والتنضيد. لوريم إيبسوم كان النص الوهمي القياسي في الصناعة منذ القرن الخامس عشر، عندما أخذت طابعة مجهولة لوحاً من النوع وتدافعته لصنع كتاب عينات النوع. لقد نجت ليس فقط خمسة قرون، ولكن أيضاً القفزة إلى التنضيد الإلكتروني، وبقيت دون تغيير جوهري.<br><br>
-                تم تشرها في الستينيات من القرن الماضي مع إصدار أوراق ليتراسيت التي تحتوي على مقاطع لوريم إيبسوم، ومؤخراً مع برامج النشر المكتبي مثل ألدوس بايج مايكر التي تتضمن إصدارات من لوريم إيبسوم.<br><br>
-                هنالك العديد من الأنواع المتوفرة لنصوص لوريم إيبسوم، ولكن الغالبية تم تعديلها بشكل ما عبر إدخال بعض النوادر أو الكلمات العشوائية إلى النص.
+                هذا اللقاء مخصص للتحرر من الأعباء الفكرية والعاطفية التي استنزفت طاقتكِ. سنستخدم أدوات الدعم النفسي والكوتشينج للتعامل مع حالات التعلق، وبناء الاستحقاق الداخلي، وتجاوز المخاوف التي تمنعكِ من التغيير. هو مساحة آمنة لتفريغ ما يثقلكِ والعبور نحو حالة من السلام والانسجام مع ذاتكِ.<br><br>
+
+                <strong>ميثاق رحلة التغيير و التوازن</strong><br>
+                أهلاً بكِ في هذه المساحة الآمنة. قبل أن نبدأ، إليكِ كيف تسير الأمور في مساري التدريبي:<br>
+                <ul>
+                    <li><strong>بناء الرحلة:</strong> جلساتي ليست عشوائية؛ نحن نستند إلى منهجية الدعم النفسي الاجتماعي و الكوتشينج معاً. سنعمل بوضوح على تحديد قيمكِ، احتياجاتكِ، معتقداتكِ، فهم و تحرير مشاعرك مع "تمارين عملية، وتأملات خاصة" تُصمم لعمق حالتكِ.</li>
+                    <li><strong>ثقافة الالتزام:</strong> مدة الجلسات الفردية و الباقات صُممت لتمنحكِ الأثر الذي تستحقينه. إذا احتجتِ لتغيير موعدك، أرجو إبلاغي قبل 24 ساعة لنحافظ على تواصل صحي.</li>
+                    <li><strong>الاستثمار النفسي:</strong> دفعك للمبلغ هو التزامك أمام نفسكِ. المبالغ غير مستردة، فاجعلي هذا الاستثمار "حباً وإكراماً" لذاتك وتأكدي من قدرتك على تخصيص هذا الوقت لنفسكِ.</li>
+                    <li><strong>حدود الدعم:</strong> قلبي وعقلي معكِ طوال فترة اشتراككِ. التواصل متاح للطوارئ، لكن هدفي الأسمى هو أن تعتمدي على نفسكِ، وتجدي مركز قوتكِ الداخلي دون تعلق بالخارج.</li>
+                    <li><strong>أمانة الأدوات:</strong> ما تتعلمينه هنا هو لتمكينكِ الشخصي. هذه التقنيات هي ثمرة سنوات من البحث والتعلم، لذا أرجو احترام حدودي المهنية وعدم مشاركتها كأداة تدريبية للآخرين.</li>
+                    <li><strong>المسؤولية الذاتية:</strong> التمارين العملية التي نناقشها هي بمثابة الجلسات. فهي مسؤوليتكِ، فامنحيها المساحة التي تستحق في يومكِ لتستقبلي منها أقصى استفادة.</li>
+                </ul>
               </div>
           </div>
-          
           <button class="info-cta-btn" onclick="openContactFromInfo('infoModal1')">تواصلي معي</button>
       </div>
   </div>
@@ -639,14 +545,22 @@
           <button class="info-close" onclick="closeInfoModal('infoModal2')">✕</button>
           
           <div class="info-scroll-area">
-              <div class="info-title">لقاء "العبور"</div>
+              <div class="info-title">لقاء "سكينة"</div>
               <div class="info-text">
-                هنالك العديد من الأنواع المتوفرة لنصوص لوريم إيبسوم، ولكن الغالبية تم تعديلها بشكل ما عبر إدخال بعض النوادر أو الكلمات العشوائية إلى النص. إن كنت تريد أن تستخدم نص لوريم إيبسوم، عليك أن تتحقق أولاً أن ليس هناك أي كلمات محرحة أو عبارات غير لائقة مخبأة في هذا النص.<br><br>
-                كل مولدات لوريم إيبسوم على الإنترنت تميل لتكرار مقتطفات من النص كلما اقتضت الحاجة، مما يجعل هذا أول مولد حقيقي على الإنترنت. يستخدم قاموساً من أكثر من 200 كلمة لاتينية، مقترنة بنماذج جمل عديدة.<br><br>
-                الخيار الأمثل للذين يبحثون عن رحلة تغيير جذرية.
+                إذا كنتِ تشعرين بالتشتت أو تجدين صعوبة في اتخاذ قراراتكِ، فهذا اللقاء صُمم ليمنحكِ الوضوح. سنعمل معاً على ترتيب أفكاركِ، وتحديد القيم والأهداف التي تشبهكِ حقاً، وتفكيك المعتقدات التي تعيق تقدمكِ. هدفنا أن تخرجي برؤية واضحة وخطوات عملية تعيد لبيئة حياتكِ توازنها.<br><br>
+
+                <strong>ميثاق رحلة التغيير و التوازن</strong><br>
+                أهلاً بكِ في هذه المساحة الآمنة. قبل أن نبدأ، إليكِ كيف تسير الأمور في مساري التدريبي:<br>
+                <ul>
+                    <li><strong>بناء الرحلة:</strong> جلساتي ليست عشوائية؛ نحن نستند إلى منهجية الدعم النفسي الاجتماعي و الكوتشينج معاً. سنعمل بوضوح على تحديد قيمكِ، احتياجاتكِ، معتقداتكِ، فهم و تحرير مشاعرك مع "تمارين عملية، وتأملات خاصة" تُصمم لعمق حالتكِ.</li>
+                    <li><strong>ثقافة الالتزام:</strong> مدة الجلسات الفردية و الباقات صُممت لتمنحكِ الأثر الذي تستحقينه. إذا احتجتِ لتغيير موعدك، أرجو إبلاغي قبل 24 ساعة لنحافظ على تواصل صحي.</li>
+                    <li><strong>الاستثمار النفسي:</strong> دفعك للمبلغ هو التزامك أمام نفسكِ. المبالغ غير مستردة، فاجعلي هذا الاستثمار "حباً وإكراماً" لذاتك وتأكدي من قدرتك على تخصيص هذا الوقت لنفسكِ.</li>
+                    <li><strong>حدود الدعم:</strong> قلبي وعقلي معكِ طوال فترة اشتراككِ. التواصل متاح للطوارئ، لكن هدفي الأسمى هو أن تعتمدي على نفسكِ، وتجدي مركز قوتكِ الداخلي دون تعلق بالخارج.</li>
+                    <li><strong>أمانة الأدوات:</strong> ما تتعلمينه هنا هو لتمكينكِ الشخصي. هذه التقنيات هي ثمرة سنوات من البحث والتعلم، لذا أرجو احترام حدودي المهنية وعدم مشاركتها كأداة تدريبية للآخرين.</li>
+                    <li><strong>المسؤولية الذاتية:</strong> التمارين العملية التي نناقشها هي بمثابة الجلسات. فهي مسؤوليتكِ، فامنحيها المساحة التي تستحق في يومكِ لتستقبلي منها أقصى استفادة.</li>
+                </ul>
               </div>
           </div>
-
           <button class="info-cta-btn" onclick="openContactFromInfo('infoModal2')">تواصلي معي</button>
       </div>
   </div>
@@ -680,9 +594,7 @@
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1 class="motto-text">
-                "السكون هو المفتاح الذي يفتح كل الأبواب المغلقة في داخلك."
-                <br>
-                <span style="font-size: 0.6em; font-weight: 300; opacity: 0.8;">(Sessizlik, içindeki tüm kapalı kapıları açan anahtardır.)</span>
+                "كل ما تؤمنين به بداخلكِ.. سيأتيكِ. دعينا نختار معاً ما يستحق أن تؤمني به."
             </h1>
         </div>
         <button class="scroll-btn" onclick="document.getElementById('seanslar').scrollIntoView()">اللقاءات الفردية</button>
@@ -691,7 +603,7 @@
     <section id="seanslar">
         <div class="section-head"><h2>اللقاءات الفردية</h2></div>
         <div class="sessions-grid">
-            <div class="session-card" onclick="openInfoModal('infoModal1')">
+            <div class="session-card" onclick="openInfoModal('infoModal2')">
                 <div class="card-img" id="img-s1"></div>
                 <div class="card-meta">
                     <div class="card-title">لقاء "سكينة"</div>
@@ -699,7 +611,7 @@
                 </div>
             </div>
 
-            <div class="session-card" onclick="openInfoModal('infoModal2')">
+            <div class="session-card" onclick="openInfoModal('infoModal1')">
                 <div class="card-img" id="img-s2"></div>
                 <div class="card-meta">
                     <div class="card-title">لقاء "العبور"</div>
@@ -713,8 +625,25 @@
         <div class="section-head"><h2>مين أنا؟</h2></div>
         <div class="about-layout">
             <div class="about-text">
-                <p class="about-p">قبل عشر سنين، كنت واقفة بنفس المكان اللي إنتي فيه اليوم؛ بعرف تماماً شو يعني يكون الطريق غبش والقلب تقيل. الحياة ما كانت وردية ولا سهلة، والفرص ما انمدت لي على طبق من ذهب، بس أنا اخترت إني حاول وأمشي رغم الخوف.</p>
-                <p class="about-p">اسمي زين، وخبرتي بالحياة هي اللي علمتني قبل كتبي ودراستي. بآمن إنو السعي هو المفتاح، وإنو أصعب تجاربنا هي اللي بتصنع أقوى بداياتنا. شغفي بالحياة بيخليني أشوف الجمال حتى بالأماكن المنسية، ورسالتي اليوم هي إني ساندك لتكتشفي القوة اللي جواتك.</p>
+                <p class="about-p">
+                    <strong>رحلة من البحث عن المعنى إلى سكينة التسليم</strong><br><br>
+                    أنا زيِن، مرافقة في رحلة الوعي والتمكين النفسي.<br>
+                    بدأت رحلتي من تلك اللحظة التي قررت فيها أن أنظر إلى جروحي لا كعقبات، بل كـ "منافذ للنور". مريت بمرحلة من الانطفاء والتغييب في سنوات كان من المفترض أن تكون الأزهى، لكن تلك العتمة هي التي دفعتني للبحث عن المعنى ببطء وعمق.<br><br>
+                    اليوم، لا أقدم لكِ مجرد جلسات تدريبية؛ بل أقدم لكِ مزيجاً من المسار الأكاديمي في الدعم النفس-اجتماعي وتقنيات الكوتشينج، وبين حكمة التجربة التي علمتني أن أرى الجانب الرقيق في كل شيء.
+                </p>
+                <p class="about-p">
+                    <strong>فلسفتي بسيطة لكنها عميقة:</strong>
+                    <ul>
+                        <li>لا أستعجل التغيير: أؤمن أن فهم الحياة يحتاج إلى "بطء واعي" لاستيعاب الدروس.</li>
+                        <li>لا أطلق الأحكام: أتعامل مع كل حالة بحياد تام، لأنني أؤمن أن لكل إنسان الحق في أن يكون كما هو، وانسجامي مع نفسي والحياة هو محرّكي الأول.</li>
+                        <li>أعلّم ما أتعلّمه: رحلتي مستمرة، وكل بصيرة أصل إليها في تسليمي ويقيني بالله، أضعها بين يديكِ لتكون جسراً لاستحقاقكِ الداخلي.</li>
+                    </ul>
+                </p>
+                <p class="about-p">
+                    ساعدتُ مئات النساء على العودة لذواتهنّ، ليس من خلال الوعود البراقة، بل من خلال مواجهة مخاوف التغيير، تفكيك المعتقدات، والتحرر الفكري والعاطفي الذي يبدأ من الداخل ليظهر أثره في الخارج.<br><br>
+                    <strong>رسالتي لكِ:</strong><br>
+                    افهمي حياتكِ ببطء، فالنور لا يحتاج إلى عجلة ليعبر من خلالكِ.. أنا هنا لنُعيد ترتيب الانعكاس، حتى ينسجم واقعكِ مع حقيقتك.
+                </p>
                 <button class="btn-submit" style="width: auto; margin-top: 20px;" onclick="openContactModal()">تواصلي معي</button>
             </div>
             <div class="about-img-wrapper">
