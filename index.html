@@ -25,15 +25,20 @@
       --bg-img-alt: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Crect width='10' height='10' fill='%23FAF7F5'/%3E%3C/svg%3E");
       --bg-img-header: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='%23FCFBF9' opacity='0.95'/%3E%3C/svg%3E");
 
+      /* --- BUTON ARKAPLAN HİLESİ (Kahverengi) --- */
+      --bg-img-btn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='%23626a48'/%3E%3C/svg%3E");
+
       /* --- DEĞİŞKENLER --- */
       --bg-body: #FCFBF9;
       --bg-header: #FCFBF9; 
       --bg-card: #FCFBF9;
       --bg-alt: #faf7f5;
+      --c3: #626a48;
+      --c2: #b36932;
+      --c1: #f5f0eb;
       
-      /* RENKLERİ RGBA (0.99 OPACITY) İLE TANIMLIYORUZ Kİ TARAYICI SOLID SANNIP ÇEVİRMESİN */
-      --text-main: rgba(98, 106, 72, 0.99); /* #626a48 */
-      --text-soft: rgba(133, 139, 115, 0.99); /* #858b73 */
+      --text-main: #626a48;
+      --text-soft: #858b73;
       --border-color: rgba(0,0,0,0.08);
       
       --headerH:70px; --footerH:80px;
@@ -46,6 +51,7 @@
       --bg-img-main: none !important;
       --bg-img-alt: none !important;
       --bg-img-header: none !important;
+      --bg-img-btn: none !important;
       
       --bg-body: #1a1b16;
       --bg-header: rgba(26, 27, 22, 0.95);
@@ -79,19 +85,19 @@
       forced-color-adjust: none;
     }
 
-    /* --- SAMSUNG TABLET TEXT FIX (THE GHOST TEXT HACK) --- */
-    /* Light Mode'da (Normalde) Yazı Rengi Yerine Gölge Kullan */
+    /* --- SAMSUNG TABLET TEXT FIX (THE GHOST TEXT HACK - REFINED) --- */
+    /* Sadece METİN elemanlarını hedef al, butonlara DOKUNMA */
     body:not(.dark-mode) h1, 
     body:not(.dark-mode) h2, 
     body:not(.dark-mode) h3, 
     body:not(.dark-mode) p, 
-    body:not(.dark-mode) span, 
-    body:not(.dark-mode) div, 
-    body:not(.dark-mode) label, 
-    body:not(.dark-mode) a,
-    body:not(.dark-mode) .nav-item {
-        color: transparent; /* Yazının kendisini gizle */
-        text-shadow: 0 0 0 var(--text-main); /* Yazı şeklinde gölge at (Tarayıcı gölgeyi çevirmez) */
+    body:not(.dark-mode) span,
+    body:not(.dark-mode) label,
+    body:not(.dark-mode) .nav-item,
+    body:not(.dark-mode) .logo-top,
+    body:not(.dark-mode) .logo-ar {
+        color: transparent; 
+        text-shadow: 0 0 0 var(--text-main);
     }
 
     /* Soft textler için özel gölge */
@@ -102,28 +108,55 @@
         text-shadow: 0 0 0 var(--text-soft);
     }
 
-    /* --- IPHONE BUTTON FIX --- */
-    /* Buton yazılarını beyaz kalmaya zorla */
-    .btn-submit, .info-cta-btn {
-        color: #ffffff !important;
-        text-shadow: none !important; /* Butonda gölge hilesine gerek yok, beyaz kalmalı */
-        -webkit-text-fill-color: #ffffff !important;
+    /* --- ETKİLEŞİMLİ ÖGE KORUMA KALKANI (Butonlar Görünür Olsun) --- */
+    button, input, select, textarea, .btn-submit, .info-cta-btn, .scroll-btn, .icon-btn, .info-close {
+        color: initial; /* Rengi sıfırla */
+        text-shadow: none !important; /* Gölge hilesini kaldır */
+        opacity: 1 !important;
+        -webkit-text-fill-color: initial;
     }
-    
-    /* Scroll Button */
-    body:not(.dark-mode) .scroll-btn {
-        color: transparent;
-        text-shadow: 0 0 0 #626a48; /* Yeşil */
+
+    /* 1. X Butonları (Kapatma) */
+    .info-close, .modal-head button {
+        color: #333333 !important;
+        -webkit-text-fill-color: #333333 !important;
     }
-    body:not(.dark-mode) .scroll-btn:hover {
+    body.dark-mode .info-close, body.dark-mode .modal-head button {
         color: #fff !important;
-        text-shadow: none;
-        background: var(--c3);
+        -webkit-text-fill-color: #fff !important;
     }
-    
-    /* Hero Motto Text */
+
+    /* 2. Ana Butonlar (Gönder / Twasoli) */
+    .btn-submit, .info-cta-btn {
+        background-color: var(--c3) !important;
+        background-image: var(--bg-img-btn) !important; /* Arka planı koru */
+        background-size: cover;
+        
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important; /* iPhone için beyaz zorla */
+    }
+    .info-cta-btn:hover, .btn-submit:hover {
+        background-color: var(--c2) !important;
+        background-image: none !important; 
+    }
+
+    /* 3. Checkbox ve Radio Butonları Görünür Yap */
+    input[type="checkbox"], input[type="radio"] {
+        -webkit-appearance: auto;
+        appearance: auto;
+        opacity: 1 !important;
+    }
+
+    /* 4. Hero Motto (Beyaz Kalmalı) */
     body:not(.dark-mode) .motto-text {
-        text-shadow: 0 2px 10px rgba(255,255,255,0.5), 0 0 0 var(--c3); /* Hem efekt hem renk gölgesi */
+        color: var(--c3) !important;
+        text-shadow: 0 2px 10px rgba(255,255,255,0.5) !important;
+        -webkit-text-fill-color: var(--c3) !important;
+    }
+    body:not(.dark-mode) .hero-content span {
+        color: #fff !important; 
+        text-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
+        -webkit-text-fill-color: #fff !important;
     }
 
     body.modal-open { overflow: hidden; }
@@ -176,9 +209,10 @@
     .theme-btn {
         background: none; border: none; cursor: pointer;
         color: var(--text-main); opacity: 0.8;
-        text-shadow: none !important; /* İkonlarda gölge hilesi olmasın */
         padding: 5px; display: flex; align-items: center; justify-content: center;
         transition: opacity 0.2s, transform 0.2s;
+        /* İkonlar için text-shadow sıfırlama */
+        text-shadow: none !important;
     }
     .theme-btn:hover { opacity: 1; transform: rotate(15deg); }
     .theme-btn svg { width: 22px; height: 22px; fill: currentColor; }
@@ -257,6 +291,22 @@
         padding: 14px 32px; border: 1px solid var(--c3);
         font-size: 16px; background: rgba(255,255,255,0.3); backdrop-filter: blur(4px);
         border-radius: 50px; cursor: pointer; transition: all 0.3s ease;
+    }
+    
+    /* Scroll Button Renk Ayarları */
+    body:not(.dark-mode) .scroll-btn {
+        color: #626a48 !important;
+        -webkit-text-fill-color: #626a48 !important;
+        text-shadow: none !important;
+    }
+    body.dark-mode .scroll-btn {
+        color: #e7dbd0 !important;
+        -webkit-text-fill-color: #e7dbd0 !important;
+    }
+    .scroll-btn:hover {
+        background-color: var(--c3) !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
     }
 
     /* SEANSLAR */
@@ -392,8 +442,7 @@
     
     .info-close { 
         position: absolute; top: 15px; right: 15px; z-index: 20; 
-        background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-main); padding: 5px; 
-        text-shadow: none !important; /* İkon, gölgeye gerek yok */
+        background: none; border: none; font-size: 24px; cursor: pointer; padding: 5px; 
     }
     
     .info-scroll-area {
@@ -408,13 +457,12 @@
     .info-cta-btn {
         position: absolute;
         bottom: 20px; right: 20px; z-index: 10;
-        background-color: var(--c3); 
+        /* Renkler yukarıda .btn-submit bloğunda ayarlandı */
         border: none; padding: 12px 24px; border-radius: 50px;
         font-family: inherit; font-size: 14px; font-weight: 500;
         cursor: pointer; box-shadow: 0 4px 15px rgba(98, 106, 72, 0.3);
         transition: transform 0.2s, background 0.2s;
     }
-    .info-cta-btn:hover { transform: scale(1.05); background-color: var(--c2); }
 
     /* TOAST */
     .toast {
@@ -428,6 +476,7 @@
         width: max-content; max-width: 90%;
         direction: rtl;
         text-shadow: none !important;
+        -webkit-text-fill-color: #fff !important;
     }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
@@ -450,8 +499,8 @@
     .check-item:hover { border-color: var(--c2); }
     .check-item input { width: 18px; height: 18px; accent-color: var(--c2); margin: 0; flex-shrink: 0; }
     .hidden { display: none; }
-    .price-tag { font-weight: bold; color: var(--c2); margin-right: auto; font-size: 14px; text-shadow: none !important; }
-    .btn-submit { width: 100%; padding: 16px; background: var(--c3); border: none; font-size: 16px; cursor: pointer; margin-top: 20px; border-radius: 4px; }
+    .price-tag { font-weight: bold; color: var(--c2); margin-right: auto; font-size: 14px; text-shadow: none !important; -webkit-text-fill-color: var(--c2) !important; }
+    .btn-submit { width: 100%; padding: 16px; border: none; font-size: 16px; cursor: pointer; margin-top: 20px; border-radius: 4px; }
 
     .qa-area { margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 20px; }
     .qa-group { margin-bottom: 20px; }
@@ -459,10 +508,10 @@
     .qa-radio-group { display: flex; flex-direction: column; gap: 8px; }
     .qa-radio-label { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
     .qa-radio-label input { width: 16px; height: 16px; accent-color: var(--c2); margin: 0; }
-    .char-count { font-size: 11px; color: #999 !important; text-shadow: none !important; text-align: left; margin-top: 4px; direction: ltr; }
+    .char-count { font-size: 11px; color: #999 !important; text-shadow: none !important; -webkit-text-fill-color: #999 !important; text-align: left; margin-top: 4px; direction: ltr; }
 
     .consent-box { margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--border-color); }
-    .consent-box .check-item { margin-bottom: 10px; font-size: 13px; padding: 10px; border: 1px solid transparent; background: transparent; }
+    .consent-box .check-item { margin-bottom: 10px; font-size: 13px; padding: 10px; border: 1px solid transparent; background: transparent; background-image: none !important; }
     .consent-box .check-item:hover { border-color: #eee; }
 
     input[type="text"], input[type="email"], input[type="tel"], select {
@@ -471,13 +520,13 @@
         border: 1px solid #ddd; border-radius: 4px; margin-bottom: 6px;
         font-family: inherit; text-align: right; font-size: 14px;
         box-sizing: border-box; 
-        background: #fff; color: #333 !important; text-shadow: none !important; /* Input içi hep temiz siyah */
+        background: #fff; color: #333 !important; text-shadow: none !important; -webkit-text-fill-color: #333 !important;
     }
     textarea { 
         width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 6px;
         font-family: inherit; text-align: right; font-size: 14px;
         resize: vertical; min-height: 80px; 
-        background: #fff; color: #333 !important; text-shadow: none !important;
+        background: #fff; color: #333 !important; text-shadow: none !important; -webkit-text-fill-color: #333 !important;
     }
     
     .custom-select-wrapper {
@@ -499,7 +548,7 @@
         direction: ltr; 
         pointer-events: none; 
         z-index: 1;
-        color: #333 !important; text-shadow: none !important;
+        color: #333 !important; text-shadow: none !important; -webkit-text-fill-color: #333 !important;
     }
     #phonePrefix {
         position: absolute; inset: 0;
