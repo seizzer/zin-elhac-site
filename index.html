@@ -59,7 +59,6 @@
       display:flex; align-items:center; justify-content:space-between;
     }
     
-    /* LOGO: Sola Alındı */
     .logo-block{
       display:flex; flex-direction:column; align-items:center; justify-content:center;
       gap:2px; line-height:1; text-align:center;
@@ -72,7 +71,6 @@
     }
     .logo-ar{font-weight:400; font-size:16px; color: color-mix(in srgb, var(--c3) 80%, transparent);}
 
-    /* NAV: Sağa Alındı */
     nav{
         display:flex; gap:32px; align-items:center; 
         justify-content:flex-start; 
@@ -110,7 +108,7 @@
     
     main{padding-top:0; padding-bottom:var(--footerH);}
 
-    /* SECTION GENEL AYARLARI */
+    /* SECTION GENEL */
     section {
       position: relative;
       min-height: auto; 
@@ -126,7 +124,7 @@
         margin-right: 4px; 
     }
 
-    /* HERO SECTION */
+    /* HERO */
     #hero {
         padding: 0; align-items: center; justify-content: center; overflow: hidden;
         background-color: var(--c1);
@@ -162,7 +160,7 @@
     }
     .scroll-btn:hover { background: var(--c3); color: #fff; }
 
-    /* SEANSLAR SECTION */
+    /* SEANSLAR */
     #seanslar { 
         background-color: var(--bg-cream); 
         padding-top: 60px;
@@ -193,7 +191,7 @@
     .card-title { font-size: 24px; font-weight: 600; color: var(--c3); margin-bottom: 8px; }
     .card-desc { font-size: 14px; color: var(--inkSoft); line-height: 1.6; }
 
-    /* HAKKIMDA (BEN KİMİM) SECTION */
+    /* HAKKIMDA (BEN KİMİM) */
     #hakkimda { 
         background-color: var(--c4); 
         padding-top: 119px; 
@@ -222,7 +220,7 @@
         box-shadow: 10px 10px 0px rgba(0,0,0,0.03);
     }
 
-    /* MODAL */
+    /* MODAL (İLETİŞİM FORMU) */
     .modal{
         position:fixed; inset:0; 
         background: rgba(98, 106, 72, 0.2); 
@@ -261,14 +259,64 @@
     .modal-body::-webkit-scrollbar-track { background: #eee; }
     .modal-body::-webkit-scrollbar-thumb { background-color: var(--c2); border-radius: 4px; }
 
-    /* INFO POPUP */
+    /* --- INFO POPUP (YENİLENMİŞ - STICKY BUTONLU) --- */
     .info-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
     .info-modal.open { opacity: 1; pointer-events: auto; }
-    .info-card { width: min(600px, 90%); background: #fff; border-radius: 12px; padding: 40px; text-align: center; position: relative; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+    
+    .info-card { 
+        width: min(600px, 90%); 
+        background: #fff; border-radius: 12px; 
+        /* Flex yapısı ile scroll yönetimi */
+        display: flex; flex-direction: column;
+        position: relative; 
+        max-height: 85vh; /* Yükseklik sınırı */
+        transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15); 
+        overflow: hidden; /* Dışarı taşmayı engelle */
+    }
     .info-modal.open .info-card { transform: scale(1); }
-    .info-close { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--c3); padding: 5px; }
-    .info-title { font-size: 24px; color: var(--c3); margin-bottom: 20px; font-weight: 600; }
+    
+    .info-close { 
+        position: absolute; top: 15px; right: 15px; z-index: 20; 
+        background: none; border: none; font-size: 24px; cursor: pointer; color: var(--c3); padding: 5px; 
+    }
+    
+    /* İçerik Kaydırma Alanı */
+    .info-scroll-area {
+        padding: 40px;
+        overflow-y: auto;
+        /* Butonun üstüne binmemesi için alt boşluk */
+        padding-bottom: 80px; 
+        scrollbar-width: thin; scrollbar-color: var(--c2) #eee;
+    }
+    .info-title { font-size: 24px; color: var(--c3); margin-bottom: 20px; font-weight: 600; text-align: center;}
     .info-text { font-size: 15px; color: var(--inkSoft); line-height: 1.8; text-align: justify; direction: rtl; }
+
+    /* Sabit Buton */
+    .info-cta-btn {
+        position: absolute;
+        bottom: 20px; right: 20px; z-index: 10;
+        background-color: var(--c3); color: #fff;
+        border: none; padding: 12px 24px; border-radius: 50px;
+        font-family: inherit; font-size: 14px; font-weight: 500;
+        cursor: pointer; box-shadow: 0 4px 15px rgba(98, 106, 72, 0.3);
+        transition: transform 0.2s, background 0.2s;
+    }
+    .info-cta-btn:hover { transform: scale(1.05); background-color: var(--c2); }
+
+    /* --- TOAST MESAJI --- */
+    .toast {
+        position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px);
+        background-color: var(--c3); color: #fff;
+        padding: 16px 24px; border-radius: 50px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        font-size: 15px; z-index: 200; opacity: 0;
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        pointer-events: none; text-align: center;
+        width: max-content; max-width: 90%;
+        direction: rtl;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
     /* FORM STYLES */
     .selection-area { background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -304,17 +352,20 @@
         .about-photo { width: 100%; height: auto; aspect-ratio: 1/1; position: static; box-shadow: none; margin-left:0; margin-top:0;}
         .about-layout { grid-template-columns: 1fr; min-height: auto;}
         
-        /* MOBİL DÜZELTMELER */
-        #hakkimda { padding-top: 20px; } /* Ben Kimim üst boşluğu (Mobile: 20px) */
-        #seanslar { padding-top: 20px; } /* Seanslar üst boşluğu (Mobile: 20px - ARTIK EŞİT) */
+        #hakkimda { padding-top: 20px; }
+        #seanslar { padding-top: 20px; } 
 
         .sessions-grid { flex-direction: column; align-items: center; }
         .session-card { width: 100%; flex: auto; }
         
         .selection-area { grid-template-columns: 1fr; }
         .about-text { max-width: 100%; padding-top: 0; }
+        
         .modal-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; margin-top: 0; }
         .modal { padding: 0; }
+        
+        /* Info Card Mobile */
+        .info-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; transform: none !important;}
         
         header { height: var(--headerH); } 
         .header-inner {
@@ -345,23 +396,39 @@
 </head>
 
 <body>
+  <div id="toast" class="toast">شكراً لتواصلك الطيب! ✨ التفاصيل وصلتك الآن عبر واتساب.</div>
+
   <div class="info-modal" id="infoModal1">
       <div class="info-card">
           <button class="info-close" onclick="closeInfoModal('infoModal1')">✕</button>
-          <div class="info-title">لقاء "سكينة"</div>
-          <div class="info-text">
-            لوريم إيبسوم هو نص وهمي يستخدم في صناعة المطابع والتنضيد...
+          
+          <div class="info-scroll-area">
+              <div class="info-title">لقاء "سكينة"</div>
+              <div class="info-text">
+                لوريم إيبسوم هو نص وهمي يستخدم في صناعة المطابع والتنضيد. لوريم إيبسوم كان النص الوهمي القياسي في الصناعة منذ القرن الخامس عشر، عندما أخذت طابعة مجهولة لوحاً من النوع وتدافعته لصنع كتاب عينات النوع. لقد نجت ليس فقط خمسة قرون، ولكن أيضاً القفزة إلى التنضيد الإلكتروني، وبقيت دون تغيير جوهري.<br><br>
+                تم تشرها في الستينيات من القرن الماضي مع إصدار أوراق ليتراسيت التي تحتوي على مقاطع لوريم إيبسوم، ومؤخراً مع برامج النشر المكتبي مثل ألدوس بايج مايكر التي تتضمن إصدارات من لوريم إيبسوم.<br><br>
+                هنالك العديد من الأنواع المتوفرة لنصوص لوريم إيبسوم، ولكن الغالبية تم تعديلها بشكل ما عبر إدخال بعض النوادر أو الكلمات العشوائية إلى النص.
+              </div>
           </div>
+          
+          <button class="info-cta-btn" onclick="openContactFromInfo('infoModal1', 'seans1')">احجزي الآن</button>
       </div>
   </div>
 
   <div class="info-modal" id="infoModal2">
       <div class="info-card">
           <button class="info-close" onclick="closeInfoModal('infoModal2')">✕</button>
-          <div class="info-title">لقاء "العبور"</div>
-          <div class="info-text">
-            هنالك العديد من الأنواع المتوفرة لنصوص لوريم إيبسوم...
+          
+          <div class="info-scroll-area">
+              <div class="info-title">لقاء "العبور"</div>
+              <div class="info-text">
+                هنالك العديد من الأنواع المتوفرة لنصوص لوريم إيبسوم، ولكن الغالبية تم تعديلها بشكل ما عبر إدخال بعض النوادر أو الكلمات العشوائية إلى النص. إن كنت تريد أن تستخدم نص لوريم إيبسوم، عليك أن تتحقق أولاً أن ليس هناك أي كلمات محرحة أو عبارات غير لائقة مخبأة في هذا النص.<br><br>
+                كل مولدات لوريم إيبسوم على الإنترنت تميل لتكرار مقتطفات من النص كلما اقتضت الحاجة، مما يجعل هذا أول مولد حقيقي على الإنترنت. يستخدم قاموساً من أكثر من 200 كلمة لاتينية، مقترنة بنماذج جمل عديدة.<br><br>
+                الخيار الأمثل للذين يبحثون عن رحلة تغيير جذرية.
+              </div>
           </div>
+
+          <button class="info-cta-btn" onclick="openContactFromInfo('infoModal2', 'seans2')">احجزي الآن</button>
       </div>
   </div>
 
@@ -531,9 +598,22 @@
   </footer>
 
   <script>
-    // --- JS AYNI ---
+    // --- JS ---
     function openInfoModal(id) { document.getElementById(id).classList.add('open'); }
     function closeInfoModal(id) { document.getElementById(id).classList.remove('open'); }
+    
+    // Yeni Fonksiyon: Pop-up içinden direkt iletişim aç
+    function openContactFromInfo(infoModalId, sessionKey) {
+        closeInfoModal(infoModalId);
+        // Otomatik seçim istenirse buraya eklenebilir, şimdilik sadece açıyor
+        openContactModal();
+        // Eğer sessionKey gönderirsen otomatik seçtirebiliriz
+        if(sessionKey) {
+            const cb = document.querySelector(`input[value="${sessionKey}"]`);
+            if(cb) { cb.checked = true; handleSessionChange(cb); }
+        }
+    }
+
     document.querySelectorAll('.info-modal').forEach(m => {
         m.addEventListener('click', (e) => { if(e.target === m) m.classList.remove('open'); });
     });
@@ -552,6 +632,13 @@
     window.addEventListener('click', (e) => { 
         if (e.target === modal) closeContactModal(); 
     });
+
+    // TOAST FUNCTION
+    function showToast() {
+        const t = document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 4000);
+    }
 
     const toEasternArabic = (n) => n.toString().replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
     function updateCount(el, countId) { document.getElementById(countId).textContent = toEasternArabic(el.value.length) + "/٥٠٠"; }
@@ -627,7 +714,8 @@
 
         try {
             await fetch('/api/lead', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(formData) });
-            alert("شكراً لتواصلك الطيب! ✨ التفاصيل وصلتك الآن عبر واتساب.");
+            // ESKİ ALERT YERİNE TOAST ÇAĞIRILIYOR
+            showToast();
             closeContactModal();
         } catch(err) { alert("Hata oluştu."); } finally { btn.disabled = false; btn.textContent = "إرسال"; }
     });
