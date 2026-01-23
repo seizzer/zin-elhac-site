@@ -336,21 +336,31 @@
     .consent-box .check-item { margin-bottom: 10px; font-size: 13px; padding: 10px; border: 1px solid transparent; background: transparent; }
     .consent-box .check-item:hover { border-color: #eee; }
 
-    input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+    /* HİZALAMA ÇÖZÜMÜ: Mutlak Eşitlik (Fix) */
+    input[type="text"], input[type="email"], input[type="tel"], select {
+        width: 100%; padding: 0 12px;
+        height: 50px; /* SABİT YÜKSEKLİK - 50px */
+        border: 1px solid #ddd; border-radius: 4px; margin-bottom: 6px;
+        font-family: inherit; text-align: right; font-size: 14px;
+        box-sizing: border-box; /* Önemli */
+    }
+    textarea { 
         width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 6px;
         font-family: inherit; text-align: right; font-size: 14px;
+        resize: vertical; min-height: 80px; 
     }
-    textarea { resize: vertical; min-height: 80px; }
     
+    /* ÖZEL SEÇİM KUTUSU (Fix) */
     .custom-select-wrapper {
         position: relative; 
         width: 90px; 
-        height: 46px; 
+        height: 50px; /* INPUT İLE AYNI YÜKSEKLİK */
         border: 1px solid #ddd; 
         border-radius: 4px; 
         background: #fff;
         display: flex; align-items: center;
         margin-bottom: 6px; 
+        box-sizing: border-box; /* Önemli */
     }
     .selected-display {
         width: 100%; height: 100%;
@@ -375,16 +385,20 @@
         z-index: 1; pointer-events: none;
     }
 
-    /* --- RESPONSIVE & MOBILE FIX --- */
+    /* --- RESPONSIVE & MOBILE FIX (iPad Dahil) --- */
     @media (max-width: 1200px) {
+        /* iPAD FIX: Görseli sınırla ve ortala */
         .about-photo { 
-            width: 100%; height: auto; aspect-ratio: 1/1; 
+            width: 100%; 
+            max-width: 500px; /* iPad'de devasa olmasın */
+            height: auto; aspect-ratio: 1/1; 
             position: static; 
-            margin-left:0; margin-top:0;
+            margin-left: auto; margin-right: auto; margin-top:0;
             /* Mobilde 4 tarafa gölge */
             box-shadow: 0 0 20px rgba(0,0,0,0.08); 
         }
         
+        /* MOBİL DÜZEN: FOTOĞRAF ÜSTTE */
         .about-layout {
             display: flex;
             flex-direction: column;
@@ -392,10 +406,13 @@
         }
         .about-img-wrapper {
             order: -1; 
-            /* REVİZYON: Boşluk 5px'e düşürüldü (15px'in 1/3'ü) */
-            margin-bottom: 5px; 
+            margin-bottom: 5px; /* 5px boşluk */
+            text-align: center; /* iPad için ortala */
         }
         
+        /* iPAD FIX: Yazı boyutunu biraz büyüt */
+        .about-p { font-size: 17px; } 
+
         #hakkimda { padding-top: 20px; }
         #seanslar { padding-top: 20px; } 
 
