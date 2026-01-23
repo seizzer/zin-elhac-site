@@ -190,7 +190,7 @@
     .card-title { font-size: 24px; font-weight: 600; color: var(--c3); margin-bottom: 8px; }
     .card-desc { font-size: 14px; color: var(--inkSoft); line-height: 1.6; }
 
-    /* HAKKIMDA */
+    /* HAKKIMDA (BEN KİMİM) */
     #hakkimda { 
         background-color: var(--c4); 
         padding-top: 119px; 
@@ -216,7 +216,8 @@
         position: absolute;
         left: 61.5px; 
         top: -120px; 
-        box-shadow: 10px 10px 0px rgba(0,0,0,0.03);
+        box-shadow: 10px 10px 0px rgba(0,0,0,0.03); /* Masaüstü Gölge */
+        border-radius: 12px; /* REVİZYON: Köşeler yuvarlatıldı (Seans kartlarıyla aynı) */
     }
 
     /* MODAL */
@@ -341,7 +342,6 @@
     }
     textarea { resize: vertical; min-height: 80px; }
     
-    /* ÖZEL SEÇİM KUTUSU STİLİ */
     .custom-select-wrapper {
         position: relative; 
         width: 90px; 
@@ -377,17 +377,23 @@
 
     /* --- RESPONSIVE & MOBILE FIX --- */
     @media (max-width: 1200px) {
-        .about-photo { width: 100%; height: auto; aspect-ratio: 1/1; position: static; box-shadow: none; margin-left:0; margin-top:0;}
+        .about-photo { 
+            width: 100%; height: auto; aspect-ratio: 1/1; 
+            position: static; 
+            margin-left:0; margin-top:0;
+            /* REVİZYON: Mobilde 4 tarafa gölge */
+            box-shadow: 0 0 20px rgba(0,0,0,0.08); 
+        }
         
-        /* MOBİL DÜZEN DEĞİŞİKLİĞİ: FOTOĞRAF ÜSTTE */
         .about-layout {
             display: flex;
             flex-direction: column;
             min-height: auto;
         }
         .about-img-wrapper {
-            order: -1; /* Görseli başa al */
-            margin-bottom: 30px; /* Görsel ile yazı arasına boşluk */
+            order: -1; 
+            /* REVİZYON: Boşluk 30px'den 15px'e düşürüldü */
+            margin-bottom: 15px; 
         }
         
         #hakkimda { padding-top: 20px; }
