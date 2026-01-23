@@ -20,19 +20,22 @@
     :root{
       color-scheme: light; 
       
-      /* PALET */
+      /* --- PALET --- */
       --c1:#f5f0eb; --c2:#b36932; --c3:#626a48; --c4:#faf7f5; --c5:#e7dbd0; --c6:#c65c75;
       
-      /* SAMSUNG FIX: Renkleri "Resim" olarak tanımladık (Base64 SVG) */
-      /* Bu #FCFBF9 (Ana Krem) rengidir */
-      --bg-image-body: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIHZpZXdCb3g9IjAgMCAxIDEiPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmY2ZiZjkiLz48L3N2Zz4=");
+      /* --- ANTI-DARK MODE RESİMLERİ (BASE64) --- */
+      /* Ana Arka Plan Rengi (#FCFBF9) */
+      --bg-img-main: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='%23FCFBF9'/%3E%3C/svg%3E");
       
-      /* Bu #FAF7F5 (Alternatif) rengidir */
-      --bg-image-alt: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIHZpZXdCb3g9IjAgMCAxIDEiPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmYWY3ZjUiLz48L3N2Zz4=");
+      /* Hakkımda Bölümü Rengi (#FAF7F5) */
+      --bg-img-alt: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='%23FAF7F5'/%3E%3C/svg%3E");
 
-      /* DİNAMİK DEĞİŞKENLER (LIGHT) */
-      --bg-body: #FCFBF9; 
-      --bg-header: rgba(252, 251, 249, 0.95);
+      /* Header/Footer Hafif Opak Rengi (Benzer ton) */
+      --bg-img-header: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='%23FCFBF9' opacity='0.95'/%3E%3C/svg%3E");
+
+      /* --- DEĞİŞKENLER --- */
+      --bg-body: #FCFBF9;
+      --bg-header: #FCFBF9; 
       --bg-card: #FCFBF9;
       --bg-alt: #faf7f5;
       
@@ -45,10 +48,11 @@
       --side-margin: 20px;
     }
 
-    /* BİZİM DARK MODE (Aktifleşince resimleri kaldırıp koyu renk yapar) */
+    /* --- BİZİM DARK MODE (Aktifleşince resimleri iptal et) --- */
     body.dark-mode {
-      --bg-image-body: none; /* Resim iptal */
-      --bg-image-alt: none;  /* Resim iptal */
+      --bg-img-main: none;
+      --bg-img-alt: none;
+      --bg-img-header: none;
       
       --bg-body: #1a1b16;
       --bg-header: rgba(26, 27, 22, 0.95);
@@ -71,17 +75,19 @@
     body{
       margin:0; 
       color: var(--text-main);
+      /* Yazı rengini zorla koru */
+      -webkit-text-fill-color: var(--text-main);
+      
       font-family: "Noto Kufi Arabic", Arial, sans-serif;
       font-weight: 300; overflow-x:hidden;
       transition: background-color 0.4s ease, color 0.4s ease;
       
-      /* SAMSUNG FIX: Arka plan resim olarak yüklenir */
+      /* BODY BACKGROUND FIX */
       background-color: var(--bg-body);
-      background-image: var(--bg-image-body);
+      background-image: var(--bg-img-main);
       background-repeat: repeat;
       background-size: auto;
       
-      /* Zorla Dark Mode Engelleme */
       forced-color-adjust: none;
     }
     
@@ -89,13 +95,16 @@
 
     a{color:inherit; text-decoration:none;}
     button{font-family:inherit; color:inherit;}
-    ::selection{background: #c65c75; color: #fff;}
+    ::selection{background: #c65c75; color: #fff; -webkit-text-fill-color: #fff;}
 
     /* HEADER */
     header{
       position:fixed; inset:0 0 auto 0; height:var(--headerH); z-index:50;
-      /* Header'da şeffaflık gerektiği için renk kullanıyoruz, burası hafif kararabilir ama içerik bozulmaz */
+      
+      /* HEADER BACKGROUND FIX */
       background-color: var(--bg-header);
+      background-image: var(--bg-img-header) !important;
+      background-repeat: repeat;
       
       backdrop-filter: blur(12px);
       border-bottom:1px solid var(--border-color);
@@ -113,11 +122,11 @@
       user-select: none; pointer-events: none;
       margin-right: 20px; 
     }
-    .logo-top{font-weight:400; font-size:17px; letter-spacing:.02em; color:var(--text-main);}
+    .logo-top{font-weight:400; font-size:17px; letter-spacing:.02em; color:var(--text-main); -webkit-text-fill-color: var(--text-main);}
     .logo-sep{
       width:60px; height:1px; background: linear-gradient(90deg, transparent, var(--text-main), transparent); opacity: .6; margin: 2px 0;
     }
-    .logo-ar{font-weight:400; font-size:16px; color: color-mix(in srgb, var(--text-main) 80%, transparent);}
+    .logo-ar{font-weight:400; font-size:16px; color: color-mix(in srgb, var(--text-main) 80%, transparent); -webkit-text-fill-color: initial;}
 
     nav{
         display:flex; gap:32px; align-items:center; 
@@ -128,10 +137,11 @@
       position:relative; padding:10px 0; font-weight:400; 
       font-size: 17px; letter-spacing:.01em;
       color: var(--text-soft);
+      -webkit-text-fill-color: var(--text-soft);
       transition:color 180ms var(--ease);
       cursor: pointer;
     }
-    .nav-item:hover{color: var(--text-main);}
+    .nav-item:hover{color: var(--text-main); -webkit-text-fill-color: var(--text-main);}
 
     .theme-btn {
         background: none; border: none; cursor: pointer;
@@ -145,7 +155,11 @@
     /* FOOTER */
     footer{
       position:fixed; inset:auto 0 0 0; height:var(--footerH); z-index:50;
+      
+      /* FOOTER BACKGROUND FIX */
       background-color: var(--bg-header);
+      background-image: var(--bg-img-header) !important;
+      background-repeat: repeat;
       
       backdrop-filter: blur(16px); border-top:1px solid var(--border-color);
       transition: background 0.4s ease, border 0.4s ease;
@@ -163,7 +177,7 @@
     .icon-btn{width:20px; height:20px; color:var(--text-main); opacity:.8; transition:opacity .2s; display: block;}
     .icon-btn:hover{opacity:1;}
     .icon-btn svg { width: 100%; height: 100%; fill: currentColor; }
-    .footer-text { font-size: 11px; color: var(--text-soft); letter-spacing: 0.05em; }
+    .footer-text { font-size: 11px; color: var(--text-soft); letter-spacing: 0.05em; -webkit-text-fill-color: var(--text-soft); }
     
     main{padding-top:0; padding-bottom:var(--footerH);}
 
@@ -178,6 +192,7 @@
     .section-head{margin-bottom: 30px; text-align: right;}
     .section-head h2{
         font-size: 36px; font-weight: 400; margin: 0; color: var(--text-main);
+        -webkit-text-fill-color: var(--text-main);
         padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); display: inline-block;
         margin-right: 4px; 
         border-color: var(--border-color);
@@ -209,6 +224,7 @@
     .motto-text {
         font-size: clamp(24px, 4vw, 42px); font-weight: 600; line-height: 1.4;
         color: var(--c3);
+        -webkit-text-fill-color: var(--c3);
         text-shadow: 0 2px 10px rgba(255,255,255,0.5);
     }
     .scroll-btn {
@@ -217,13 +233,13 @@
         font-size: 16px; background: rgba(255,255,255,0.3); backdrop-filter: blur(4px);
         border-radius: 50px; cursor: pointer; transition: all 0.3s ease;
     }
-    .scroll-btn:hover { background: var(--c3); color: #fff; }
+    .scroll-btn:hover { background: var(--c3); color: #fff; -webkit-text-fill-color: #fff; }
 
     /* SEANSLAR */
     #seanslar { 
         background-color: var(--bg-body);
-        /* FIX: Resim Hack */
-        background-image: var(--bg-image-body);
+        /* FIX: Main Color Image */
+        background-image: var(--bg-img-main);
         
         padding-top: 60px;
         padding-bottom: 54px;
@@ -237,8 +253,7 @@
     .session-card {
         flex: 0 1 450px;
         background-color: var(--bg-card);
-        /* FIX: Resim Hack */
-        background-image: var(--bg-image-body);
+        background-image: var(--bg-img-main);
         
         border: 1px solid var(--border-color);
         border-radius: 12px; overflow: hidden;
@@ -254,14 +269,14 @@
     #img-s1 { background-image: url('seans 1.jpg'); }
     #img-s2 { background-image: url('seans 2.jpg'); }
     .card-meta { padding: 24px; text-align: center; }
-    .card-title { font-size: 24px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; }
-    .card-desc { font-size: 14px; color: var(--text-soft); line-height: 1.6; }
+    .card-title { font-size: 24px; font-weight: 600; color: var(--text-main); -webkit-text-fill-color: var(--text-main); margin-bottom: 8px; }
+    .card-desc { font-size: 14px; color: var(--text-soft); -webkit-text-fill-color: var(--text-soft); line-height: 1.6; }
 
     /* HAKKIMDA */
     #hakkimda { 
         background-color: var(--bg-alt); 
-        /* FIX: Resim Hack (Alternatif Renk) */
-        background-image: var(--bg-image-alt);
+        /* FIX: Alt Color Image (Daha Koyu Olan) */
+        background-image: var(--bg-img-alt);
         
         padding-top: 119px; 
         min-height: 85vh; 
@@ -277,7 +292,7 @@
         direction: rtl; text-align: right; padding-top: 40px;
         max-width: 550px;
     }
-    .about-p { margin-bottom: 20px; font-size: 16px; line-height: 1.9; color: var(--text-soft); }
+    .about-p { margin-bottom: 20px; font-size: 16px; line-height: 1.9; color: var(--text-soft); -webkit-text-fill-color: var(--text-soft); }
     
     .about-img-wrapper { position: relative; height: 100%; width: 100%; }
     
@@ -305,8 +320,7 @@
     .modal-card{
         width: min(900px, 100%); 
         background-color: var(--bg-card); 
-        /* FIX: Resim Hack */
-        background-image: var(--bg-image-body);
+        background-image: var(--bg-img-main);
         
         border-radius: 8px; 
         box-shadow: 0 20px 50px rgba(0,0,0,0.3); 
@@ -342,8 +356,7 @@
     .info-card { 
         width: min(600px, 90%); 
         background-color: var(--bg-card); 
-        /* FIX: Resim Hack */
-        background-image: var(--bg-image-body);
+        background-image: var(--bg-img-main);
         
         border-radius: 12px; 
         display: flex; flex-direction: column;
@@ -366,8 +379,8 @@
         padding-bottom: 80px; 
         scrollbar-width: thin; scrollbar-color: var(--c2) var(--border-color);
     }
-    .info-title { font-size: 24px; color: var(--text-main); margin-bottom: 20px; font-weight: 600; text-align: center;}
-    .info-text { font-size: 15px; color: var(--text-soft); line-height: 1.8; text-align: justify; direction: rtl; }
+    .info-title { font-size: 24px; color: var(--text-main); -webkit-text-fill-color: var(--text-main); margin-bottom: 20px; font-weight: 600; text-align: center;}
+    .info-text { font-size: 15px; color: var(--text-soft); -webkit-text-fill-color: var(--text-soft); line-height: 1.8; text-align: justify; direction: rtl; }
 
     .info-cta-btn {
         position: absolute;
@@ -397,17 +410,15 @@
     /* FORM STYLES */
     .selection-area { 
         background-color: var(--bg-alt); 
-        /* FIX: Resim Hack */
-        background-image: var(--bg-image-alt);
+        background-image: var(--bg-img-alt);
         
         padding: 20px; border-radius: 8px; margin: 20px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; 
     }
-    .sel-group-title { font-size: 14px; color: var(--text-main); margin-bottom: 10px; font-weight: 600; }
+    .sel-group-title { font-size: 14px; color: var(--text-main); -webkit-text-fill-color: var(--text-main); margin-bottom: 10px; font-weight: 600; }
     .check-item { 
         display: flex; align-items: center; gap: 10px; padding: 12px; 
         background-color: var(--bg-card); 
-        /* FIX: Resim Hack */
-        background-image: var(--bg-image-body);
+        background-image: var(--bg-img-main);
         
         border: 1px solid var(--border-color); 
         border-radius: 6px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; 
@@ -420,9 +431,9 @@
 
     .qa-area { margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 20px; }
     .qa-group { margin-bottom: 20px; }
-    .qa-label { font-weight: 500; font-size: 14px; color: var(--text-main); margin-bottom: 10px; display: block; }
+    .qa-label { font-weight: 500; font-size: 14px; color: var(--text-main); -webkit-text-fill-color: var(--text-main); margin-bottom: 10px; display: block; }
     .qa-radio-group { display: flex; flex-direction: column; gap: 8px; }
-    .qa-radio-label { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: var(--text-soft); }
+    .qa-radio-label { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: var(--text-soft); -webkit-text-fill-color: var(--text-soft); }
     .qa-radio-label input { width: 16px; height: 16px; accent-color: var(--c2); margin: 0; }
     .char-count { font-size: 11px; color: #999; text-align: left; margin-top: 4px; direction: ltr; }
 
@@ -436,13 +447,13 @@
         border: 1px solid #ddd; border-radius: 4px; margin-bottom: 6px;
         font-family: inherit; text-align: right; font-size: 14px;
         box-sizing: border-box; 
-        background: #fff; color: #333; 
+        background: #fff; color: #333; -webkit-text-fill-color: #333; /* Input içi hep siyah kalsın */
     }
     textarea { 
         width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 6px;
         font-family: inherit; text-align: right; font-size: 14px;
         resize: vertical; min-height: 80px; 
-        background: #fff; color: #333;
+        background: #fff; color: #333; -webkit-text-fill-color: #333;
     }
     
     .custom-select-wrapper {
@@ -465,6 +476,7 @@
         pointer-events: none; 
         z-index: 1;
         color: #333;
+        -webkit-text-fill-color: #333;
     }
     #phonePrefix {
         position: absolute; inset: 0;
@@ -744,7 +756,7 @@
   </footer>
 
   <script>
-    // --- DARK MODE LOGIC (Dinamik Meta Tag) ---
+    // --- DARK MODE LOGIC (Dinamik Meta Tag & Image Reset) ---
     function toggleTheme() {
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
