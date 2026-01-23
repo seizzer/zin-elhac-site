@@ -8,7 +8,7 @@
   
   <meta name="color-scheme" content="light only">
   <meta name="supported-color-schemes" content="light">
-  <meta name="theme-color" content="#FCFBF9">
+  <meta name="theme-color" content="#FCFBF9" id="meta-theme-color">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,14 +23,21 @@
       /* PALET */
       --c1:#f5f0eb; --c2:#b36932; --c3:#626a48; --c4:#faf7f5; --c5:#e7dbd0; --c6:#c65c75;
       
-      /* LIGHT MODE (Varsayılan) */
-      --bg-body: #FCFBF9;
-      --bg-header: rgba(252, 251, 249, 0.95); /* Biraz daha opak yapıldı */
+      /* SAMSUNG FIX: Renkleri "Resim" olarak tanımladık (Base64 SVG) */
+      /* Bu #FCFBF9 (Ana Krem) rengidir */
+      --bg-image-body: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIHZpZXdCb3g9IjAgMCAxIDEiPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmY2ZiZjkiLz48L3N2Zz4=");
+      
+      /* Bu #FAF7F5 (Alternatif) rengidir */
+      --bg-image-alt: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIHZpZXdCb3g9IjAgMCAxIDEiPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmYWY3ZjUiLz48L3N2Zz4=");
+
+      /* DİNAMİK DEĞİŞKENLER (LIGHT) */
+      --bg-body: #FCFBF9; 
+      --bg-header: rgba(252, 251, 249, 0.95);
       --bg-card: #FCFBF9;
       --bg-alt: #faf7f5;
       
       --text-main: #626a48;
-      --text-soft: #858b73; /* Mix yerine hex kullanıldı garanti olsun diye */
+      --text-soft: #858b73;
       --border-color: rgba(0,0,0,0.08);
       
       --headerH:70px; --footerH:80px;
@@ -38,8 +45,11 @@
       --side-margin: 20px;
     }
 
-    /* DARK MODE (Sadece .dark-mode sınıfı varsa) */
+    /* BİZİM DARK MODE (Aktifleşince resimleri kaldırıp koyu renk yapar) */
     body.dark-mode {
+      --bg-image-body: none; /* Resim iptal */
+      --bg-image-alt: none;  /* Resim iptal */
+      
       --bg-body: #1a1b16;
       --bg-header: rgba(26, 27, 22, 0.95);
       --bg-card: #23251f;
@@ -63,12 +73,16 @@
       color: var(--text-main);
       font-family: "Noto Kufi Arabic", Arial, sans-serif;
       font-weight: 300; overflow-x:hidden;
-      transition: background 0.4s ease, color 0.4s ease;
+      transition: background-color 0.4s ease, color 0.4s ease;
       
-      /* SAMSUNG INTERNET FIX: Background Image Hilesi */
-      background-color: var(--bg-body) !important;
-      background-image: linear-gradient(var(--bg-body), var(--bg-body)) !important;
-      background-size: cover;
+      /* SAMSUNG FIX: Arka plan resim olarak yüklenir */
+      background-color: var(--bg-body);
+      background-image: var(--bg-image-body);
+      background-repeat: repeat;
+      background-size: auto;
+      
+      /* Zorla Dark Mode Engelleme */
+      forced-color-adjust: none;
     }
     
     body.modal-open { overflow: hidden; }
@@ -80,9 +94,8 @@
     /* HEADER */
     header{
       position:fixed; inset:0 0 auto 0; height:var(--headerH); z-index:50;
-      /* FIX: Gradient Hack */
-      background-color: var(--bg-header) !important;
-      background-image: linear-gradient(var(--bg-header), var(--bg-header)) !important;
+      /* Header'da şeffaflık gerektiği için renk kullanıyoruz, burası hafif kararabilir ama içerik bozulmaz */
+      background-color: var(--bg-header);
       
       backdrop-filter: blur(12px);
       border-bottom:1px solid var(--border-color);
@@ -132,9 +145,7 @@
     /* FOOTER */
     footer{
       position:fixed; inset:auto 0 0 0; height:var(--footerH); z-index:50;
-      /* FIX: Gradient Hack */
-      background-color: var(--bg-header) !important;
-      background-image: linear-gradient(var(--bg-header), var(--bg-header)) !important;
+      background-color: var(--bg-header);
       
       backdrop-filter: blur(16px); border-top:1px solid var(--border-color);
       transition: background 0.4s ease, border 0.4s ease;
@@ -175,7 +186,7 @@
     /* HERO */
     #hero {
         padding: 0; align-items: center; justify-content: center; overflow: hidden;
-        background-color: var(--c1); /* Hero background resim olduğu için burada hileye gerek yok */
+        background-color: var(--c1); 
         height: 100vh;
         margin-bottom: 0;
         padding-bottom: 11px;
@@ -210,14 +221,14 @@
 
     /* SEANSLAR */
     #seanslar { 
-        /* FIX: Gradient Hack */
-        background-color: var(--bg-body) !important;
-        background-image: linear-gradient(var(--bg-body), var(--bg-body)) !important;
+        background-color: var(--bg-body);
+        /* FIX: Resim Hack */
+        background-image: var(--bg-image-body);
         
         padding-top: 60px;
         padding-bottom: 54px;
         min-height: 80vh; 
-        transition: background 0.4s ease;
+        transition: background-color 0.4s ease;
     }
     .sessions-grid { 
         display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; 
@@ -225,13 +236,13 @@
     }
     .session-card {
         flex: 0 1 450px;
-        /* FIX: Gradient Hack */
-        background-color: var(--bg-card) !important;
-        background-image: linear-gradient(var(--bg-card), var(--bg-card)) !important;
+        background-color: var(--bg-card);
+        /* FIX: Resim Hack */
+        background-image: var(--bg-image-body);
         
         border: 1px solid var(--border-color);
         border-radius: 12px; overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.4s ease, border 0.4s ease;
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease, border 0.4s ease;
         cursor: pointer; position: relative;
     }
     .session-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(98, 106, 72, 0.15); }
@@ -248,14 +259,14 @@
 
     /* HAKKIMDA */
     #hakkimda { 
-        /* FIX: Gradient Hack */
-        background-color: var(--bg-alt) !important;
-        background-image: linear-gradient(var(--bg-alt), var(--bg-alt)) !important;
+        background-color: var(--bg-alt); 
+        /* FIX: Resim Hack (Alternatif Renk) */
+        background-image: var(--bg-image-alt);
         
         padding-top: 119px; 
         min-height: 85vh; 
         padding-bottom: 40px; 
-        transition: background 0.4s ease;
+        transition: background-color 0.4s ease;
     }
     .about-layout {
         display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
@@ -293,9 +304,9 @@
     
     .modal-card{
         width: min(900px, 100%); 
-        /* FIX: Gradient Hack */
-        background-color: var(--bg-card) !important;
-        background-image: linear-gradient(var(--bg-card), var(--bg-card)) !important;
+        background-color: var(--bg-card); 
+        /* FIX: Resim Hack */
+        background-image: var(--bg-image-body);
         
         border-radius: 8px; 
         box-shadow: 0 20px 50px rgba(0,0,0,0.3); 
@@ -330,9 +341,9 @@
     
     .info-card { 
         width: min(600px, 90%); 
-        /* FIX: Gradient Hack */
-        background-color: var(--bg-card) !important;
-        background-image: linear-gradient(var(--bg-card), var(--bg-card)) !important;
+        background-color: var(--bg-card); 
+        /* FIX: Resim Hack */
+        background-image: var(--bg-image-body);
         
         border-radius: 12px; 
         display: flex; flex-direction: column;
@@ -385,16 +396,20 @@
 
     /* FORM STYLES */
     .selection-area { 
-        /* FIX: Gradient Hack */
-        background-color: var(--bg-alt) !important;
-        background-image: linear-gradient(var(--bg-alt), var(--bg-alt)) !important;
+        background-color: var(--bg-alt); 
+        /* FIX: Resim Hack */
+        background-image: var(--bg-image-alt);
         
         padding: 20px; border-radius: 8px; margin: 20px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; 
     }
     .sel-group-title { font-size: 14px; color: var(--text-main); margin-bottom: 10px; font-weight: 600; }
     .check-item { 
         display: flex; align-items: center; gap: 10px; padding: 12px; 
-        background: var(--bg-card); border: 1px solid var(--border-color); 
+        background-color: var(--bg-card); 
+        /* FIX: Resim Hack */
+        background-image: var(--bg-image-body);
+        
+        border: 1px solid var(--border-color); 
         border-radius: 6px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; 
     }
     .check-item:hover { border-color: var(--c2); }
@@ -739,10 +754,8 @@
         document.getElementById('icon-sun').style.display = isDark ? 'block' : 'none';
 
         // Meta Rengini Güncelle
-        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-        if(metaThemeColor) {
-            metaThemeColor.setAttribute('content', isDark ? '#1a1b16' : '#FCFBF9');
-        }
+        const metaThemeColor = document.getElementById('meta-theme-color');
+        metaThemeColor.setAttribute('content', isDark ? '#1a1b16' : '#FCFBF9');
     }
 
     // --- JS ---
