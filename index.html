@@ -20,22 +20,20 @@
     :root{
       color-scheme: light; 
       
-      /* --- PALET --- */
-      --c1:#f5f0eb; --c2:#b36932; --c3:#626a48; --c4:#faf7f5; --c5:#e7dbd0; --c6:#c65c75;
-      
       /* --- RESİM HİLESİ (BACKGROUND HACK) --- */
       --bg-img-main: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Crect width='10' height='10' fill='%23FCFBF9'/%3E%3C/svg%3E");
       --bg-img-alt: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Crect width='10' height='10' fill='%23FAF7F5'/%3E%3C/svg%3E");
       --bg-img-header: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='%23FCFBF9' opacity='0.95'/%3E%3C/svg%3E");
 
-      /* --- LIGHT MODE DEĞİŞKENLERİ --- */
+      /* --- DEĞİŞKENLER --- */
       --bg-body: #FCFBF9;
       --bg-header: #FCFBF9; 
       --bg-card: #FCFBF9;
       --bg-alt: #faf7f5;
       
-      --text-main: #626a48;
-      --text-soft: #858b73;
+      /* RENKLERİ RGBA (0.99 OPACITY) İLE TANIMLIYORUZ Kİ TARAYICI SOLID SANNIP ÇEVİRMESİN */
+      --text-main: rgba(98, 106, 72, 0.99); /* #626a48 */
+      --text-soft: rgba(133, 139, 115, 0.99); /* #858b73 */
       --border-color: rgba(0,0,0,0.08);
       
       --headerH:70px; --footerH:80px;
@@ -43,9 +41,8 @@
       --side-margin: 20px;
     }
 
-    /* --- DARK MODE DEĞİŞKENLERİ --- */
+    /* --- DARK MODE --- */
     body.dark-mode {
-      /* Dark modda resim hilelerini kapat */
       --bg-img-main: none !important;
       --bg-img-alt: none !important;
       --bg-img-header: none !important;
@@ -70,51 +67,70 @@
     
     body{
       margin:0; 
-      color: var(--text-main);
       font-family: "Noto Kufi Arabic", Arial, sans-serif;
       font-weight: 300; overflow-x:hidden;
       transition: background-color 0.4s ease, color 0.4s ease;
       
-      /* TEMEL AYARLAR */
       background-color: var(--bg-body);
       background-image: var(--bg-img-main);
       background-repeat: repeat;
       
-      /* Tarayıcı Renk Müdahalesini Engelle */
+      color: var(--text-main);
       forced-color-adjust: none;
     }
-    
-    /* --- SAMSUNG TEXT FIX: Metinlere gölge ekleyerek "grafik" gibi algılanmasını sağla --- */
-    h1, h2, h3, h4, h5, p, span, div, a, label, .logo-top, .card-title, .card-desc {
-        text-shadow: 0 0 0 rgba(0,0,0,0.01); /* Görünmez gölge = Renk koruması */
+
+    /* --- SAMSUNG TABLET TEXT FIX (THE GHOST TEXT HACK) --- */
+    /* Light Mode'da (Normalde) Yazı Rengi Yerine Gölge Kullan */
+    body:not(.dark-mode) h1, 
+    body:not(.dark-mode) h2, 
+    body:not(.dark-mode) h3, 
+    body:not(.dark-mode) p, 
+    body:not(.dark-mode) span, 
+    body:not(.dark-mode) div, 
+    body:not(.dark-mode) label, 
+    body:not(.dark-mode) a,
+    body:not(.dark-mode) .nav-item {
+        color: transparent; /* Yazının kendisini gizle */
+        text-shadow: 0 0 0 var(--text-main); /* Yazı şeklinde gölge at (Tarayıcı gölgeyi çevirmez) */
     }
 
-    /* --- IPHONE BUTTON FIX: Buton yazılarını manuel zorla --- */
-    /* "Twasoli Ma'i" ve "Gonder" butonları */
+    /* Soft textler için özel gölge */
+    body:not(.dark-mode) .about-p, 
+    body:not(.dark-mode) .card-desc,
+    body:not(.dark-mode) .footer-text,
+    body:not(.dark-mode) .info-text {
+        text-shadow: 0 0 0 var(--text-soft);
+    }
+
+    /* --- IPHONE BUTTON FIX --- */
+    /* Buton yazılarını beyaz kalmaya zorla */
     .btn-submit, .info-cta-btn {
         color: #ffffff !important;
+        text-shadow: none !important; /* Butonda gölge hilesine gerek yok, beyaz kalmalı */
         -webkit-text-fill-color: #ffffff !important;
     }
     
-    /* Hero alanındaki Scroll butonu (Light modda yeşil, Dark modda krem) */
+    /* Scroll Button */
     body:not(.dark-mode) .scroll-btn {
-        color: #626a48 !important;
-        -webkit-text-fill-color: #626a48 !important;
+        color: transparent;
+        text-shadow: 0 0 0 #626a48; /* Yeşil */
     }
-    body.dark-mode .scroll-btn {
-        color: #e7dbd0 !important;
-        -webkit-text-fill-color: #e7dbd0 !important;
+    body:not(.dark-mode) .scroll-btn:hover {
+        color: #fff !important;
+        text-shadow: none;
+        background: var(--c3);
     }
-    .scroll-btn:hover {
-        color: #ffffff !important;
-        -webkit-text-fill-color: #ffffff !important;
+    
+    /* Hero Motto Text */
+    body:not(.dark-mode) .motto-text {
+        text-shadow: 0 2px 10px rgba(255,255,255,0.5), 0 0 0 var(--c3); /* Hem efekt hem renk gölgesi */
     }
 
     body.modal-open { overflow: hidden; }
 
     a{color:inherit; text-decoration:none;}
     button{font-family:inherit; color:inherit;}
-    ::selection{background: #c65c75; color: #fff;}
+    ::selection{background: #c65c75; color: #fff; text-shadow: none;}
 
     /* HEADER */
     header{
@@ -139,11 +155,11 @@
       user-select: none; pointer-events: none;
       margin-right: 20px; 
     }
-    .logo-top{font-weight:400; font-size:17px; letter-spacing:.02em; color:var(--text-main);}
+    .logo-top{font-weight:400; font-size:17px; letter-spacing:.02em;}
     .logo-sep{
       width:60px; height:1px; background: linear-gradient(90deg, transparent, var(--text-main), transparent); opacity: .6; margin: 2px 0;
     }
-    .logo-ar{font-weight:400; font-size:16px; color: color-mix(in srgb, var(--text-main) 80%, transparent);}
+    .logo-ar{font-weight:400; font-size:16px;}
 
     nav{
         display:flex; gap:32px; align-items:center; 
@@ -153,15 +169,14 @@
     .nav-item{
       position:relative; padding:10px 0; font-weight:400; 
       font-size: 17px; letter-spacing:.01em;
-      color: var(--text-soft);
       transition:color 180ms var(--ease);
       cursor: pointer;
     }
-    .nav-item:hover{color: var(--text-main);}
-
+    
     .theme-btn {
         background: none; border: none; cursor: pointer;
         color: var(--text-main); opacity: 0.8;
+        text-shadow: none !important; /* İkonlarda gölge hilesi olmasın */
         padding: 5px; display: flex; align-items: center; justify-content: center;
         transition: opacity 0.2s, transform 0.2s;
     }
@@ -188,10 +203,10 @@
         background: linear-gradient(90deg, transparent, var(--text-main), transparent); 
         opacity: .6; margin: 2px 0; 
     }
-    .icon-btn{width:20px; height:20px; color:var(--text-main); opacity:.8; transition:opacity .2s; display: block;}
+    .icon-btn{width:20px; height:20px; color:var(--text-main); opacity:.8; transition:opacity .2s; display: block; text-shadow: none !important;}
     .icon-btn:hover{opacity:1;}
     .icon-btn svg { width: 100%; height: 100%; fill: currentColor; }
-    .footer-text { font-size: 11px; color: var(--text-soft); letter-spacing: 0.05em; }
+    .footer-text { font-size: 11px; letter-spacing: 0.05em; }
     
     main{padding-top:0; padding-bottom:var(--footerH);}
 
@@ -205,7 +220,7 @@
 
     .section-head{margin-bottom: 30px; text-align: right;}
     .section-head h2{
-        font-size: 36px; font-weight: 400; margin: 0; color: var(--text-main);
+        font-size: 36px; font-weight: 400; margin: 0;
         padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); display: inline-block;
         margin-right: 4px; 
         border-color: var(--border-color);
@@ -234,18 +249,15 @@
         position: relative; z-index: 2; text-align: center; color: #fff;
         max-width: 800px; padding: 20px;
     }
-    .motto-text {
-        font-size: clamp(24px, 4vw, 42px); font-weight: 600; line-height: 1.4;
-        color: var(--c3);
-        text-shadow: 0 2px 10px rgba(255,255,255,0.5);
-    }
+    /* Hero içindeki yazıların text-shadow hilesine ihtiyacı yok, zaten beyaz */
+    .hero-content * { color: #fff !important; text-shadow: 0 2px 10px rgba(255,255,255,0.5) !important; }
+
     .scroll-btn {
         position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%); z-index: 10;
-        padding: 14px 32px; border: 1px solid var(--c3); color: var(--c3);
+        padding: 14px 32px; border: 1px solid var(--c3);
         font-size: 16px; background: rgba(255,255,255,0.3); backdrop-filter: blur(4px);
         border-radius: 50px; cursor: pointer; transition: all 0.3s ease;
     }
-    .scroll-btn:hover { background: var(--c3); color: #fff !important; }
 
     /* SEANSLAR */
     #seanslar { 
@@ -280,8 +292,8 @@
     #img-s1 { background-image: url('seans 1.jpg'); }
     #img-s2 { background-image: url('seans 2.jpg'); }
     .card-meta { padding: 24px; text-align: center; }
-    .card-title { font-size: 24px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; }
-    .card-desc { font-size: 14px; color: var(--text-soft); line-height: 1.6; }
+    .card-title { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+    .card-desc { font-size: 14px; line-height: 1.6; }
 
     /* HAKKIMDA */
     #hakkimda { 
@@ -302,7 +314,7 @@
         direction: rtl; text-align: right; padding-top: 40px;
         max-width: 550px;
     }
-    .about-p { margin-bottom: 20px; font-size: 16px; line-height: 1.9; color: var(--text-soft); }
+    .about-p { margin-bottom: 20px; font-size: 16px; line-height: 1.9; }
     
     .about-img-wrapper { position: relative; height: 100%; width: 100%; }
     
@@ -381,6 +393,7 @@
     .info-close { 
         position: absolute; top: 15px; right: 15px; z-index: 20; 
         background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-main); padding: 5px; 
+        text-shadow: none !important; /* İkon, gölgeye gerek yok */
     }
     
     .info-scroll-area {
@@ -389,13 +402,13 @@
         padding-bottom: 80px; 
         scrollbar-width: thin; scrollbar-color: var(--c2) var(--border-color);
     }
-    .info-title { font-size: 24px; color: var(--text-main); margin-bottom: 20px; font-weight: 600; text-align: center;}
-    .info-text { font-size: 15px; color: var(--text-soft); line-height: 1.8; text-align: justify; direction: rtl; }
+    .info-title { font-size: 24px; margin-bottom: 20px; font-weight: 600; text-align: center;}
+    .info-text { font-size: 15px; line-height: 1.8; text-align: justify; direction: rtl; }
 
     .info-cta-btn {
         position: absolute;
         bottom: 20px; right: 20px; z-index: 10;
-        background-color: var(--c3); color: #fff;
+        background-color: var(--c3); 
         border: none; padding: 12px 24px; border-radius: 50px;
         font-family: inherit; font-size: 14px; font-weight: 500;
         cursor: pointer; box-shadow: 0 4px 15px rgba(98, 106, 72, 0.3);
@@ -414,6 +427,7 @@
         pointer-events: none; text-align: center;
         width: max-content; max-width: 90%;
         direction: rtl;
+        text-shadow: none !important;
     }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
@@ -424,7 +438,7 @@
         
         padding: 20px; border-radius: 8px; margin: 20px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; 
     }
-    .sel-group-title { font-size: 14px; color: var(--text-main); margin-bottom: 10px; font-weight: 600; }
+    .sel-group-title { font-size: 14px; margin-bottom: 10px; font-weight: 600; }
     .check-item { 
         display: flex; align-items: center; gap: 10px; padding: 12px; 
         background-color: var(--bg-card); 
@@ -436,16 +450,16 @@
     .check-item:hover { border-color: var(--c2); }
     .check-item input { width: 18px; height: 18px; accent-color: var(--c2); margin: 0; flex-shrink: 0; }
     .hidden { display: none; }
-    .price-tag { font-weight: bold; color: var(--c2); margin-right: auto; font-size: 14px; }
-    .btn-submit { width: 100%; padding: 16px; background: var(--c3); color: #fff; border: none; font-size: 16px; cursor: pointer; margin-top: 20px; border-radius: 4px; }
+    .price-tag { font-weight: bold; color: var(--c2); margin-right: auto; font-size: 14px; text-shadow: none !important; }
+    .btn-submit { width: 100%; padding: 16px; background: var(--c3); border: none; font-size: 16px; cursor: pointer; margin-top: 20px; border-radius: 4px; }
 
     .qa-area { margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 20px; }
     .qa-group { margin-bottom: 20px; }
-    .qa-label { font-weight: 500; font-size: 14px; color: var(--text-main); margin-bottom: 10px; display: block; }
+    .qa-label { font-weight: 500; font-size: 14px; margin-bottom: 10px; display: block; }
     .qa-radio-group { display: flex; flex-direction: column; gap: 8px; }
-    .qa-radio-label { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: var(--text-soft); }
+    .qa-radio-label { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
     .qa-radio-label input { width: 16px; height: 16px; accent-color: var(--c2); margin: 0; }
-    .char-count { font-size: 11px; color: #999; text-align: left; margin-top: 4px; direction: ltr; }
+    .char-count { font-size: 11px; color: #999 !important; text-shadow: none !important; text-align: left; margin-top: 4px; direction: ltr; }
 
     .consent-box { margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--border-color); }
     .consent-box .check-item { margin-bottom: 10px; font-size: 13px; padding: 10px; border: 1px solid transparent; background: transparent; }
@@ -457,13 +471,13 @@
         border: 1px solid #ddd; border-radius: 4px; margin-bottom: 6px;
         font-family: inherit; text-align: right; font-size: 14px;
         box-sizing: border-box; 
-        background: #fff; color: #333; -webkit-text-fill-color: #333; /* Input içi hep siyah */
+        background: #fff; color: #333 !important; text-shadow: none !important; /* Input içi hep temiz siyah */
     }
     textarea { 
         width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 6px;
         font-family: inherit; text-align: right; font-size: 14px;
         resize: vertical; min-height: 80px; 
-        background: #fff; color: #333; -webkit-text-fill-color: #333;
+        background: #fff; color: #333 !important; text-shadow: none !important;
     }
     
     .custom-select-wrapper {
@@ -485,7 +499,7 @@
         direction: ltr; 
         pointer-events: none; 
         z-index: 1;
-        color: #333; -webkit-text-fill-color: #333;
+        color: #333 !important; text-shadow: none !important;
     }
     #phonePrefix {
         position: absolute; inset: 0;
@@ -765,7 +779,7 @@
   </footer>
 
   <script>
-    // --- DARK MODE LOGIC (Dinamik Meta Tag) ---
+    // --- DARK MODE LOGIC ---
     function toggleTheme() {
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
