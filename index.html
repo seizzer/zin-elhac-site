@@ -38,6 +38,7 @@
       font-weight: 300; overflow-x:hidden;
     }
     
+    /* Modal açıkken arka planı kilitle */
     body.modal-open { overflow: hidden; }
 
     a{color:inherit; text-decoration:none;}
@@ -89,7 +90,7 @@
     /* FOOTER */
     footer{
       position:fixed; inset:auto 0 0 0; height:var(--footerH); z-index:50;
-      background: color-mix(in srgb, var(--bg-cream) 95%, transparent); /* Arka plan biraz daha opak */
+      background: color-mix(in srgb, var(--bg-cream) 95%, transparent);
       backdrop-filter: blur(16px); border-top:1px solid rgba(0,0,0,0.03);
     }
     .footer-inner{
@@ -109,15 +110,12 @@
     
     main{padding-top:0; padding-bottom:var(--footerH);}
 
-    /* --- SECTION GENEL AYARLARI (KIRMIZI/MAVİ KUTU ÇÖZÜMÜ) --- */
+    /* SECTION GENEL AYARLARI */
     section {
       position: relative;
       min-height: auto; 
       padding: 40px var(--side-margin);
       display: flex; flex-direction: column; justify-content: center;
-      
-      /* KRİTİK AYAR: Menüden tıklayınca Header (70px) kadar pay bırakır. 
-         Böylece üstteki section görünmez. */
       scroll-margin-top: 70px; 
     }
 
@@ -132,8 +130,9 @@
     #hero {
         padding: 0; align-items: center; justify-content: center; overflow: hidden;
         background-color: var(--c1);
-        height: 100vh; /* Tam Ekran */
+        height: 100vh;
         margin-bottom: 0;
+        padding-bottom: 11px;
     }
     .hero-bg {
         position: absolute; inset: 0; 
@@ -167,8 +166,7 @@
     #seanslar { 
         background-color: var(--bg-cream); 
         padding-top: 60px;
-        padding-bottom: 60px; /* Rahat bir boşluk */
-        /* Ekranın en az %80'ini kaplasın ki footer hemen yapışmasın */
+        padding-bottom: 54px;
         min-height: 80vh; 
     }
     .sessions-grid { 
@@ -198,16 +196,13 @@
     /* HAKKIMDA (BEN KİMİM) SECTION */
     #hakkimda { 
         background-color: var(--c4); 
-        /* MASAÜSTÜ İÇİN AYAR: 119px Padding */
         padding-top: 119px; 
-        /* Aşağıda boşluk kalmasın istedin, bu yüzden min-height'i içerik kadar yapıyoruz */
-        min-height: 85vh; /* Footer ile birleşince tam ekran gibi dursun */
+        min-height: 85vh; 
         padding-bottom: 40px; 
     }
     .about-layout {
         display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
         position: relative; 
-        /* İçerik kadar yükseklik */
         min-height: 600px; 
     }
     .about-text {
@@ -218,7 +213,6 @@
     
     .about-img-wrapper { position: relative; height: 100%; width: 100%; }
     
-    /* FOTOĞRAF KONUMU (Masaüstü) */
     .about-photo {
         width: 600px; height: 600px;
         background-image: url('zin.jpg'); background-size: cover; background-position: center;
@@ -307,16 +301,12 @@
 
     /* --- RESPONSIVE & MOBILE FIX --- */
     @media (max-width: 1200px) {
-        /* FOTOĞRAF AYARI: Mobilde "position: absolute" olmasın, normal akışta dursun */
-        .about-photo { 
-            width: 100%; height: auto; aspect-ratio: 1/1; 
-            position: static; box-shadow: none; margin-left:0; margin-top:0;
-        }
+        .about-photo { width: 100%; height: auto; aspect-ratio: 1/1; position: static; box-shadow: none; margin-left:0; margin-top:0;}
         .about-layout { grid-template-columns: 1fr; min-height: auto;}
         
-        /* MOBİLDEKİ SİYAH BOŞLUK ÇÖZÜMÜ */
-        /* Masaüstünde 119px olan boşluk, mobilde 20px'e düşüyor */
-        #hakkimda { padding-top: 20px; } 
+        /* MOBİL DÜZELTMELER */
+        #hakkimda { padding-top: 20px; } /* Ben Kimim üst boşluğu (Mobile: 20px) */
+        #seanslar { padding-top: 20px; } /* Seanslar üst boşluğu (Mobile: 20px - ARTIK EŞİT) */
 
         .sessions-grid { flex-direction: column; align-items: center; }
         .session-card { width: 100%; flex: auto; }
