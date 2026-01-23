@@ -21,8 +21,6 @@
       --inkSoft: color-mix(in srgb, var(--c3) 70%, transparent);
       --headerH:70px; --footerH:80px;
       --ease: cubic-bezier(.16,.92,.18,1); 
-      
-      /* Kenar Boşlukları: PC'de 275px */
       --side-margin: 20px;
     }
 
@@ -40,7 +38,7 @@
       font-weight: 300; overflow-x:hidden;
     }
     
-    /* İletişim kutusu açılınca arka planı kilitle */
+    /* Modal açıkken arka planı kilitle */
     body.modal-open { overflow: hidden; }
 
     a{color:inherit; text-decoration:none;}
@@ -61,12 +59,11 @@
       display:flex; align-items:center; justify-content:space-between;
     }
     
-    /* LOGO: Sola Alındı (RTL'de Flex-End Sol taraftır) */
+    /* LOGO: SOLA ALINDI (RTL'de SON eleman SOLDA durur) */
     .logo-block{
       display:flex; flex-direction:column; align-items:center; justify-content:center;
       gap:2px; line-height:1; text-align:center;
       user-select: none; pointer-events: none;
-      /* Solda duracağı için margin ayarı */
       margin-right: 20px; 
     }
     .logo-top{font-weight:400; font-size:17px; letter-spacing:.02em; color:var(--c3);}
@@ -75,10 +72,10 @@
     }
     .logo-ar{font-weight:400; font-size:16px; color: color-mix(in srgb, var(--c3) 80%, transparent);}
 
-    /* NAV: Sağa Alındı (RTL'de Flex-Start Sağ taraftır) */
+    /* NAV: SAĞA ALINDI (RTL'de İLK eleman SAĞDA durur) */
     nav{
         display:flex; gap:32px; align-items:center; 
-        justify-content:flex-start; /* SAĞA YASLA (RTL'de start=sağ) */
+        justify-content:flex-start; /* SAĞ */
         flex:1; 
     }
     .nav-item{
@@ -109,7 +106,7 @@
     
     main{padding-top:0; padding-bottom:var(--footerH);}
 
-    /* SECTION YAPISI & SCROLL HİZALAMASI */
+    /* SECTION GENEL AYARLARI */
     section{
       min-height: auto; 
       position: relative;
@@ -118,7 +115,7 @@
       scroll-margin-top: 80px; 
     }
 
-    .section-head{margin-bottom: 40px; text-align: right;}
+    .section-head{margin-bottom: 30px; text-align: right;}
     .section-head h2{
         font-size: 36px; font-weight: 400; margin: 0; color: var(--c3);
         padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); display: inline-block;
@@ -130,7 +127,9 @@
         padding: 0; align-items: center; justify-content: center; overflow: hidden;
         background-color: var(--c1);
         height: 100vh;
-        margin-bottom: 0;
+        /* REVİZYON: Alttan 11px kısaltma etkisi için margin/height ayarı */
+        /* Normalde 100vh tam ekrandır, padding ile içerik yukarı itilir */
+        padding-bottom: 11px; 
     }
     .hero-bg {
         position: absolute; inset: 0; 
@@ -162,14 +161,17 @@
     }
     .scroll-btn:hover { background: var(--c3); color: #fff; }
 
-    /* SEANSLAR - Padding Revize Edildi */
+    /* SEANSLAR */
     #seanslar { 
         background-color: var(--bg-cream); 
         padding-top: 60px;
-        /* REVİZYON: Alttan 11px kısaltıldı (60-11=49) */
-        padding-bottom: 49px;
+        /* REVİZYON: Normalden 6px daha az padding */
+        padding-bottom: 54px; 
     }
-    .sessions-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-bottom: 20px;}
+    .sessions-grid { 
+        display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; 
+        margin-top: 10px;
+    }
     .session-card {
         flex: 0 1 450px;
         background: var(--bg-cream);
@@ -190,12 +192,12 @@
     .card-title { font-size: 24px; font-weight: 600; color: var(--c3); margin-bottom: 8px; }
     .card-desc { font-size: 14px; color: var(--inkSoft); line-height: 1.6; }
 
-    /* HAKKIMDA (BEN KİMİM) - Revize Edildi */
+    /* HAKKIMDA (BEN KİMİM) */
     #hakkimda { 
         background-color: var(--c4); 
         padding-top: 60px;
         min-height: auto;
-        /* REVİZYON: 120px kısaltıldı (Eskiden padding-bottom: 120px vardı, şimdi 0) */
+        /* Alttan 120px kısaltılmış hali */
         padding-bottom: 0px; 
     }
     .about-layout {
@@ -211,18 +213,17 @@
     
     .about-img-wrapper { position: relative; height: 100%; width: 100%; }
     
-    /* FOTOĞRAF KONUMU - 120px Yukarı Çekildi */
+    /* FOTOĞRAF KONUMU - 120px Yukarı */
     .about-photo {
         width: 600px; height: 600px;
         background-image: url('zin.jpg'); background-size: cover; background-position: center;
         position: absolute;
         left: 61.5px; 
-        /* REVİZYON: 120px yukarı çekildi */
         top: -120px; 
         box-shadow: 10px 10px 0px rgba(0,0,0,0.03);
     }
 
-    /* MODAL */
+    /* MODAL (İLETİŞİM FORMU) - SCROLL FIX */
     .modal{
         position:fixed; inset:0; 
         background: rgba(98, 106, 72, 0.2); 
@@ -239,7 +240,7 @@
         box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
         transform: translateY(20px); transition: transform .3s; 
         display: flex; flex-direction: column; 
-        max-height: 90vh; 
+        max-height: 90vh; /* Ekranın %90'ını geçmesin */
         height: auto;
     }
     .modal.open .modal-card { transform: translateY(0); }
@@ -250,9 +251,10 @@
         flex-shrink: 0; 
     }
     
+    /* İÇERİK KAYDIRMA ALANI */
     .modal-body{
         padding: 30px; direction: rtl; text-align: right; 
-        overflow-y: auto; 
+        overflow-y: auto; /* Kaydırma çubuğu burada çıkacak */
         flex: 1;
         scrollbar-width: thin;
         scrollbar-color: var(--c2) #eee;
@@ -305,10 +307,19 @@
         .about-layout { grid-template-columns: 1fr; min-height: auto;}
         .sessions-grid { flex-direction: column; align-items: center; }
         .session-card { width: 100%; flex: auto; }
-        nav { display: none; }
+        /* MOBILDE MENÜYÜ GÖSTERME DÜZELTMESİ */
+        nav { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 10px; margin-right: 0; gap: 15px; }
+        .nav-item { font-size: 14px; }
+        .header-inner { flex-direction: column; height: auto; padding: 10px 20px; }
+        header { height: auto; }
+        
         .selection-area { grid-template-columns: 1fr; }
         .about-text { max-width: 100%; padding-top: 0; }
         .modal-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; margin-top: 0; }
+        .modal { padding: 0; }
+        
+        /* MOBİLDE BUTON AYARI */
+        .scroll-btn { bottom: 160px !important; }
     }
   </style>
 </head>
@@ -473,7 +484,7 @@
             <div class="consent-box">
                 <label class="check-item"><input type="checkbox" required><span>أوافق على تلقي رسائل معلوماتية عبر تطبيق واتساب.</span></label>
                 <label class="check-item"><input type="checkbox" required><span>أعلم أنه يمكنني الإلغاء في أي وقت بكتابة "STOP".</span></label>
-                <label class="check-item"><input type="checkbox" required><span>قرأت ووافقت على <a href="https://zindiary.com/legal" target="_blank" style="text-decoration:underline; color:var(--c2);">سياسة الخصوصية وحماية البيانات</a>.</span></label>
+                <label class="check-item"><input type="checkbox" required><span>قرأت ووافقت على <a href="https://zindiary.com/legal.html" target="_blank" style="text-decoration:underline; color:var(--c2);">سياسة الخصوصية وحماية البيانات</a>.</span></label>
             </div>
 
             <button type="submit" class="btn-submit" id="submitBtn">إرسال</button>
@@ -518,6 +529,7 @@
         resetSelection(); 
         document.getElementById('contactForm').reset(); 
     }
+    // Dışarı tıklayınca kapatma
     window.addEventListener('click', (e) => { 
         if (e.target === modal) closeContactModal(); 
     });
