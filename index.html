@@ -68,7 +68,7 @@
     }
     .logo-top{font-weight:400; font-size:17px; letter-spacing:.02em; color:var(--c3);}
     
-    /* LOGO ÇİZGİSİ (Referans Stil) */
+    /* LOGO ÇİZGİSİ */
     .logo-sep{
       width:60px; height:1px; 
       background: linear-gradient(90deg, transparent, var(--c3), transparent); 
@@ -104,11 +104,11 @@
     }
     .social{display:flex; gap:16px; align-items: center;}
     
-    /* FOOTER ÇİZGİSİ - ARTIK LOGO İLE AYNI */
+    /* FOOTER ÇİZGİSİ (Logo ile aynı) */
     .footer-sep { 
-        width: 60px; /* Genişlik logo ile aynı yapıldı (Eskiden 40px idi) */
+        width: 60px; 
         height: 1px; 
-        background: linear-gradient(90deg, transparent, var(--c3), transparent); /* Aynı gradyan */
+        background: linear-gradient(90deg, transparent, var(--c3), transparent); 
         opacity: .6; 
         margin: 2px 0; 
     }
@@ -204,10 +204,11 @@
     .card-title { font-size: 24px; font-weight: 600; color: var(--c3); margin-bottom: 8px; }
     .card-desc { font-size: 14px; color: var(--inkSoft); line-height: 1.6; }
 
-    /* HAKKIMDA (BEN KİMİM) */
+    /* HAKKIMDA (BEN KİMİM) - GÜNCELLENDİ */
     #hakkimda { 
         background-color: var(--c4); 
-        padding-top: 87px; 
+        /* REVİZYON: 87px + 10px = 97px */
+        padding-top: 97px; 
         min-height: auto;
         padding-bottom: 0px; 
     }
