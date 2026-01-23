@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Zin Diary | زين الحاج</title>
   <meta name="description" content="Zîn Elhac — yaşam koçluğu seans ve paketleri" />
-  <meta name="color-scheme" content="light">
+  
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-schemes" content="light">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,10 +17,13 @@
 
   <style>
     :root{
+      /* SİSTEM AYARLARINI EZEN RENK ZORLAMASI */
+      color-scheme: light; 
+      
       /* SABİT PALET */
       --c1:#f5f0eb; --c2:#b36932; --c3:#626a48; --c4:#faf7f5; --c5:#e7dbd0; --c6:#c65c75;
       
-      /* DİNAMİK DEĞİŞKENLER (Light Mode) */
+      /* DİNAMİK DEĞİŞKENLER (Varsayılan Light) */
       --bg-body: #FCFBF9;
       --bg-header: rgba(252, 251, 249, 0.85);
       --bg-card: #FCFBF9;
@@ -33,7 +38,7 @@
       --side-margin: 20px;
     }
 
-    /* DARK MODE */
+    /* DARK MODE (Sadece bizim butonla aktifleşir) */
     body.dark-mode {
       --bg-body: #1a1b16;
       --bg-header: rgba(26, 27, 22, 0.85);
@@ -60,6 +65,9 @@
       font-family: "Noto Kufi Arabic", Arial, sans-serif;
       font-weight: 300; overflow-x:hidden;
       transition: background 0.4s ease, color 0.4s ease;
+      
+      /* ANDROID ZORLA KARANLIK MODU ENGELLEME */
+      forced-color-adjust: none;
     }
     
     body.modal-open { overflow: hidden; }
@@ -108,7 +116,6 @@
     }
     .nav-item:hover{color: var(--text-main);}
 
-    /* THEME TOGGLE BUTTON */
     .theme-btn {
         background: none; border: none; cursor: pointer;
         color: var(--text-main); opacity: 0.8;
@@ -142,7 +149,6 @@
     
     main{padding-top:0; padding-bottom:var(--footerH);}
 
-    /* SECTION GENEL */
     section {
       position: relative;
       min-height: auto; 
@@ -424,8 +430,9 @@
         z-index: 1; pointer-events: none;
     }
 
-    /* --- RESPONSIVE & MOBILE FIX --- */
-    @media (max-width: 1280px) {
+    /* --- RESPONSIVE & MOBILE FIX (TABLET DAHİL) --- */
+    /* BREAKPOINT: 1400px (Güvenli Sınır) */
+    @media (max-width: 1400px) {
         .about-photo { 
             width: 100%; max-width: 500px; 
             height: auto; aspect-ratio: 1/1; 
