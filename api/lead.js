@@ -34,10 +34,10 @@ export default async function handler(req, res) {
     if (session) {
         if (session.includes("Sakina")) {
             if (session.includes("Single")) {
-                arabicName = 'لقاء "سكينة" (جلسة واحدة)';
+                arabicName = 'لقاء 'بصيرة' (جلسة واحدة);
                 priceStr = "110$";
             } else { 
-                arabicName = 'لقاء "سكينة" (باقة 3 جلسات)';
+                arabicName = 'لقاء 'بصيرة' (باقة 3 جلسات);
                 priceStr = "295$";
             }
         } else if (session.includes("El-Abour")) {
