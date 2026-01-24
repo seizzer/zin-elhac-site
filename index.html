@@ -174,19 +174,9 @@
     .carousel-container { position: relative; width: 100%; max-width: 1000px; margin: auto; padding: 20px 0; height: 650px; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
     .carousel-track { display: flex; align-items: center; gap: 20px; width: 100%; height: 100%; justify-content: center; transform-style: preserve-3d; }
     
-    .feedback-card { 
-        position: absolute; width: 320px; height: 600px; padding: 40px 30px; 
-        background-color: var(--bg-card); background-image: var(--bg-img-main); border: 1px solid var(--border-color); border-radius: 12px; 
-        text-align: right; direction: rtl; 
-        
-        /* BUZ GİBİ KAYMA EFEKTİ (Transition) */
-        transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease, filter 0.6s ease;
-        
-        opacity: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.05); user-select: none; cursor: pointer; overflow-y: auto; display: flex; flex-direction: column; justify-content: flex-start; scrollbar-width: thin; scrollbar-color: var(--c3) transparent; 
-    }
+    .feedback-card { position: absolute; width: 320px; height: 600px; padding: 40px 30px; background-color: var(--bg-card); background-image: var(--bg-img-main); border: 1px solid var(--border-color); border-radius: 12px; text-align: right; direction: rtl; transition: all 0.7s cubic-bezier(0.4, 0.0, 0.2, 1); opacity: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.05); user-select: none; cursor: pointer; overflow-y: auto; display: flex; flex-direction: column; justify-content: flex-start; scrollbar-width: thin; scrollbar-color: var(--c3) transparent; }
     .feedback-card::-webkit-scrollbar { width: 4px; }
     .feedback-card::-webkit-scrollbar-thumb { background-color: var(--c3); border-radius: 4px; }
-
     .feedback-card.active { opacity: 1; transform: translateX(0) scale(1.1); z-index: 10; filter: blur(0); border-color: var(--c3); box-shadow: 0 20px 50px rgba(98, 106, 72, 0.15); }
     .feedback-card.prev { opacity: 0.6; transform: translateX(-380px) scale(0.85); z-index: 5; filter: blur(2px); pointer-events: none; }
     .feedback-card.next { opacity: 0.6; transform: translateX(380px) scale(0.85); z-index: 5; filter: blur(2px); pointer-events: none; }
@@ -194,9 +184,7 @@
 
     .feedback-name { font-weight: 700; color: var(--c3); margin-bottom: 15px; font-size: 18px; }
     .feedback-quote { font-size: 15px; line-height: 1.8; color: var(--text-main); }
-    
-    /* Z-Index Arttırıldı */
-    .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: var(--bg-card); border: 1px solid var(--border-color); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 50; color: var(--c3); font-size: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s, background 0.2s; }
+    .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: var(--bg-card); border: 1px solid var(--border-color); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; color: var(--c3); font-size: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s, background 0.2s; }
     .nav-arrow:hover { background: var(--c3); color: #fff; transform: translateY(-50%) scale(1.1); }
     .nav-prev { left: 20px; }
     .nav-next { right: 20px; }
@@ -212,7 +200,7 @@
     .modal-body::-webkit-scrollbar-track { background: var(--bg-body); }
     .modal-body::-webkit-scrollbar-thumb { background-color: var(--c2); border-radius: 4px; }
 
-    /* --- FORM CSS --- */
+    /* --- FORM CSS (İLETİŞİM KUTUSU) --- */
     .input-group { margin-bottom: 16px; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 16px; }
     label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main); }
@@ -304,9 +292,33 @@
   <div class="info-modal" id="infoModal1">
       <div class="info-card">
           <button class="info-close" onclick="closeInfoModal('infoModal1')">✕</button>
+          
           <div class="info-scroll-area">
               <div class="info-title">لقاء "العبور"</div>
-              <div class="info-text">... (İçerik Aynı) ...</div>
+              <div class="info-text">
+                هذا اللقاء مخصص للتحرر من الأعباء الفكرية والعاطفية التي استنزفت طاقتكِ. سنستخدم أدوات الدعم النفسي والكوتشينج للتعامل مع حالات التعلق، وبناء الاستحقاق الداخلي، وتجاوز المخاوف التي تمنعكِ من التغيير. هو مساحة آمنة لتفريغ ما يثقلكِ والعبور نحو حالة من السلام والانسجام مع ذاتكِ.<br><br>
+
+                <strong>المزايا المضافة (VIP Support):</strong>
+                <ul>
+                    <li>مكالمة تقييم مجانية (30 دقيقة): لفهم الجذور العميقة لحالتكِ.</li>
+                    <li>تمارين وتأمل خاص: تسجيل صوتي لتأمل صُمم خصيصاً لذبذباتكِ واحتياجكِ.</li>
+                    <li>متابعة دورية (واتساب): مرافقة مستمرة لضمان ثبات خطواتكِ.</li>
+                    <li>جلسة طوارئ مجانية في حال الاشتراك بالباقة: أنا معكِ قلباً وقالباً عند الحاجة القصوى.</li>
+                    <li>ميزة التجديد: خصم 10% عند رغبتكِ في تمديد باقة رحلة العبور معنا.</li>
+                </ul>
+                <br>
+
+                <strong>ميثاق رحلة التغيير و التوازن</strong><br>
+                أهلاً بكِ في هذه المساحة الآمنة. قبل أن نبدأ، إليكِ كيف تسير الأمور في مساري التدريبي:
+                <ul>
+                    <li><strong>بناء الرحلة:</strong> جلساتي ليست عشوائية؛ نحن نستند إلى منهجية الدعم النفسي الاجتماعي و الكوتشينج معاً. سنعمل بوضوح على تحديد قيمكِ، احتياجاتكِ، معتقداتكِ، فهم و تحرير مشاعرك مع "تمارين عملية، وتأملات خاصة" تُصمم لعمق حالتكِ.</li>
+                    <li><strong>ثقافة الالتزام:</strong> مدة الجلسات الفردية و الباقات صُممت لتمنحكِ الأثر الذي تستحقينه. إذا احتجتِ لتغيير موعدك، أرجو إبلاغي قبل 24 ساعة لنحافظ على تواصل صحي.</li>
+                    <li><strong>الاستثمار النفسي:</strong> دفعك للمبلغ هو التزامك أمام نفسكِ. المبالغ غير مستردة، فاجعلي هذا الاستثمار "حباً وإكراماً" لذاتك وتأكدي من قدرتك على تخصيص هذا الوقت لنفسكِ.</li>
+                    <li><strong>حدود الدعم:</strong> قلبي وعقلي معكِ طوال فترة اشتراككِ. التواصل متاح للطوارئ، لكن هدفي الأسمى هو أن تعتمدي على نفسكِ، وتجدي مركز قوتكِ الداخلي دون تعلق بالخارج.</li>
+                    <li><strong>أمانة الأدوات:</strong> ما تتعلمينه هنا هو لتمكينكِ الشخصي. هذه التقنيات هي ثمرة سنوات من البحث والتعلم، لذا أرجو احترام حدودي المهنية وعدم مشاركتها كأداة تدريبية للآخرين.</li>
+                    <li><strong>المسؤولية الذاتية:</strong> التمارين العملية التي نناقشها هي بمثابة الجلسات. فهي مسؤوليتكِ، فامنحيها المساحة التي تستحق في يومكِ لتستقبلي منها أقصى استفادة.</li>
+                </ul>
+              </div>
           </div>
           <button class="info-cta-btn" onclick="openContactFromInfo('infoModal1')">تواصلي معي</button>
       </div>
@@ -315,9 +327,31 @@
   <div class="info-modal" id="infoModal2">
       <div class="info-card">
           <button class="info-close" onclick="closeInfoModal('infoModal2')">✕</button>
+          
           <div class="info-scroll-area">
               <div class="info-title">لقاء "سكينة"</div>
-              <div class="info-text">... (İçerik Aynı) ...</div>
+              <div class="info-text">
+                إذا كنتِ تشعرين بالتشتت أو تجدين صعوبة في اتخاذ قراراتكِ، فهذا اللقاء صُمم ليمنحكِ الوضوح. سنعمل معاً على ترتيب أفكاركِ، وتحديد القيم والأهداف التي تشبهكِ حقاً، وتفكيك المعتقدات التي تعيق تقدمكِ. هدفنا أن تخرجي برؤية واضحة وخطوات عملية تعيد لبيئة حياتكِ توازنها.<br><br>
+
+                <strong>المزايا المضافة:</strong>
+                <ul>
+                    <li>مكالمة تقييم مجانية (20 دقيقة): لنضع النقاط على الحروف قبل البدء.</li>
+                    <li>تمارين عملية: مصممة خصيصاً لتناسب تحدياتكِ الحالية.</li>
+                    <li>متابعة أسبوعية (واتساب): مساحة مخصصة للإجابة على تساؤلاتكِ ودعم خطواتكِ.</li>
+                </ul>
+                <br>
+
+                <strong>ميثاق رحلة التغيير و التوازن</strong><br>
+                أهلاً بكِ في هذه المساحة الآمنة. قبل أن نبدأ، إليكِ كيف تسير الأمور في مساري التدريبي:
+                <ul>
+                    <li><strong>بناء الرحلة:</strong> جلساتي ليست عشوائية؛ نحن نستند إلى منهجية الدعم النفسي الاجتماعي و الكوتشينج معاً. سنعمل بوضوح على تحديد قيمكِ، احتياجاتكِ، معتقداتكِ، فهم و تحرير مشاعرك مع "تمارين عملية، وتأملات خاصة" تُصمم لعمق حالتكِ.</li>
+                    <li><strong>ثقافة الالتزام:</strong> مدة الجلسات الفردية و الباقات صُممت لتمنحكِ الأثر الذي تستحقينه. إذا احتجتِ لتغيير موعدك، أرجو إبلاغي قبل 24 ساعة لنحافظ على تواصل صحي.</li>
+                    <li><strong>الاستثمار النفسي:</strong> دفعك للمبلغ هو التزامك أمام نفسكِ. المبالغ غير مستردة، فاجعلي هذا الاستثمار "حباً وإكراماً" لذاتك وتأكدي من قدرتك على تخصيص هذا الوقت لنفسكِ.</li>
+                    <li><strong>حدود الدعم:</strong> قلبي وعقلي معكِ طوال فترة اشتراككِ. التواصل متاح للطوارئ، لكن هدفي الأسمى هو أن تعتمدي على نفسكِ، وتجدي مركز قوتكِ الداخلي دون تعلق بالخارج.</li>
+                    <li><strong>أمانة الأدوات:</strong> ما تتعلمينه هنا هو لتمكينكِ الشخصي. هذه التقنيات هي ثمرة سنوات من البحث والتعلم، لذا أرجو احترام حدودي المهنية وعدم مشاركتها كأداة تدريبية للآخرين.</li>
+                    <li><strong>المسؤولية الذاتية:</strong> التمارين العملية التي نناقشها هي بمثابة الجلسات. فهي مسؤوليتكِ، فامنحيها المساحة التي تستحق في يومكِ لتستقبلي منها أقصى استفادة.</li>
+                </ul>
+              </div>
           </div>
           <button class="info-cta-btn" onclick="openContactFromInfo('infoModal2')">تواصلي معي</button>
       </div>
@@ -328,13 +362,17 @@
       <nav>
         <button class="theme-btn" onclick="toggleTheme()" title="تغيير الوضع">
             <svg id="icon-moon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
-            <svg id="icon-sun" style="display:none;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" /><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+            <svg id="icon-sun" style="display:none;" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="5" />
+                <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
         </button>
         <a class="nav-item" href="#seanslar">اللقاءات الفردية</a>
         <a class="nav-item" href="#hakkimda">مين أنا؟</a>
         <a class="nav-item" href="#feedback">آراء المتدربات</a>
         <a class="nav-item" onclick="openContactModal()">تواصل</a>
       </nav>
+
       <div class="logo-block">
         <div class="logo-top">Zîn</div>
         <div class="logo-sep"></div>
@@ -345,8 +383,13 @@
 
   <main>
     <section id="hero">
-        <div class="hero-bg"></div><div class="hero-overlay"></div>
-        <div class="hero-content"><h1 class="motto-text">"كل ما تؤمنين به بداخلكِ.. سيأتيكِ. دعينا نختار معاً ما يستحق أن تؤمني به."</h1></div>
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="motto-text">
+                "كل ما تؤمنين به بداخلكِ.. سيأتيكِ. دعينا نختار معاً ما يستحق أن تؤمني به."
+            </h1>
+        </div>
         <button class="scroll-btn" onclick="document.getElementById('seanslar').scrollIntoView()">اللقاءات الفردية</button>
     </section>
 
@@ -355,11 +398,18 @@
         <div class="sessions-grid">
             <div class="session-card" onclick="openInfoModal('infoModal2')">
                 <div class="card-img" id="img-s1"></div>
-                <div class="card-meta"><div class="card-title">لقاء "سكينة"</div><div class="card-desc">نسمة هوا لقلبك. بنتحرر من وجع قديم، وبنفرغ التقل اللي بصدرك لترتاح روحك وتصفى.</div></div>
+                <div class="card-meta">
+                    <div class="card-title">لقاء "سكينة"</div>
+                    <div class="card-desc">نسمة هوا لقلبك. بنتحرر من وجع قديم، وبنفرغ التقل اللي بصدرك لترتاح روحك وتصفى.</div>
+                </div>
             </div>
+
             <div class="session-card" onclick="openInfoModal('infoModal1')">
                 <div class="card-img" id="img-s2"></div>
-                <div class="card-meta"><div class="card-title">لقاء "العبور"</div><div class="card-desc">الرحلة المتكاملة. لقاء يجمع بين راحة القلب ونور العقل لخطوة كبيرة نحو نسختك الجديدة.</div></div>
+                <div class="card-meta">
+                    <div class="card-title">لقاء "العبور"</div>
+                    <div class="card-desc">الرحلة المتكاملة. لقاء يجمع بين راحة القلب ونور العقل لخطوة كبيرة نحو نسختك الجديدة.</div>
+                </div>
             </div>
         </div>
     </section>
@@ -387,17 +437,23 @@
                     رسالتي لكِ:<br>
                     افهمي حياتكِ ببطء، فالنور لا يحتاج إلى عجلة ليعبر من خلالكِ.. أنا هنا لنُعيد ترتيب الانعكاس، حتى ينسجم واقعكِ مع حقيقتك.
                 </p>
-                <button class="btn-submit" style="width: auto; margin-top: 15px;" onclick="openContactModal()">تواصلي معي</button>
+                <button class="btn-submit" style="width: auto; margin-top: 20px;" onclick="openContactModal()">تواصلي معي</button>
             </div>
-            <div class="about-img-wrapper"><div class="about-photo"></div></div>
+            <div class="about-img-wrapper">
+                <div class="about-photo"></div>
+            </div>
         </div>
     </section>
 
     <section id="feedback">
         <div class="section-head"><h2>آراء المتدربات</h2></div>
+        
         <div class="carousel-container">
             <button class="nav-arrow nav-prev" onclick="prevCard()">&#10095;</button>
-            <div class="carousel-track" id="track"></div>
+            
+            <div class="carousel-track" id="track">
+                </div>
+            
             <button class="nav-arrow nav-next" onclick="nextCard()">&#10094;</button>
         </div>
     </section>
@@ -416,6 +472,7 @@
              <div><label>الاسم</label><input id="firstName" required type="text"></div>
              <div><label>الكنية</label><input id="lastName" required type="text"></div>
           </div>
+          
           <label>الدولة & الهاتف</label>
           <div style="display:flex; gap:10px;">
              <div class="phone-container">
@@ -427,22 +484,45 @@
                  <input id="phone" required type="tel" placeholder="5xx xxx xx xx">
               </div>
           </div>
+          
           <label>البريد الإلكتروني</label>
           <input id="email" required type="email">
+
           <div class="selection-area">
              <div class="step-1">
                 <div class="sel-group-title">1. اختر اللقاء</div>
-                <label class="check-item"><input type="checkbox" name="main_session" value="seans1" onchange="handleSessionChange(this)"><span>لقاء "سكينة"</span></label>
-                <label class="check-item"><input type="checkbox" name="main_session" value="seans2" onchange="handleSessionChange(this)"><span>لقاء "العبور"</span></label>
+                <label class="check-item">
+                    <input type="checkbox" name="main_session" value="seans1" onchange="handleSessionChange(this)">
+                    <span>لقاء "سكينة"</span>
+                </label>
+                <label class="check-item">
+                    <input type="checkbox" name="main_session" value="seans2" onchange="handleSessionChange(this)">
+                    <span>لقاء "العبور"</span>
+                </label>
              </div>
+
              <div class="step-2 hidden" id="typeSelection">
                 <div class="sel-group-title">2. اختر النوع</div>
-                <label class="check-item"><input type="checkbox" name="sub_type" value="tekli" onchange="handleTypeChange(this)"><span>جلسة واحدة</span><span class="price-tag" id="price-tekli"></span></label>
-                <label class="check-item"><input type="checkbox" name="sub_type" value="uclu" onchange="handleTypeChange(this)"><span>باقة 3 جلسات</span><span class="price-tag" id="price-uclu"></span></label>
+                <label class="check-item">
+                    <input type="checkbox" name="sub_type" value="tekli" onchange="handleTypeChange(this)">
+                    <span>جلسة واحدة</span>
+                    <span class="price-tag" id="price-tekli"></span>
+                </label>
+                <label class="check-item">
+                    <input type="checkbox" name="sub_type" value="uclu" onchange="handleTypeChange(this)">
+                    <span>باقة 3 جلسات</span>
+                    <span class="price-tag" id="price-uclu"></span>
+                </label>
              </div>
           </div>
+
           <div class="qa-area hidden" id="qaArea">
-            <div class="qa-group"><label class="qa-label">ما هي الأعراض أو التحديات الرئيسية التي تواجهك حالياً؟</label><textarea id="q1" maxlength="500" oninput="updateCount(this, 'c1')" required></textarea><div class="char-count" id="c1">٠/٥٠٠</div></div>
+            <div class="qa-group">
+                <label class="qa-label">ما هي الأعراض أو التحديات الرئيسية التي تواجهك حالياً؟</label>
+                <textarea id="q1" maxlength="500" oninput="updateCount(this, 'c1')" required></textarea>
+                <div class="char-count" id="c1">٠/٥٠٠</div>
+            </div>
+
             <div class="qa-group"><label class="qa-label">متى بدأت هذه الأعراض أو التحديات لأول مرة؟</label><textarea id="q2" maxlength="500" oninput="updateCount(this, 'c2')" required></textarea><div class="char-count" id="c2">٠/٥٠٠</div></div>
             <div class="qa-group"><label class="qa-label">ما هي المواقف أو الأوقات التي تشعر فيها بأنك تزداد سوءاً؟</label><textarea id="q3" maxlength="500" oninput="updateCount(this, 'c3')" required></textarea><div class="char-count" id="c3">٠/٥٠٠</div></div>
             <div class="qa-group"><label class="qa-label">هل سبق وتم تشخيصك من قبل؟</label><div class="qa-radio-group"><label class="qa-radio-label"><input type="radio" name="q4" value="نعم" required> نعم</label><label class="qa-radio-label"><input type="radio" name="q4" value="لا" required> لا</label></div></div>
@@ -450,14 +530,21 @@
             <div class="qa-group"><label class="qa-label">هل سبق وخضعت لجلسات علاج نفسي أو إرشاد مع معالج أو كوتش؟</label><div class="qa-radio-group"><label class="qa-radio-label"><input type="radio" name="q6" value="نعم، كانت تجربة إيجابية" required> نعم، كانت تجربة إيجابية</label><label class="qa-radio-label"><input type="radio" name="q6" value="نعم، كانت تجربة غير مرضية" required> نعم، كانت تجربة غير مرضية</label><label class="qa-radio-label"><input type="radio" name="q6" value="لا، هذه هي المرة الأولى" required> لا، هذه هي المرة الأولى</label></div></div>
             <div class="qa-group"><label class="qa-label">ما هي توقعاتك و أهدافك من الجلسات؟</label><textarea id="q7" maxlength="500" oninput="updateCount(this, 'c7')" required></textarea><div class="char-count" id="c7">٠/٥٠٠</div></div>
             <div class="qa-group"><label class="qa-label">هل لديك الوقت والعزم لحضور الجلسات بشكل منتظم؟</label><textarea id="q8" maxlength="500" oninput="updateCount(this, 'c8')" required></textarea><div class="char-count" id="c8">٠/٥٠٠</div></div>
-            <div class="qa-group" style="margin-top:20px;"><label class="qa-label">رسالة إضافية (اختياري)</label><textarea id="message" rows="3"></textarea></div>
+
+            <div class="qa-group" style="margin-top:20px;">
+                <label class="qa-label">رسالة إضافية (اختياري)</label>
+                <textarea id="message" rows="3"></textarea>
+            </div>
+
             <div class="consent-box">
                 <label class="check-item"><input type="checkbox" required><span>أوافق على تلقي رسائل معلوماتية عبر تطبيق واتساب.</span></label>
                 <label class="check-item"><input type="checkbox" required><span>أعلم أنه يمكنني الإلغاء في أي وقت بكتابة "STOP".</span></label>
                 <label class="check-item"><input type="checkbox" required><span>قرأت ووافقت على <a href="https://zindiary.com/legal.html" target="_blank" style="text-decoration:underline; color:var(--c2);">سياسة الخصوصية وحماية البيانات</a>.</span></label>
             </div>
+
             <button type="submit" class="btn-submit" id="submitBtn">إرسال</button>
           </div>
+          
         </form>
       </div>
     </div>
@@ -468,8 +555,10 @@
     function toggleTheme() {
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
+        
         document.getElementById('icon-moon').style.display = isDark ? 'none' : 'block';
         document.getElementById('icon-sun').style.display = isDark ? 'block' : 'none';
+
         const metaThemeColor = document.getElementById('meta-theme-color');
         metaThemeColor.setAttribute('content', isDark ? '#1a1b16' : '#FCFBF9');
     }
@@ -484,8 +573,8 @@
         {name: "س** ال**", text: "حابه احكيلك انك انتي كنتي افضل شي حصلي من سنه وشوي ، كنتي الك متل النور بنص العتمه، كيف بتسمعي متل اعز صديقه وبتطبطبي وبتنوري دربي متل افضل معلم.. صرت معك حقيقيه اكثر ، بقدر اميز صوتي الداخلي وبعرف كيف اصدقه ، وصرت قادره اطلع حالي من دوامة التفكير المفرط والاهم اني تعلمت معك كيف اطبطب ع حالي بحنيه واحتوي الطفل الصغير الي جواتي.. شكراً لكل شي ، ردك علي وتواصلك معي حتى ع الواتس اب كانّ دائمآ يطمني ويحسسني انك معي حتى خارج الجلسه"},
         {name: "ب** ب**", text: "زييييين يا زييين يا حلوة الحلوين مبارح خلصت مراجعة ومشاهدة الورشة تبع الرجوع إلى الذات وانا كتير كتير عايشة شعور حلو مرتبط بهالورشة بظن انه انا اتخطيت مرحلة الشكر فيكي والثناء عليكي لانه هاد الموضوع صار مؤكد ومفروغ منه 💗 انا على طول ممنونة الك ولمحتواكي والفايدة يلي بتقدميها لانه عم توصل بصدق وعم تمس مطارح بقلبي وبحياتي بكون بحاجتها وانا مو حاسة وبتجي انتي متل البلسم والدواء وبتكوني انتي الجواب لأسئلتي ❤️"},
         {name: "غ** ال**", text: "بعد ما خلصنا الباقة الأولى بفضل رب العالمين و فضل جهودنا سوا شفت تغييرات كتير حلوة بشخصيتي عم اتعلم كيف اتعامل مع المشاعر يلي ما بحبا و كيف كون متصالحة مع نقاط ضعفي و أخطائي الجلسات كانت ممتعة و بكل مرة كنت أتعلم شي جديد و صلح مفاهيم خاطئة أهم شي قدرت اتعلمو بعد ما خلصنا الجلسات هو كيف اتعاطف مع حالي و اتقبل الماضي"},
-        {name: "ل** ال**", text: "طريقة طرحك للأسئله بتخليني جاوب بشفافيه لدرجة الصدمة من حالي، واجه حالي. كنتي الملجأ الوحيد والداعم حرفيا اتعلمت معك كيف حدد هويتي الأصليه ، كيف اخدم خياراتي بطريقه اتناسبني ، كيف كون مسؤوله عن نفسي وحب حالي واهتم فيها وهاد عكس كتير ع عيلتي والاشخاص يلي حواليي وفجأه ابتدت الأمور تتمحور لصالحي اتعلمت كيف واسي حالي وطبطب عليها ومااستنى أي تعاطف من حدا ،كيف اعترف قدام نفسي بأشياء انا كنت ناسيتها أو بالاصح متجاهلتها"},
-        {name: "ل** ال**", text: "زين انتي الملاك يلي دايما كان بدعائي ، رب العالمين حطك بطريقي لتكوني الرحمه لحياتي اتعلمت منك كتير هدوئك وطريقه طرحك للأسئه ، محبتك النابعه من القلب هي يلي خلتني كمل ولامره حسيت اني مجرد عميل جايه لتلقي عليه محاضره وتتركيه يتصارع مع حاله بدون جدوى ‎شكرا من جوا القلب لوجودك ودعمك ، شكرا لانك مخلصه ومؤمنه بالرساله يلي عم اتقدميها. كلامك بيعطيني امل وأمان ودافع اني كمل شكراً من القلب انك موجوده وشكراً لدعمك ♥️♥️ بحمد ربي انو الله وقفك بطريقي بحبك من قلبي ♥️♥️"}
+        {name: "ل** ال**", text: "طريقة طرحك للأسئله بتخليني جاوب بشفافيه لدرجة الصدمة من حالي، واجه حالي. كنتي الملجأ الوحيد والداعم حرفيا اتعلمت معك كيف حدد هويتي الأصليه ، كيف اخدم خياراتي بطريقه اتناسبني ، كيف كون مسؤوله عن نفسي وحب حالي واهتم فيها وهاد عكس كتير ع عيلتي والاشخاص يلي حواليي وفجأه ابتدت الأمور تتمحور لصالحي اتعلمت كيف واسي حالي وطبطب عليها ومااستنى أي تعاطف من حدا  ،كيف اعترف قدام نفسي بأشياء انا كنت ناسيتها أو بالاصح متجاهلتها"},
+        {name: "ل** ال**", text: "زين  انتي الملاك يلي دايما كان بدعائي ، رب العالمين حطك بطريقي لتكوني الرحمه لحياتي اتعلمت منك كتير هدوئك وطريقه طرحك للأسئه ، محبتك النابعه من القلب هي يلي خلتني كمل ولامره حسيت اني مجرد عميل جايه لتلقي عليه محاضره وتتركيه يتصارع مع حاله بدون جدوى ‎شكرا من جوا القلب لوجودك ودعمك ، شكرا لانك مخلصه ومؤمنه بالرساله يلي عم اتقدميها. كلامك بيعطيني امل وأمان ودافع اني كمل شكراً من القلب انك موجوده وشكراً لدعمك ♥️♥️ بحمد ربي انو الله وقفك بطريقي بحبك من قلبي ♥️♥️"}
     ];
 
     let activeIndex = Math.floor(feedbacks.length / 2);
@@ -496,15 +585,37 @@
         feedbacks.forEach((fb, index) => {
             const card = document.createElement('div');
             card.className = 'feedback-card';
-            card.innerHTML = `<span class="feedback-name">${fb.name}</span><p class="feedback-quote">${fb.text}</p>`;
+            
+            let diff = index - activeIndex;
+            
+            if (diff > feedbacks.length / 2) diff -= feedbacks.length;
+            if (diff < -feedbacks.length / 2) diff += feedbacks.length;
+
+            if (diff === 0) card.classList.add('active');
+            else if (diff === 1) card.classList.add('next');
+            else if (diff === -1) card.classList.add('prev');
+            else card.classList.add('hidden');
+
+            card.innerHTML = `<span class="feedback-name">${fb.name}:</span><p class="feedback-quote">${fb.text}</p>`;
             
             card.onclick = () => {
-                activeIndex = index;
-                updateClasses();
+                if (diff !== 0) {
+                    activeIndex = index;
+                    renderCarousel();
+                }
             };
             
             track.appendChild(card);
         });
+    }
+
+    function nextCard() {
+        activeIndex = (activeIndex + 1) % feedbacks.length;
+        updateClasses();
+    }
+
+    function prevCard() {
+        activeIndex = (activeIndex - 1 + feedbacks.length) % feedbacks.length;
         updateClasses();
     }
 
@@ -522,16 +633,6 @@
             else if (diff === -1) card.classList.add('prev');
             else card.classList.add('hidden');
         });
-    }
-
-    function nextCard() {
-        activeIndex = (activeIndex + 1) % feedbacks.length;
-        updateClasses();
-    }
-
-    function prevCard() {
-        activeIndex = (activeIndex - 1 + feedbacks.length) % feedbacks.length;
-        updateClasses();
     }
 
     // SCROLL LOCK LOGIC (SENSITIVITY)
@@ -562,14 +663,34 @@
     window.addEventListener('load', createCarouselItems);
     window.addEventListener('resize', createCarouselItems);
 
-    // --- OTHER JS ---
-    function openInfoModal(id) { document.getElementById(id).classList.add('open'); }
-    function closeInfoModal(id) { document.getElementById(id).classList.remove('open'); }
-    function openContactFromInfo(infoModalId, sessionKey) { closeInfoModal(infoModalId); openContactModal(); }
-    document.querySelectorAll('.info-modal').forEach(m => { m.addEventListener('click', (e) => { if(e.target === m) m.classList.remove('open'); }); });
+    // --- JS ---
+    function openInfoModal(id) { 
+        document.getElementById(id).classList.add('open'); 
+        document.body.classList.add('modal-open'); 
+    }
+    function closeInfoModal(id) { 
+        document.getElementById(id).classList.remove('open'); 
+        document.body.classList.remove('modal-open');
+    }
+    function openContactFromInfo(infoModalId, sessionKey) {
+        closeInfoModal(infoModalId);
+        openContactModal(); 
+    }
+
+    document.querySelectorAll('.info-modal').forEach(m => {
+        m.addEventListener('click', (e) => { 
+            if(e.target === m) {
+                m.classList.remove('open'); 
+                document.body.classList.remove('modal-open');
+            }
+        });
+    });
 
     const modal = document.getElementById('contactModal');
-    function openContactModal(){ modal.classList.add('open'); document.body.classList.add('modal-open'); }
+    function openContactModal(){ 
+        modal.classList.add('open'); 
+        document.body.classList.add('modal-open');
+    }
     function closeContactModal(){ 
         modal.classList.remove('open'); 
         document.body.classList.remove('modal-open');
@@ -578,7 +699,9 @@
         document.getElementById('selectedCode').textContent = '+90';
         document.getElementById('phonePrefix').value = '+90';
     }
-    window.addEventListener('click', (e) => { if (e.target === modal) closeContactModal(); });
+    window.addEventListener('click', (e) => { 
+        if (e.target === modal) closeContactModal(); 
+    });
 
     function showToast() {
         const t = document.getElementById('toast');
@@ -590,11 +713,15 @@
     function updateCount(el, countId) { document.getElementById(countId).textContent = toEasternArabic(el.value.length) + "/٥٠٠"; }
 
     const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
+    
     async function loadCountries(){
        const res = await fetch(COUNTRIES_URL); const list = await res.json();
        list.sort((a,b)=>a.name.localeCompare(b.name));
        const pSel = document.getElementById('phonePrefix');
-       list.forEach(c => { pSel.innerHTML += `<option value="${c.dial_code}">${c.name} (${c.dial_code})</option>`; });
+       
+       list.forEach(c => {
+          pSel.innerHTML += `<option value="${c.dial_code}">${c.name} (${c.dial_code})</option>`;
+       });
        pSel.value="+90";
        updateSelectedCode(); 
     }
