@@ -184,7 +184,18 @@
 
     .feedback-name { font-weight: 700; color: var(--c3); margin-bottom: 15px; font-size: 18px; }
     .feedback-quote { font-size: 15px; line-height: 1.8; color: var(--text-main); }
-    .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: var(--bg-card); border: 1px solid var(--border-color); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 50; color: var(--c3); font-size: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s, background 0.2s; }
+    
+    /* DÜZELTME: OK TUŞLARI GÖRÜNÜR YAPILDI */
+    .nav-arrow { 
+        position: absolute; top: 50%; transform: translateY(-50%); 
+        background: var(--bg-card); border: 1px solid var(--border-color); 
+        width: 50px; height: 50px; border-radius: 50%; 
+        display: flex; align-items: center; justify-content: center; 
+        cursor: pointer; z-index: 50; /* Z-Index Yüksek */
+        color: var(--c3); font-size: 20px; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+        transition: transform 0.2s, background 0.2s; 
+    }
     .nav-arrow:hover { background: var(--c3); color: #fff; transform: translateY(-50%) scale(1.1); }
     .nav-prev { left: 20px; }
     .nav-next { right: 20px; }
@@ -265,7 +276,7 @@
         .info-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; transform: none !important;}
         header { height: var(--headerH); } 
         
-        /* HEADER DÜZENLEMESİ */
+        /* HEADER DÜZENLEMESİ (TEK SATIR) */
         .header-inner { flex-direction: row; justify-content: space-between; align-items: center; padding: 0 15px; height: 100%; }
         .logo-block { margin: 0; transform: scale(0.9); }
         nav { display: flex; gap: 8px; margin: 0; justify-content: flex-end; flex-wrap: nowrap; flex: 1; }
@@ -454,7 +465,7 @@
             <div class="carousel-track" id="track">
                 </div>
             
-            <button class="nav-arrow nav-next" onclick="moveCarousel(1)">&#10094;</button>
+            <button class="nav-arrow nav-next" onclick="nextCard()">&#10094;</button>
         </div>
     </section>
 
@@ -633,6 +644,8 @@
     track.addEventListener('touchmove', e => {
         let touchMoveX = e.changedTouches[0].screenX;
         let touchMoveY = e.changedTouches[0].screenY;
+        
+        // Eğer yatay hareket dikeyden fazlaysa, sayfanın scroll olmasını engelle (carousel kaysın)
         if(Math.abs(touchMoveX - touchStartX) > Math.abs(touchMoveY - touchStartY)) {
             e.preventDefault(); 
         }
@@ -647,7 +660,7 @@
     window.addEventListener('load', createCarouselItems);
     window.addEventListener('resize', createCarouselItems);
 
-    // --- POPUP & MODAL (BODY LOCK EKLENDİ) ---
+    // --- JS ---
     function openInfoModal(id) { 
         document.getElementById(id).classList.add('open'); 
         document.body.classList.add('modal-open'); 
@@ -660,6 +673,7 @@
         closeInfoModal(infoModalId);
         openContactModal(); 
     }
+
     document.querySelectorAll('.info-modal').forEach(m => {
         m.addEventListener('click', (e) => { 
             if(e.target === m) {
@@ -748,10 +762,11 @@
         document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     }
 
-    // --- FORM GÖNDERME KISMI (FETCH İLE) ---
+    // --- FORM GÖNDERME KISMI (BURASI DEĞİŞTİ) ---
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
+        // 1. Validasyon
         if(!selectedSession || !selectedType) { 
             alert("الرجاء اختيار نوع الجلسة"); 
             return; 
@@ -760,8 +775,9 @@
         const btn = document.getElementById('submitBtn');
         const originalText = btn.textContent;
         btn.disabled = true; 
-        btn.textContent = "جاري الإرسال..."; 
+        btn.textContent = "جاري الإرسال..."; // "Gönderiliyor..."
 
+        // 2. Verileri Topla
         const getRadio = (name) => { 
             const el = document.querySelector(`input[name="${name}"]:checked`); 
             return el ? el.value : 'Belirtilmedi'; 
@@ -776,17 +792,19 @@
             phone: document.getElementById('phonePrefix').value + " " + document.getElementById('phone').value,
             email: document.getElementById('email').value,
             session: `${sKey} - ${tKey}`,
-            q1: document.getElementById('q1').value,
-            q2: document.getElementById('q2').value,
-            q3: document.getElementById('q3').value,
-            q4: getRadio('q4'),
-            q5: getRadio('q5'),
-            q6: getRadio('q6'),
-            q7: document.getElementById('q7').value,
-            q8: document.getElementById('q8').value,
-            message: document.getElementById('message').value
+            // Sorular
+            q1: document.getElementById('q1').value, // Şikayet
+            q2: document.getElementById('q2').value, // Ne zaman başladı
+            q3: document.getElementById('q3').value, // Tetikleyiciler
+            q4: getRadio('q4'), // Teşhis
+            q5: getRadio('q5'), // İlaç
+            q6: getRadio('q6'), // Geçmiş deneyim
+            q7: document.getElementById('q7').value, // Hedefler
+            q8: document.getElementById('q8').value, // Zaman/İrade
+            message: document.getElementById('message').value // Ek mesaj
         };
 
+        // 3. Backend'e Gönder (Vercel Function)
         try {
             const response = await fetch('/api/lead', {
                 method: 'POST',
@@ -795,10 +813,10 @@
             });
 
             if (response.ok) {
-                showToast(); 
+                showToast(); // Başarılı
                 closeContactModal();
             } else {
-                alert("حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى."); 
+                alert("حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى."); // Hata mesajı
             }
         } catch (err) {
             console.error(err);
