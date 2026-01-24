@@ -292,13 +292,22 @@
         .form-grid { grid-template-columns: 1fr; gap: 10px; } 
     }
 
-    /* --- YENİ EKLENEN: SADECE TELEFONLAR İÇİN ARKA PLAN --- */
+    /* --- YENİ EKLENEN: SADECE TELEFONLAR İÇİN ARKA PLAN DÜZELTMESİ --- */
     @media (max-width: 768px) {
+        /* Ekran boyunu sabitleyip kaymaları önlüyoruz */
+        #hero {
+            height: 90vh !important; /* Biraz kısalttım ki alttaki bar sorun çıkarmasın */
+            min-height: auto !important;
+        }
+
         .hero-bg {
             /* Masaüstü resmi telefonda zoomlanmasın diye, 
                TELEFONA ÖZEL KESİLMİŞ RESİM kullanıyoruz */
             background-image: url('motto-mobile.jpg') !important; 
-            background-position: center center !important;
+            background-position: center top !important; /* Üstten başlasın */
+            
+            /* SİHİRLİ KOMUT BURASI: Resmi kutuya zorla sığdır */
+            background-size: 100% 100% !important; 
         }
     }
   </style>
