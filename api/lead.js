@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 1. FRONTEND'DEN GELEN VERİ (Senin logundaki yapı)
+    // 1. FRONTEND'DEN GELEN VERİ
     const { 
       firstName, lastName, phone, email, session, message,
       q1, q2, q3, q4, q5, q6, q7, q8
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
     // 2. TEMİZLİK
     const fullName = `${firstName || ''} ${lastName || ''}`.trim();
-    const cleanPhone = (phone || '').replace(/\D/g, ''); // Sadece rakamlar
+    const cleanPhone = (phone || '').replace(/\D/g, ''); 
     const clientEmail = email || 'Belirtilmedi';
     const clientMessage = message || 'Mesaj bırakılmadı.';
 
@@ -27,17 +27,18 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Telefon zorunlu.' });
     }
 
-    // 3. PAKET VE FİYAT BELİRLEME (Logundaki 'Sakina - Package (3)' verisine göre)
+    // 3. PAKET VE FİYAT BELİRLEME
     let arabicName = session || "غير محدد"; 
     let priceStr = "";
 
     if (session) {
         if (session.includes("Sakina")) {
             if (session.includes("Single")) {
-                arabicName = 'لقاء 'بصيرة' (جلسة واحدة);
+                // Tırnak hatası düzeltildi: ' yerine " kullanıldı
+                arabicName = 'لقاء "بصيرة" (جلسة واحدة)';
                 priceStr = "110$";
             } else { 
-                arabicName = 'لقاء 'بصيرة' (باقة 3 جلسات);
+                arabicName = 'لقاء "بصيرة" (باقة 3 جلسات)';
                 priceStr = "295$";
             }
         } else if (session.includes("El-Abour")) {
@@ -61,7 +62,7 @@ export default async function handler(req, res) {
           {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${process.env.WHATSAPP_TOKEN}`, // <-- BU TOKEN'I KONTROL ET
+              'Authorization': `Bearer ${process.env.WHATSAPP_TOKEN}`,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -70,7 +71,7 @@ export default async function handler(req, res) {
               type: "template",
               template: {
                 name: process.env.WHATSAPP_TEMPLATE_NAME,
-                language: { code: "ar" }, // Şablonun Arapça olduğundan emin ol
+                language: { code: "ar" },
                 components: [
                   {
                     type: "body",
@@ -88,7 +89,7 @@ export default async function handler(req, res) {
         waData = await waResponse.json();
         
         if (!waResponse.ok) {
-            console.error("🔴 WhatsApp API Hatası (Token veya Şablon sorunu):", JSON.stringify(waData, null, 2));
+            console.error("🔴 WhatsApp API Hatası:", JSON.stringify(waData, null, 2));
         } else {
             console.log("🟢 WhatsApp Başarılı:", JSON.stringify(waData, null, 2));
         }
