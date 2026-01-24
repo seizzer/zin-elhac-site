@@ -293,22 +293,39 @@
     }
 
     /* --- YENİ EKLENEN: SADECE TELEFONLAR İÇİN ARKA PLAN DÜZELTMESİ --- */
+ /* --- YENİ EKLENEN: SADECE TELEFONLAR İÇİN (ALTTAN KESİLME ÇÖZÜMÜ) --- */
     @media (max-width: 768px) {
-        /* Ekran boyunu sabitleyip kaymaları önlüyoruz */
         #hero {
-            height: 90vh !important; /* Biraz kısalttım ki alttaki bar sorun çıkarmasın */
-            min-height: auto !important;
+            /* 1. vh yerine dvh kullanıyoruz. Bu, adres çubuğunu hesaba katar */
+            height: 100dvh !important; 
+            min-height: 100dvh !important;
+            
+            /* 2. İçeriğin alttan sıkışmaması için padding ayarı */
+            padding-bottom: 0 !important;
+            margin-bottom: 0 !important;
+            
+            /* 3. Taşmayı engelle */
+            overflow: hidden !important;
         }
 
         .hero-bg {
-            /* Masaüstü resmi telefonda zoomlanmasın diye, 
-               TELEFONA ÖZEL KESİLMİŞ RESİM kullanıyoruz */
             background-image: url('motto-mobile.jpg') !important; 
-            background-position: center top !important; /* Üstten başlasın */
+            background-position: center top !important; 
             
-            /* SİHİRLİ KOMUT BURASI: Resmi kutuya zorla sığdır */
+            /* Resmi ekrana tam yay ama orantıyı bozma */
             background-size: 100% 100% !important; 
+            background-attachment: scroll !important;
         }
+
+        /* 4. Alttaki bölümün Hero'nun içine girmesini engelleyen TAMPON */
+        #seanslar {
+            margin-top: -1px !important; /* Boşluk kalmasın diye hafif yukarı çekip */
+            padding-top: 60px !important; /* İçeriği aşağı itiyoruz */
+            position: relative;
+            z-index: 10; /* Hero'nun üstüne binmesini engeller */
+            background-color: var(--bg-body); /* Arkası şeffaf kalmasın */
+        }
+    }
     }
   </style>
 </head>
