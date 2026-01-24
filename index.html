@@ -24,7 +24,7 @@
       --bg-img-main: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Crect width='10' height='10' fill='%23FCFBF9'/%3E%3C/svg%3E");
       --bg-img-alt: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Crect width='10' height='10' fill='%23FAF7F5'/%3E%3C/svg%3E");
       --bg-img-header: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1' height='1' fill='%23FCFBF9' opacity='0.95'/%3E%3C/svg%3E");
-      --bg-img-btn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1' height='1' fill='%23626a48'/%3E%3C/svg%3E");
+      --bg-img-btn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='%23626a48'/%3E%3C/svg%3E");
 
       /* --- VARS --- */
       --bg-body: #FCFBF9;
@@ -91,7 +91,8 @@
     }
 
     /* --- PROTECTED ELEMENTS --- */
-    button, input, select, textarea, .btn-submit, .info-cta-btn, .scroll-btn, .icon-btn, .info-close, .modal-head button, .theme-btn, .nav-arrow, .carousel-nav {
+    /* Motto ve Scroll Btn özel olarak aşağıda tanımlandı */
+    button, input, select, textarea, .btn-submit, .info-cta-btn, .icon-btn, .info-close, .modal-head button, .theme-btn, .nav-arrow, .carousel-nav {
         text-shadow: none !important; opacity: 1 !important;
     }
     .info-close, .modal-head button { color: #333333 !important; -webkit-text-fill-color: #333333 !important; }
@@ -99,7 +100,7 @@
     .btn-submit, .info-cta-btn { background-color: var(--c3) !important; background-image: var(--bg-img-btn) !important; background-size: cover; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; height: auto; min-height: 44px; }
     .info-cta-btn:hover, .btn-submit:hover { background-color: var(--c2) !important; background-image: none !important; }
     input[type="checkbox"], input[type="radio"] { -webkit-appearance: auto; appearance: auto; opacity: 1 !important; }
-    body:not(.dark-mode) .motto-text { color: var(--c3) !important; text-shadow: 0 2px 10px rgba(255,255,255,0.5) !important; -webkit-text-fill-color: var(--c3) !important; }
+    
     body.modal-open { overflow: hidden; }
     a{color:inherit; text-decoration:none;}
     button{font-family:inherit; color:inherit;}
@@ -137,14 +138,39 @@
     /* HERO */
     #hero { padding: 0; align-items: center; justify-content: center; overflow: hidden; background-color: var(--c1); height: 100vh; margin-bottom: 0; padding-bottom: 11px; }
     .hero-bg { position: absolute; inset: 0; background-image: url('motto.jpg'); background-size: cover; background-position: center; z-index: 0; }
-    .hero-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.05); backdrop-filter: blur(4px); z-index: 1; }
+    .hero-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.2); /* Biraz daha koyu overlay */ backdrop-filter: blur(2px); z-index: 1; }
     .hero-content { position: relative; z-index: 2; text-align: center; color: #fff; max-width: 800px; padding: 20px; }
-    .hero-content * { color: #fff !important; text-shadow: 0 2px 10px rgba(255,255,255,0.5) !important; }
-    .motto-text { font-size: clamp(28px, 5vw, 54px); font-weight: 600; line-height: 1.4; color: var(--c3); }
-    .scroll-btn { position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%); z-index: 10; padding: 14px 32px; border: 1px solid var(--c3); font-size: 16px; background: rgba(255,255,255,0.3); backdrop-filter: blur(4px); border-radius: 50px; cursor: pointer; transition: all 0.3s ease; }
-    body:not(.dark-mode) .scroll-btn { color: #626a48 !important; -webkit-text-fill-color: #626a48 !important; text-shadow: none !important; }
-    body.dark-mode .scroll-btn { color: #e7dbd0 !important; -webkit-text-fill-color: #e7dbd0 !important; }
-    .scroll-btn:hover { background-color: var(--c3) !important; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; }
+    .hero-content * { color: #fff !important; text-shadow: 0 2px 10px rgba(0,0,0,0.5) !important; }
+    
+    /* MOTTO RENGİ BEYAZ */
+    .motto-text { 
+        font-size: clamp(28px, 5vw, 54px); 
+        font-weight: 600; line-height: 1.4; 
+        color: #ffffff !important; 
+        -webkit-text-fill-color: #ffffff !important;
+        text-shadow: 0 2px 15px rgba(0,0,0,0.5) !important;
+    }
+
+    /* BUTTON BEYAZ */
+    .scroll-btn { 
+        position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%); z-index: 10; 
+        padding: 14px 32px; 
+        border: 1px solid #ffffff !important; /* Beyaz Çerçeve */
+        font-size: 16px; 
+        background: rgba(255,255,255,0.1); 
+        backdrop-filter: blur(4px); border-radius: 50px; cursor: pointer; transition: all 0.3s ease;
+        
+        /* Metin Rengi Beyaz */
+        color: #ffffff !important; 
+        -webkit-text-fill-color: #ffffff !important; 
+        text-shadow: none !important;
+    }
+    
+    .scroll-btn:hover { 
+        background-color: #ffffff !important; 
+        color: var(--c3) !important; /* Hover olunca metin koyu */
+        -webkit-text-fill-color: var(--c3) !important; 
+    }
 
     /* SEANSLAR */
     #seanslar { 
@@ -206,7 +232,7 @@
         max-width: 1000px;
         margin: auto; 
         padding: 20px 0;
-        height: 600px; /* Yükseklik korundu */
+        height: 600px; 
         display: flex;
         align-items: center;
         justify-content: center;
@@ -223,7 +249,6 @@
         transform-style: preserve-3d;
     }
 
-    /* KART STİLİ (Transition arttırıldı) */
     .feedback-card {
         position: absolute;
         width: 320px;
@@ -236,10 +261,7 @@
         border: 1px solid var(--border-color);
         border-radius: 12px;
         text-align: right; direction: rtl;
-        
-        /* BUZ GİBİ KAYMA EFEKTİ */
         transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1); 
-        
         opacity: 0; 
         box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         user-select: none;
@@ -525,7 +547,7 @@
         metaThemeColor.setAttribute('content', isDark ? '#1a1b16' : '#FCFBF9');
     }
 
-    // --- CAROUSEL LOGIC (YENİLENMİŞ - DÜZGÜN) ---
+    // --- CAROUSEL LOGIC ---
     const feedbacks = [
         {name: "ز*** م***", text: "وضعي قبل الجلسات كان وايد مشتت وماعرف شنو ابي وماعرف شلون اخذ قرار وحيل كنت خايفه ومولاقيه نفسي من بعد الجلسه الاولى والثانيه عدلت واااايد قررارات مصيريه لو كنت ماخذتها جان تورطت بس الحمدلله تبينت الامور كلها عدل معاي بفضل الله ثم فضلج حبيبتي  والفرق الي حسيته واجهت مخاوفي عرفت منو الي مأثر علي وعلى حياتي وجودتها وقاعده اتخطاه والاهم من هذا كله دعمج المستمر لي ان بأي وقت احتاجج تكونين موجوده وتردين علي حبيبتي ❤️❤️❤️❤️"},
         {name: "ش** ح**", text: "قبل الجلسات ما كنت واعية قديش في أشياء من الطفولة ممكن تترك أثر بحياتنا وإحساسنا وتصرفاتنا لما نكبر. كنت مفكرة إنو اللي بصير معي طبيعي أو مالو سبب واضح. خلال الجلسات، الأسئلة اللي بتسأليني ياها خلتني أوقف وأفكّر بحالي وبمشاعري بطريقة أعمق، وتخليني أربط أشياء ما كنت شايفتها من قبل. بعد الجلسة دايمًا بحس براحة، لأنّي عم شارك أحداث ومشاعر مع شخص بثق فيه، شخص ما بيحكم عليّ، وبنفس الوقت بيساعدني شوف الصح وأفهمه بدون ما يفرضه عليّ أو يقلي شو لازم أعمل. الفرق يمكن يكون بسيط، بس حقيقي ومريح"},
@@ -539,11 +561,9 @@
         {name: "ل** ال**", text: "زين انتي الملاك يلي دايما كان بدعائي ، رب العالمين حطك بطريقي لتكوني الرحمه لحياتي اتعلمت منك كتير هدوئك وطريقه طرحك للأسئه ، محبتك النابعه من القلب هي يلي خلتني كمل ولامره حسيت اني مجرد عميل جايه لتلقي عليه محاضره وتتركيه يتصارع مع حاله بدون جدوى ‎شكرا من جوا القلب لوجودك ودعمك ، شكرا لانك مخلصه ومؤمنه بالرساله يلي عم اتقدميها. كلامك بيعطيني امل وأمان ودافع اني كمل شكراً من القلب انك موجوده وشكراً لدعمك ♥️♥️ بحمد ربي انو الله وقفك بطريقي بحبك من قلبي ♥️♥️"}
     ];
 
-    // BAŞLANGIÇ: ORTADAN BAŞLA
     let activeIndex = Math.floor(feedbacks.length / 2);
     const track = document.getElementById('track');
 
-    // DOM OLUŞTURMA (SADECE BİR KEZ)
     function createCarouselItems() {
         track.innerHTML = '';
         feedbacks.forEach((fb, index) => {
@@ -551,7 +571,6 @@
             card.className = 'feedback-card';
             card.innerHTML = `<span class="feedback-name">${fb.name}</span><p class="feedback-quote">${fb.text}</p>`;
             
-            // Tıklayınca o karta git
             card.onclick = () => {
                 activeIndex = index;
                 updateClasses();
@@ -562,15 +581,12 @@
         updateClasses();
     }
 
-    // SINIFLARI GÜNCELLEME (SMOOTH TRANSITION İÇİN)
     function updateClasses() {
         const cards = document.querySelectorAll('.feedback-card');
         cards.forEach((card, index) => {
-            // Sınıfları temizle ve yeniden hesapla
-            card.className = 'feedback-card';
+            card.className = 'feedback-card'; // Sınıfları sıfırla
             
             let diff = index - activeIndex;
-            // Sonsuz döngü matematiği
             if (diff > feedbacks.length / 2) diff -= feedbacks.length;
             if (diff < -feedbacks.length / 2) diff += feedbacks.length;
 
@@ -591,7 +607,6 @@
         updateClasses();
     }
 
-    // Dokunmatik Kaydırma
     let touchStartX = 0;
     track.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
     track.addEventListener('touchend', e => {
@@ -604,12 +619,13 @@
     window.addEventListener('load', createCarouselItems);
     window.addEventListener('resize', createCarouselItems);
 
-
-    // --- MEVCUT JS (AYNEN KORUNDU) ---
+    // --- OTHER JS ---
     function openInfoModal(id) { document.getElementById(id).classList.add('open'); }
     function closeInfoModal(id) { document.getElementById(id).classList.remove('open'); }
     function openContactFromInfo(infoModalId, sessionKey) { closeInfoModal(infoModalId); openContactModal(); }
-    document.querySelectorAll('.info-modal').forEach(m => { m.addEventListener('click', (e) => { if(e.target === m) m.classList.remove('open'); }); });
+    document.querySelectorAll('.info-modal').forEach(m => {
+        m.addEventListener('click', (e) => { if(e.target === m) m.classList.remove('open'); });
+    });
 
     const modal = document.getElementById('contactModal');
     function openContactModal(){ modal.classList.add('open'); document.body.classList.add('modal-open'); }
@@ -633,7 +649,6 @@
     function updateCount(el, countId) { document.getElementById(countId).textContent = toEasternArabic(el.value.length) + "/٥٠٠"; }
 
     const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
-    
     async function loadCountries(){
        const res = await fetch(COUNTRIES_URL); const list = await res.json();
        list.sort((a,b)=>a.name.localeCompare(b.name));
