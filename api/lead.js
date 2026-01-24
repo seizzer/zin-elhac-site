@@ -1,151 +1,813 @@
-import { Resend } from 'resend';
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zin Diary | زين الحاج</title>
+  <meta name="description" content="Zîn Elhac — yaşam koçluğu seans ve paketleri" />
+  
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-schemes" content="light">
+  <meta name="theme-color" content="#FCFBF9" id="meta-theme-color">
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  
+  <link rel="icon" href="favicon.png?v=3" type="image/png">
 
-// ÜRÜN KATALOĞU
-const CATALOG = {
-  // Seans 1: Sakina
-  "seans-1-tekli": { name: 'لقاء "سكينة" (Single)', price: 110 },
-  "seans-1-uclu":  { name: 'لقاء "سكينة" (3 Sessions)', price: 295 },
+  <style>
+    :root{
+      color-scheme: light; 
+      
+      /* --- BASE64 IMAGES --- */
+      --bg-img-main: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Crect width='10' height='10' fill='%23FCFBF9'/%3E%3C/svg%3E");
+      --bg-img-alt: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Crect width='10' height='10' fill='%23FAF7F5'/%3E%3C/svg%3E");
+      --bg-img-header: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1' height='1' fill='%23FCFBF9' opacity='0.95'/%3E%3C/svg%3E");
+      --bg-img-btn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'%3E%3Crect width='1' height='1' fill='%23626a48'/%3E%3C/svg%3E");
 
-  // Seans 2: Abur (Al-Ubur)
-  "seans-2-tekli": { name: 'لقاء "العبور" (Single)', price: 147 },
-  "seans-2-uclu":  { name: 'لقاء "العبور" (3 Sessions)', price: 395 }
-};
-
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  try {
-    const { 
-      firstName, lastName, phonePrefix, phoneRaw, 
-      sessions, email, message,
-      q1, q2, q3, q4, q5, q6, q7, q8
-    } = req.body;
-
-    const name = `${firstName || ''} ${lastName || ''}`.trim();
-    const phone = `${phonePrefix || ''}${phoneRaw || ''}`.replace(/\D/g, ''); 
-    const clientEmail = email || 'Belirtilmedi';
-    const clientMessage = message || 'Mesaj bırakılmadı.';
-
-    if (!phone) return res.status(400).json({ error: 'Telefon zorunlu.' });
-
-    // SEPET HESAPLAMA
-    let selectedNames = [];
-    let totalPrice = 0;
-
-    const allItems = sessions || [];
-
-    if (allItems.length > 0) {
-      allItems.forEach(itemKey => {
-        const product = CATALOG[itemKey];
-        if (product) {
-          selectedNames.push(product.name);
-          totalPrice += product.price;
-        } else {
-          selectedNames.push(itemKey);
-        }
-      });
-    } else {
-      selectedNames.push("لم يتم الاختيار"); // Seçim Yapılmadı
+      /* --- VARS --- */
+      --bg-body: #FCFBF9;
+      --bg-header: #FCFBF9; 
+      --bg-card: #FCFBF9;
+      --bg-alt: #faf7f5;
+      --c3: #626a48;
+      --c2: #b36932;
+      --c1: #f5f0eb;
+      
+      --text-main: #626a48;
+      --text-soft: #858b73;
+      --border-color: rgba(0,0,0,0.08);
+      
+      --headerH:70px; --footerH:80px;
+      --ease: cubic-bezier(.16,.92,.18,1); 
+      --side-margin: 20px;
     }
 
-    const selectedItemsStr = selectedNames.join(", ");
-    const totalDetailsStr = `${totalPrice}$`;
+    /* --- DARK MODE --- */
+    body.dark-mode {
+      --bg-img-main: none !important;
+      --bg-img-alt: none !important;
+      --bg-img-header: none !important;
+      --bg-img-btn: none !important;
+      
+      --bg-body: #1a1b16;
+      --bg-header: rgba(26, 27, 22, 0.95);
+      --bg-card: #23251f;
+      --bg-alt: #1f211b;
+      
+      --text-main: #e7dbd0;
+      --text-soft: #b0b5a0;
+      --border-color: rgba(255,255,255,0.1);
+    }
 
-    // WHATSAPP GÖNDERİMİ
-    const waResponse = await fetch(
-      `https://graph.facebook.com/v21.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.WHATSAPP_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messaging_product: "whatsapp",
-          to: phone, 
-          type: "template",
-          template: {
-            name: process.env.WHATSAPP_TEMPLATE_NAME,
-            language: { code: "ar" },
-            components: [
-              {
-                type: "body",
-                parameters: [
-                  { type: "text", text: selectedItemsStr },
-                  { type: "text", text: totalDetailsStr }
-                ],
-              },
-            ],
-          },
-        }),
-      }
-    );
+    @media (min-width: 1200px) {
+      :root{ --side-margin: 275px; }
+    }
 
-    const waData = await waResponse.json();
+    *{box-sizing:border-box;}
+    html,body{height:100%;}
+    html{scroll-behavior:smooth;}
     
-    // MAIL GÖNDERİMİ (ARAPÇA TABLO)
-    await resend.emails.send({
-      from: process.env.RESEND_FROM,
-      to: process.env.OWNER_EMAIL,
-      subject: `طلب جديد: ${name}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; direction: rtl; text-align: right;">
-            <div style="background-color: #626a48; padding: 20px; text-align: center;">
-                <h2 style="color: #ffffff; margin: 0;">طلب استشارة جديد 🎉</h2>
-            </div>
-            <div style="padding: 20px; background-color: #fcfbf9;">
-                
-                <h3 style="color:#b36932; border-bottom:1px solid #ddd; padding-bottom:10px;">👤 البيانات الشخصية والطلب</h3>
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
-                    <tr><td style="padding:8px; border-bottom:1px solid #eee; font-weight:bold; width: 150px;">الاسم والكنية</td><td style="padding:8px; border-bottom:1px solid #eee;">${name}</td></tr>
-                    <tr><td style="padding:8px; border-bottom:1px solid #eee; font-weight:bold;">رقم الهاتف</td><td style="padding:8px; border-bottom:1px solid #eee; direction: ltr; text-align: right;">${phone}</td></tr>
-                    <tr><td style="padding:8px; border-bottom:1px solid #eee; font-weight:bold;">البريد الإلكتروني</td><td style="padding:8px; border-bottom:1px solid #eee;">${clientEmail}</td></tr>
-                    <tr><td style="padding:8px; border-bottom:1px solid #eee; font-weight:bold;">الباقة المختارة</td><td style="padding:8px; border-bottom:1px solid #eee; color:#d35400; font-weight:bold;">${selectedItemsStr}</td></tr>
-                    <tr><td style="padding:8px; border-bottom:1px solid #eee; font-weight:bold;">المبلغ</td><td style="padding:8px; border-bottom:1px solid #eee;">${totalDetailsStr}</td></tr>
-                </table>
+    body{
+      margin:0; 
+      font-family: "Noto Kufi Arabic", Arial, sans-serif;
+      font-weight: 300; overflow-x:hidden;
+      transition: background-color 0.4s ease, color 0.4s ease;
+      background-color: var(--bg-body);
+      background-image: var(--bg-img-main);
+      background-repeat: repeat;
+      color: var(--text-main);
+      forced-color-adjust: none;
+    }
 
-                <h3 style="color:#b36932; border-bottom:1px solid #ddd; padding-bottom:10px;">📋 استمارة المقابلة الأولية</h3>
-                <div style="background:#fff; padding:15px; border:1px solid #eee; border-radius:5px;">
-                    <p><strong>1. الأعراض والتحديات الرئيسية:</strong><br>${q1 || '-'}</p>
-                    <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
-                    
-                    <p><strong>2. متى بدأت هذه الأعراض:</strong><br>${q2 || '-'}</p>
-                    <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
-                    
-                    <p><strong>3. أوقات التفاقم (تزداد سوءاً):</strong><br>${q3 || '-'}</p>
-                    <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
-                    
-                    <p><strong>4. هل تم التشخيص مسبقاً؟</strong><br>👉 ${q4 || '-'}</p>
-                    <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
+    /* --- SAMSUNG FIX --- */
+    body:not(.dark-mode) h1, body:not(.dark-mode) h2, body:not(.dark-mode) h3, body:not(.dark-mode) p, body:not(.dark-mode) span, body:not(.dark-mode) label, body:not(.dark-mode) .nav-item, body:not(.dark-mode) .logo-top, body:not(.dark-mode) .logo-ar, body:not(.dark-mode) li, body:not(.dark-mode) strong, body:not(.dark-mode) .feedback-name, body:not(.dark-mode) .feedback-quote {
+        color: transparent; text-shadow: 0 0 0 var(--text-main);
+    }
+    body:not(.dark-mode) li::marker { color: var(--text-main); text-shadow: none; }
+    body:not(.dark-mode) .about-p, body:not(.dark-mode) .card-desc, body:not(.dark-mode) .footer-text, body:not(.dark-mode) .info-text, body:not(.dark-mode) .info-text li, body:not(.dark-mode) .info-text strong, body:not(.dark-mode) .feedback-quote {
+        text-shadow: 0 0 0 var(--text-soft);
+    }
 
-                    <p><strong>5. هل يتناول أدوية حالياً؟</strong><br>👉 ${q5 || '-'}</p>
-                    <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
+    /* --- PROTECTED ELEMENTS --- */
+    button, input, select, textarea, .btn-submit, .info-cta-btn, .scroll-btn, .icon-btn, .info-close, .modal-head button, .theme-btn, .nav-arrow, .carousel-nav {
+        text-shadow: none !important; opacity: 1 !important;
+    }
+    .info-close, .modal-head button { color: #333333 !important; -webkit-text-fill-color: #333333 !important; }
+    body.dark-mode .info-close, body.dark-mode .modal-head button { color: #fff !important; -webkit-text-fill-color: #fff !important; }
+    .btn-submit, .info-cta-btn { background-color: var(--c3) !important; background-image: var(--bg-img-btn) !important; background-size: cover; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; height: auto; min-height: 44px; }
+    .info-cta-btn:hover, .btn-submit:hover { background-color: var(--c2) !important; background-image: none !important; }
+    input[type="checkbox"], input[type="radio"] { -webkit-appearance: auto; appearance: auto; opacity: 1 !important; }
+    body:not(.dark-mode) .motto-text { color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; text-shadow: 0 2px 15px rgba(0,0,0,0.5) !important; }
+    
+    body.modal-open { overflow: hidden; }
+    a{color:inherit; text-decoration:none;}
+    button{font-family:inherit; color:inherit;}
+    ::selection{background: #c65c75; color: #fff; text-shadow: none;}
 
-                    <p><strong>6. تجربة العلاج السابقة:</strong><br>👉 ${q6 || '-'}</p>
-                    <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
-                    
-                    <p><strong>7. التوقعات والأهداف:</strong><br>${q7 || '-'}</p>
-                    <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
+    /* HEADER */
+    header{ position:fixed; inset:0 0 auto 0; height:var(--headerH); z-index:50; background-color: var(--bg-header); background-image: var(--bg-img-header) !important; background-repeat: repeat; backdrop-filter: blur(12px); border-bottom:1px solid var(--border-color); padding: 0 var(--side-margin); transition: padding 0.3s ease, background 0.4s ease, border 0.4s ease; }
+    .header-inner{ height:100%; width:100%; margin:0; display:flex; align-items:center; justify-content:space-between; }
+    .logo-block{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; line-height:1; text-align:center; user-select: none; pointer-events: none; margin-right: 20px; }
+    .logo-top{font-weight:400; font-size:17px; letter-spacing:.02em;}
+    .logo-sep{ width:60px; height:1px; background: linear-gradient(90deg, transparent, var(--text-main), transparent); opacity: .6; margin: 2px 0; }
+    .logo-ar{font-weight:400; font-size:16px;}
+    nav{ display:flex; gap:32px; align-items:center; justify-content:flex-start; flex:1; }
+    .nav-item{ position:relative; padding:10px 0; font-weight:400; font-size: 17px; letter-spacing:.01em; transition:color 180ms var(--ease); cursor: pointer; }
+    .theme-btn { background: none; border: none; cursor: pointer; color: var(--text-main); opacity: 0.8; padding: 5px; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s, transform 0.2s; text-shadow: none !important; }
+    .theme-btn:hover { opacity: 1; transform: rotate(15deg); }
+    .theme-btn svg { width: 22px; height: 22px; fill: currentColor; }
 
-                    <p><strong>8. توفر الوقت والعزيمة:</strong><br>${q8 || '-'}</p>
+    /* FOOTER */
+    footer{ position:fixed; inset:auto 0 0 0; height:var(--footerH); z-index:50; background-color: var(--bg-header); background-image: var(--bg-img-header) !important; background-repeat: repeat; backdrop-filter: blur(16px); border-top:1px solid var(--border-color); transition: background 0.4s ease, border 0.4s ease; }
+    .footer-inner{ height:100%; width:100%; padding: 0 40px; margin:0 auto; display:flex; flex-direction: column; align-items:center; justify-content:center; gap: 6px; }
+    .social{display:flex; gap:16px; align-items: center;}
+    .footer-sep { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--text-main), transparent); opacity: .6; margin: 2px 0; }
+    .icon-btn{width:20px; height:20px; color:var(--text-main); opacity:.8; transition:opacity .2s; display: block; text-shadow: none !important;}
+    .icon-btn:hover{opacity:1;}
+    .icon-btn svg { width: 100%; height: 100%; fill: currentColor; }
+    .footer-text { font-size: 11px; letter-spacing: 0.05em; }
+    main{padding-top:0; padding-bottom:var(--footerH);}
+
+    /* GENEL SECTION */
+    section { position: relative; min-height: 100vh; padding: 40px var(--side-margin); display: flex; flex-direction: column; justify-content: flex-start; scroll-margin-top: 70px; }
+    .section-head{margin-bottom: 20px; text-align: right;} 
+    .section-head h2{ font-size: 36px; font-weight: 400; margin: 0; padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); display: inline-block; margin-right: 4px; border-color: var(--border-color); }
+
+    /* HERO */
+    #hero { padding: 0; align-items: center; justify-content: center; overflow: hidden; background-color: var(--c1); height: 100vh; margin-bottom: 0; padding-bottom: 11px; }
+    .hero-bg { position: absolute; inset: 0; background-image: url('motto.jpg'); background-size: cover; background-position: center; z-index: 0; }
+    .hero-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.2); backdrop-filter: blur(2px); z-index: 1; }
+    .hero-content { position: relative; z-index: 2; text-align: center; color: #fff; max-width: 800px; padding: 20px; }
+    .hero-content * { color: #fff !important; text-shadow: 0 2px 10px rgba(0,0,0,0.5) !important; }
+    .motto-text { font-size: clamp(28px, 5vw, 54px); font-weight: 600; line-height: 1.4; color: #ffffff !important; }
+    
+    .scroll-btn { position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%); z-index: 10; padding: 14px 32px; border: 1px solid #ffffff !important; font-size: 16px; background: rgba(255,255,255,0.1); backdrop-filter: blur(4px); border-radius: 50px; cursor: pointer; transition: all 0.3s ease; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; text-shadow: none !important; }
+    .scroll-btn:hover { background-color: #ffffff !important; color: var(--c3) !important; -webkit-text-fill-color: var(--c3) !important; }
+
+    /* SEANSLAR */
+    #seanslar { background-color: var(--bg-body); background-image: var(--bg-img-main); padding-top: 40px; padding-bottom: 120px; min-height: 100vh; height: auto; transition: background-color 0.4s ease; }
+    .sessions-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 10px; }
+    .session-card { flex: 0 1 400px; background-color: var(--bg-card); background-image: var(--bg-img-main); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease, border 0.4s ease; cursor: pointer; position: relative; }
+    .session-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(98, 106, 72, 0.15); }
+    .card-img { width: 100%; aspect-ratio: 1/1; background-size: cover; background-position: center; border-bottom: 1px solid var(--border-color); }
+    #img-s1 { background-image: url('seans 1.jpg'); }
+    #img-s2 { background-image: url('seans 2.jpg'); }
+    .card-meta { padding: 24px; text-align: center; }
+    .card-title { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+    .card-desc { font-size: 14px; line-height: 1.6; }
+
+    /* HAKKIMDA (Sıkı) */
+    #hakkimda { background-color: var(--bg-alt); background-image: var(--bg-img-alt); padding-top: 40px; min-height: 85vh; padding-bottom: 120px; transition: background-color 0.4s ease; position: relative; z-index: 2; }
+    .about-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; position: relative; min-height: 600px; align-items: start; }
+    .about-text { direction: rtl; text-align: right; margin-top: -50px; max-width: 100%; }
+    .about-p { margin-bottom: 8px; font-size: 13.5px; line-height: 1.5; }
+    .about-text ul { margin: 5px 0; padding-right: 20px; list-style-type: disc; list-style-position: inside; }
+    .about-text li { margin-bottom: 4px; font-size: 13.5px; }
+    .about-text .btn-submit { margin-top: 15px !important; width: auto; padding: 12px 24px; font-size: 14px; }
+    .about-img-wrapper { position: relative; height: 100%; width: 100%; }
+    .about-photo { width: 600px; height: 600px; background-image: url('zin.jpg'); background-size: cover; background-position: center; position: absolute; left: 61.5px; top: -50px; box-shadow: 10px 10px 0px rgba(0,0,0,0.03); border-radius: 12px; }
+
+    /* FEEDBACK (FIXED & GLIDING) */
+    #feedback { background-color: var(--bg-body); background-image: var(--bg-img-main); padding-top: 20px; padding-bottom: 80px; min-height: 85vh; overflow: hidden; transition: background-color 0.4s ease; display: flex; flex-direction: column; justify-content: flex-start; position: relative; z-index: 5; }
+    .carousel-container { position: relative; width: 100%; max-width: 1000px; margin: auto; padding: 20px 0; height: 650px; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
+    .carousel-track { display: flex; align-items: center; gap: 20px; width: 100%; height: 100%; justify-content: center; transform-style: preserve-3d; }
+    
+    .feedback-card { position: absolute; width: 320px; height: 600px; padding: 40px 30px; background-color: var(--bg-card); background-image: var(--bg-img-main); border: 1px solid var(--border-color); border-radius: 12px; text-align: right; direction: rtl; transition: all 0.7s cubic-bezier(0.4, 0.0, 0.2, 1); opacity: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.05); user-select: none; cursor: pointer; overflow-y: auto; display: flex; flex-direction: column; justify-content: flex-start; scrollbar-width: thin; scrollbar-color: var(--c3) transparent; }
+    .feedback-card::-webkit-scrollbar { width: 4px; }
+    .feedback-card::-webkit-scrollbar-thumb { background-color: var(--c3); border-radius: 4px; }
+    .feedback-card.active { opacity: 1; transform: translateX(0) scale(1.1); z-index: 10; filter: blur(0); border-color: var(--c3); box-shadow: 0 20px 50px rgba(98, 106, 72, 0.15); }
+    .feedback-card.prev { opacity: 0.6; transform: translateX(-380px) scale(0.85); z-index: 5; filter: blur(2px); pointer-events: none; }
+    .feedback-card.next { opacity: 0.6; transform: translateX(380px) scale(0.85); z-index: 5; filter: blur(2px); pointer-events: none; }
+    .feedback-card.hidden { opacity: 0; transform: translateX(0) scale(0.5); pointer-events: none; z-index: 0; }
+
+    .feedback-name { font-weight: 700; color: var(--c3); margin-bottom: 15px; font-size: 18px; }
+    .feedback-quote { font-size: 15px; line-height: 1.8; color: var(--text-main); }
+    .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: var(--bg-card); border: 1px solid var(--border-color); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 50; color: var(--c3); font-size: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s, background 0.2s; }
+    .nav-arrow:hover { background: var(--c3); color: #fff; transform: translateY(-50%) scale(1.1); }
+    .nav-prev { left: 20px; }
+    .nav-next { right: 20px; }
+
+    /* MODAL VE DİĞERLERİ */
+    .modal{ position:fixed; inset:0; background: rgba(0, 0, 0, 0.4); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:100; opacity:0; pointer-events:none; transition: opacity .3s; padding: 20px; }
+    .modal.open{opacity:1; pointer-events:auto;}
+    .modal-card{ width: min(900px, 100%); background-color: var(--bg-card); background-image: var(--bg-img-main); border-radius: 8px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); transform: translateY(20px); transition: transform .3s; display: flex; flex-direction: column; max-height: 90vh; height: auto; color: var(--text-main); }
+    .modal.open .modal-card { transform: translateY(0); }
+    .modal-head{ padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; direction: rtl; flex-shrink: 0; }
+    .modal-body{ padding: 30px; direction: rtl; text-align: right; overflow-y: auto; flex: 1; scrollbar-width: thin; scrollbar-color: var(--c2) var(--border-color); }
+    .modal-body::-webkit-scrollbar { width: 8px; }
+    .modal-body::-webkit-scrollbar-track { background: var(--bg-body); }
+    .modal-body::-webkit-scrollbar-thumb { background-color: var(--c2); border-radius: 4px; }
+
+    /* --- FORM CSS (İLETİŞİM KUTUSU) --- */
+    .input-group { margin-bottom: 16px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 16px; }
+    label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main); }
+    input[type="text"], input[type="email"], input[type="tel"], select, textarea { width: 100%; padding: 0 12px; height: 48px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; text-align: right; font-size: 14px; box-sizing: border-box; background: #fff; color: #333 !important; transition: border-color 0.2s; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--c3); }
+    textarea { height: auto; min-height: 80px; resize: vertical; padding: 12px; }
+    .phone-container { display: flex; gap: 10px; align-items: stretch; }
+    .phone-container input { flex: 1; } 
+    .custom-select-wrapper { width: 100px; flex-shrink: 0; position: relative; height: 48px; border: 1px solid #ddd; border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center; }
+    .selected-display { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 14px; direction: ltr; color: #333 !important; font-weight: 500; pointer-events: none; z-index: 1; }
+    #phonePrefix { position: absolute; inset: 0; opacity: 0 !important; width: 100%; height: 100%; cursor: pointer; z-index: 2; }
+    .select-arrow { position: absolute; left: 8px; font-size: 10px; color: #666; pointer-events: none; z-index: 1; }
+
+    /* --- INFO POPUP --- */
+    .info-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+    .info-modal.open { opacity: 1; pointer-events: auto; }
+    .info-card { width: min(600px, 90%); background-color: var(--bg-card); background-image: var(--bg-img-main); border-radius: 12px; display: flex; flex-direction: column; position: relative; max-height: 85vh; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+    .info-modal.open .info-card { transform: scale(1); }
+    .info-close { position: absolute; top: 15px; right: 15px; z-index: 20; background: none; border: none; font-size: 24px; cursor: pointer; padding: 5px; }
+    .info-scroll-area { padding: 40px; overflow-y: auto; padding-bottom: 80px; scrollbar-width: thin; scrollbar-color: var(--c2) var(--border-color); }
+    .info-scroll-area ul { padding-right: 20px; list-style-type: disc; margin-top: 10px; }
+    .info-scroll-area li { margin-bottom: 10px; }
+    .info-scroll-area strong { font-weight: 700; color: var(--c3); }
+    .info-title { font-size: 24px; margin-bottom: 20px; font-weight: 600; text-align: center;}
+    .info-text { font-size: 15px; line-height: 1.8; text-align: justify; direction: rtl; }
+    .info-cta-btn { position: absolute; bottom: 20px; right: 20px; z-index: 10; border: none; padding: 12px 24px; border-radius: 50px; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; box-shadow: 0 4px 15px rgba(98, 106, 72, 0.3); transition: transform 0.2s, background 0.2s; }
+    .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px); background-color: var(--c3); color: #fff; padding: 16px 24px; border-radius: 50px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); font-size: 15px; z-index: 200; opacity: 0; transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); pointer-events: none; text-align: center; width: max-content; max-width: 90%; direction: rtl; text-shadow: none !important; -webkit-text-fill-color: #fff !important; }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .selection-area { background-color: var(--bg-alt); background-image: var(--bg-img-alt); padding: 20px; border-radius: 8px; margin: 20px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .sel-group-title { font-size: 14px; margin-bottom: 10px; font-weight: 600; }
+    .check-item { display: flex; align-items: center; gap: 10px; padding: 12px; background-color: var(--bg-card); background-image: var(--bg-img-main); border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
+    .check-item:hover { border-color: var(--c2); }
+    .check-item input { width: 18px; height: 18px; accent-color: var(--c2); margin: 0; flex-shrink: 0; }
+    .hidden { display: none; }
+    .price-tag { font-weight: bold; color: var(--c2); margin-right: auto; font-size: 14px; text-shadow: none !important; -webkit-text-fill-color: var(--c2) !important; }
+    .btn-submit { width: 100%; padding: 16px; border: none; font-size: 16px; cursor: pointer; margin-top: 20px; border-radius: 4px; }
+    .qa-area { margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 20px; }
+    .qa-group { margin-bottom: 20px; }
+    .qa-label { font-weight: 500; font-size: 14px; margin-bottom: 10px; display: block; }
+    .qa-radio-group { display: flex; flex-direction: column; gap: 8px; }
+    .qa-radio-label { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+    .qa-radio-label input { width: 16px; height: 16px; accent-color: var(--c2); margin: 0; }
+    .char-count { font-size: 11px; color: #999 !important; text-shadow: none !important; -webkit-text-fill-color: #999 !important; text-align: left; margin-top: 4px; direction: ltr; }
+    .consent-box { margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--border-color); }
+    .consent-box .check-item { margin-bottom: 10px; font-size: 13px; padding: 10px; border: 1px solid transparent; background: transparent; background-image: none !important; }
+    .consent-box .check-item:hover { border-color: #eee; }
+
+    /* RESPONSIVE & MOBILE FIX */
+    @media (max-width: 1400px) {
+        .about-photo { width: 100%; max-width: 400px; height: auto; aspect-ratio: 1/1; position: static; margin-left: auto; margin-right: auto; margin-top:0; box-shadow: 0 0 20px rgba(0,0,0,0.08); }
+        .about-layout { display: flex; flex-direction: column; min-height: auto; }
+        .about-img-wrapper { order: -1; margin-bottom: 5px; text-align: center; }
+        #hakkimda { padding-top: 20px; }
+        #seanslar { padding-top: 20px; } 
+        .hero-content { transform: translateY(-30px); }
+        .sessions-grid { flex-direction: column; align-items: center; }
+        .session-card { width: 100%; flex: auto; }
+        .selection-area { grid-template-columns: 1fr; }
+        .about-text { max-width: 100%; padding-top: 0; margin-top: 5px; }
+        .modal-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; margin-top: 0; }
+        .modal { padding: 0; }
+        .info-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; transform: none !important;}
+        header { height: var(--headerH); } 
+        
+        /* HEADER DÜZENLEMESİ */
+        .header-inner { flex-direction: row; justify-content: space-between; align-items: center; padding: 0 15px; height: 100%; }
+        .logo-block { margin: 0; transform: scale(0.9); }
+        nav { display: flex; gap: 8px; margin: 0; justify-content: flex-end; flex-wrap: nowrap; flex: 1; }
+        .nav-item { font-size: 11px; padding: 5px 2px; white-space: nowrap; }
+        .scroll-btn { bottom: 160px !important; }
+        
+        /* Carousel Mobil Ayarları */
+        #feedback { padding-top: 60px; height: auto; min-height: 90vh; }
+        .carousel-container { padding: 20px; max-width: 100%; height: 650px; overflow: visible; margin-top: 40px; }
+        .feedback-card { width: 260px; } 
+        .feedback-card.prev { transform: translateX(-105%) scale(0.85) !important; opacity: 0.5; filter: blur(1px); } 
+        .feedback-card.next { transform: translateX(105%) scale(0.85) !important; opacity: 0.5; filter: blur(1px); }
+        .carousel-nav { display: none; } 
+        .nav-arrow { display: none !important; } 
+        
+        .form-grid { grid-template-columns: 1fr; gap: 10px; } 
+    }
+  </style>
+</head>
+
+<body>
+  <div id="toast" class="toast">شكراً لتواصلك الطيب! ✨ التفاصيل وصلتك الآن عبر واتساب.</div>
+
+  <div class="info-modal" id="infoModal1">
+      <div class="info-card">
+          <button class="info-close" onclick="closeInfoModal('infoModal1')">✕</button>
+          
+          <div class="info-scroll-area">
+              <div class="info-title">لقاء "العبور"</div>
+              <div class="info-text">
+                هذا اللقاء مخصص للتحرر من الأعباء الفكرية والعاطفية التي استنزفت طاقتكِ. سنستخدم أدوات الدعم النفسي والكوتشينج للتعامل مع حالات التعلق، وبناء الاستحقاق الداخلي، وتجاوز المخاوف التي تمنعكِ من التغيير. هو مساحة آمنة لتفريغ ما يثقلكِ والعبور نحو حالة من السلام والانسجام مع ذاتكِ.<br><br>
+
+                <strong>المزايا المضافة (VIP Support):</strong>
+                <ul>
+                    <li>مكالمة تقييم مجانية (30 دقيقة): لفهم الجذور العميقة لحالتكِ.</li>
+                    <li>تمارين وتأمل خاص: تسجيل صوتي لتأمل صُمم خصيصاً لذبذباتكِ واحتياجكِ.</li>
+                    <li>متابعة دورية (واتساب): مرافقة مستمرة لضمان ثبات خطواتكِ.</li>
+                    <li>جلسة طوارئ مجانية في حال الاشتراك بالباقة: أنا معكِ قلباً وقالباً عند الحاجة القصوى.</li>
+                    <li>ميزة التجديد: خصم 10% عند رغبتكِ في تمديد باقة رحلة العبور معنا.</li>
+                </ul>
+                <br>
+
+                <strong>ميثاق رحلة التغيير و التوازن</strong><br>
+                أهلاً بكِ في هذه المساحة الآمنة. قبل أن نبدأ، إليكِ كيف تسير الأمور في مساري التدريبي:
+                <ul>
+                    <li><strong>بناء الرحلة:</strong> جلساتي ليست عشوائية؛ نحن نستند إلى منهجية الدعم النفسي الاجتماعي و الكوتشينج معاً. سنعمل بوضوح على تحديد قيمكِ، احتياجاتكِ، معتقداتكِ، فهم و تحرير مشاعرك مع "تمارين عملية، وتأملات خاصة" تُصمم لعمق حالتكِ.</li>
+                    <li><strong>ثقافة الالتزام:</strong> مدة الجلسات الفردية و الباقات صُممت لتمنحكِ الأثر الذي تستحقينه. إذا احتجتِ لتغيير موعدك، أرجو إبلاغي قبل 24 ساعة لنحافظ على تواصل صحي.</li>
+                    <li><strong>الاستثمار النفسي:</strong> دفعك للمبلغ هو التزامك أمام نفسكِ. المبالغ غير مستردة، فاجعلي هذا الاستثمار "حباً وإكراماً" لذاتك وتأكدي من قدرتك على تخصيص هذا الوقت لنفسكِ.</li>
+                    <li><strong>حدود الدعم:</strong> قلبي وعقلي معكِ طوال فترة اشتراككِ. التواصل متاح للطوارئ، لكن هدفي الأسمى هو أن تعتمدي على نفسكِ، وتجدي مركز قوتكِ الداخلي دون تعلق بالخارج.</li>
+                    <li><strong>أمانة الأدوات:</strong> ما تتعلمينه هنا هو لتمكينكِ الشخصي. هذه التقنيات هي ثمرة سنوات من البحث والتعلم، لذا أرجو احترام حدودي المهنية وعدم مشاركتها كأداة تدريبية للآخرين.</li>
+                    <li><strong>المسؤولية الذاتية:</strong> التمارين العملية التي نناقشها هي بمثابة الجلسات. فهي مسؤوليتكِ، فامنحيها المساحة التي تستحق في يومكِ لتستقبلي منها أقصى استفادة.</li>
+                </ul>
+              </div>
+          </div>
+          <button class="info-cta-btn" onclick="openContactFromInfo('infoModal1')">تواصلي معي</button>
+      </div>
+  </div>
+
+  <div class="info-modal" id="infoModal2">
+      <div class="info-card">
+          <button class="info-close" onclick="closeInfoModal('infoModal2')">✕</button>
+          
+          <div class="info-scroll-area">
+              <div class="info-title">لقاء "سكينة"</div>
+              <div class="info-text">
+                إذا كنتِ تشعرين بالتشتت أو تجدين صعوبة في اتخاذ قراراتكِ، فهذا اللقاء صُمم ليمنحكِ الوضوح. سنعمل معاً على ترتيب أفكاركِ، وتحديد القيم والأهداف التي تشبهكِ حقاً، وتفكيك المعتقدات التي تعيق تقدمكِ. هدفنا أن تخرجي برؤية واضحة وخطوات عملية تعيد لبيئة حياتكِ توازنها.<br><br>
+
+                <strong>المزايا المضافة:</strong>
+                <ul>
+                    <li>مكالمة تقييم مجانية (20 دقيقة): لنضع النقاط على الحروف قبل البدء.</li>
+                    <li>تمارين عملية: مصممة خصيصاً لتناسب تحدياتكِ الحالية.</li>
+                    <li>متابعة أسبوعية (واتساب): مساحة مخصصة للإجابة على تساؤلاتكِ ودعم خطواتكِ.</li>
+                </ul>
+                <br>
+
+                <strong>ميثاق رحلة التغيير و التوازن</strong><br>
+                أهلاً بكِ في هذه المساحة الآمنة. قبل أن نبدأ، إليكِ كيف تسير الأمور في مساري التدريبي:
+                <ul>
+                    <li><strong>بناء الرحلة:</strong> جلساتي ليست عشوائية؛ نحن نستند إلى منهجية الدعم النفسي الاجتماعي و الكوتشينج معاً. سنعمل بوضوح على تحديد قيمكِ، احتياجاتكِ، معتقداتكِ، فهم و تحرير مشاعرك مع "تمارين عملية، وتأملات خاصة" تُصمم لعمق حالتكِ.</li>
+                    <li><strong>ثقافة الالتزام:</strong> مدة الجلسات الفردية و الباقات صُممت لتمنحكِ الأثر الذي تستحقينه. إذا احتجتِ لتغيير موعدك، أرجو إبلاغي قبل 24 ساعة لنحافظ على تواصل صحي.</li>
+                    <li><strong>الاستثمار النفسي:</strong> دفعك للمبلغ هو التزامك أمام نفسكِ. المبالغ غير مستردة، فاجعلي هذا الاستثمار "حباً وإكراماً" لذاتك وتأكدي من قدرتك على تخصيص هذا الوقت لنفسكِ.</li>
+                    <li><strong>حدود الدعم:</strong> قلبي وعقلي معكِ طوال فترة اشتراككِ. التواصل متاح للطوارئ، لكن هدفي الأسمى هو أن تعتمدي على نفسكِ، وتجدي مركز قوتكِ الداخلي دون تعلق بالخارج.</li>
+                    <li><strong>أمانة الأدوات:</strong> ما تتعلمينه هنا هو لتمكينكِ الشخصي. هذه التقنيات هي ثمرة سنوات من البحث والتعلم، لذا أرجو احترام حدودي المهنية وعدم مشاركتها كأداة تدريبية للآخرين.</li>
+                    <li><strong>المسؤولية الذاتية:</strong> التمارين العملية التي نناقشها هي بمثابة الجلسات. فهي مسؤوليتكِ، فامنحيها المساحة التي تستحق في يومكِ لتستقبلي منها أقصى استفادة.</li>
+                </ul>
+              </div>
+          </div>
+          <button class="info-cta-btn" onclick="openContactFromInfo('infoModal2')">تواصلي معي</button>
+      </div>
+  </div>
+
+  <header>
+    <div class="header-inner">
+      <nav>
+        <button class="theme-btn" onclick="toggleTheme()" title="تغيير الوضع">
+            <svg id="icon-moon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+            <svg id="icon-sun" style="display:none;" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="5" />
+                <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+        </button>
+        <a class="nav-item" href="#seanslar">اللقاءات الفردية</a>
+        <a class="nav-item" href="#hakkimda">مين أنا؟</a>
+        <a class="nav-item" href="#feedback">آراء المتدربات</a>
+        <a class="nav-item" onclick="openContactModal()">تواصل</a>
+      </nav>
+
+      <div class="logo-block">
+        <div class="logo-top">Zîn</div>
+        <div class="logo-sep"></div>
+        <div class="logo-ar">زين</div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="motto-text">
+                "كل ما تؤمنين به بداخلكِ.. سيأتيكِ. دعينا نختار معاً ما يستحق أن تؤمني به."
+            </h1>
+        </div>
+        <button class="scroll-btn" onclick="document.getElementById('seanslar').scrollIntoView()">اللقاءات الفردية</button>
+    </section>
+
+    <section id="seanslar">
+        <div class="section-head"><h2>اللقاءات الفردية</h2></div>
+        <div class="sessions-grid">
+            <div class="session-card" onclick="openInfoModal('infoModal2')">
+                <div class="card-img" id="img-s1"></div>
+                <div class="card-meta">
+                    <div class="card-title">لقاء "سكينة"</div>
+                    <div class="card-desc">نسمة هوا لقلبك. بنتحرر من وجع قديم، وبنفرغ التقل اللي بصدرك لترتاح روحك وتصفى.</div>
                 </div>
+            </div>
 
-                <h3 style="color:#b36932; border-bottom:1px solid #ddd; padding-bottom:10px; margin-top:25px;">💬 رسالة إضافية</h3>
-                <p style="background:#eee; padding:10px; border-radius:4px; font-style:italic;">"${clientMessage}"</p>
-
+            <div class="session-card" onclick="openInfoModal('infoModal1')">
+                <div class="card-img" id="img-s2"></div>
+                <div class="card-meta">
+                    <div class="card-title">لقاء "العبور"</div>
+                    <div class="card-desc">الرحلة المتكاملة. لقاء يجمع بين راحة القلب ونور العقل لخطوة كبيرة نحو نسختك الجديدة.</div>
+                </div>
             </div>
         </div>
-      `,
+    </section>
+
+    <section id="hakkimda">
+        <div class="section-head"><h2>مين أنا؟</h2></div>
+        <div class="about-layout">
+            <div class="about-text">
+                <p class="about-p">
+                    رحلة من البحث عن المعنى إلى سكينة التسليم<br><br>
+                    أنا زيِن، مرافقة في رحلة الوعي والتمكين النفسي.<br>
+                    بدأت رحلتي من تلك اللحظة التي قررت فيها أن أنظر إلى جروحي لا كعقبات، بل كـ "منافذ للنور". مريت بمرحلة من الانطفاء والتغييب في سنوات كان من المفترض أن تكون الأزهى، لكن تلك العتمة هي التي دفعتني للبحث عن المعنى ببطء وعمق.<br><br>
+                    اليوم، لا أقدم لكِ مجرد جلسات تدريبية؛ بل أقدم لكِ مزيجاً من المسار الأكاديمي في الدعم النفس-اجتماعي وتقنيات الكوتشينج، وبين حكمة التجربة التي علمتني أن أرى الجانب الرقيق في كل شيء.
+                </p>
+                <p class="about-p">
+                    فلسفتي بسيطة لكنها عميقة:
+                    <ul>
+                        <li>لا أستعجل التغيير: أؤمن أن فهم الحياة يحتاج إلى "بطء واعي" لاستيعاب الدروس.</li>
+                        <li>لا أطلق الأحكام: أتعامل مع كل حالة بحياد تام، لأنني أؤمن أن لكل إنسان الحق في أن يكون كما هو، وانسجامي مع نفسي والحياة هو محرّكي الأول.</li>
+                        <li>أعلّم ما أتعلّمه: رحلتي مستمرة، وكل بصيرة أصل إليها في تسليمي ويقيني بالله، أضعها بين يديكِ لتكون جسراً لاستحقاقكِ الداخلي.</li>
+                    </ul>
+                </p>
+                <p class="about-p">
+                    ساعدتُ مئات النساء على العودة لذواتهنّ، ليس من خلال الوعود البراقة، بل من خلال مواجهة مخاوف التغيير، تفكيك المعتقدات، والتحرر الفكري والعاطفي الذي يبدأ من الداخل ليظهر أثره في الخارج.<br><br>
+                    رسالتي لكِ:<br>
+                    افهمي حياتكِ ببطء، فالنور لا يحتاج إلى عجلة ليعبر من خلالكِ.. أنا هنا لنُعيد ترتيب الانعكاس، حتى ينسجم واقعكِ مع حقيقتك.
+                </p>
+                <button class="btn-submit" style="width: auto; margin-top: 20px;" onclick="openContactModal()">تواصلي معي</button>
+            </div>
+            <div class="about-img-wrapper">
+                <div class="about-photo"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="feedback">
+        <div class="section-head"><h2>آراء المتدربات</h2></div>
+        
+        <div class="carousel-container">
+            <button class="nav-arrow nav-prev" onclick="prevCard()">&#10095;</button>
+            
+            <div class="carousel-track" id="track">
+                </div>
+            
+            <button class="nav-arrow nav-next" onclick="moveCarousel(1)">&#10094;</button>
+        </div>
+    </section>
+
+  </main>
+
+  <div class="modal" id="contactModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <strong>حجز موعد</strong>
+        <button onclick="closeContactModal()" style="border:none; background:none; cursor:pointer; font-size:20px;">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="contactForm">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+             <div><label>الاسم</label><input id="firstName" required type="text"></div>
+             <div><label>الكنية</label><input id="lastName" required type="text"></div>
+          </div>
+          
+          <label>الدولة & الهاتف</label>
+          <div style="display:flex; gap:10px;">
+             <div class="phone-container">
+                 <div class="custom-select-wrapper">
+                     <div id="selectedCode" class="selected-display">+90</div>
+                     <select id="phonePrefix" required onchange="updateSelectedCode()"></select>
+                     <div class="select-arrow">▼</div>
+                 </div>
+                 <input id="phone" required type="tel" placeholder="5xx xxx xx xx">
+              </div>
+          </div>
+          
+          <label>البريد الإلكتروني</label>
+          <input id="email" required type="email">
+
+          <div class="selection-area">
+             <div class="step-1">
+                <div class="sel-group-title">1. اختر اللقاء</div>
+                <label class="check-item">
+                    <input type="checkbox" name="main_session" value="seans1" onchange="handleSessionChange(this)">
+                    <span>لقاء "سكينة"</span>
+                </label>
+                <label class="check-item">
+                    <input type="checkbox" name="main_session" value="seans2" onchange="handleSessionChange(this)">
+                    <span>لقاء "العبور"</span>
+                </label>
+             </div>
+
+             <div class="step-2 hidden" id="typeSelection">
+                <div class="sel-group-title">2. اختر النوع</div>
+                <label class="check-item">
+                    <input type="checkbox" name="sub_type" value="tekli" onchange="handleTypeChange(this)">
+                    <span>جلسة واحدة</span>
+                    <span class="price-tag" id="price-tekli"></span>
+                </label>
+                <label class="check-item">
+                    <input type="checkbox" name="sub_type" value="uclu" onchange="handleTypeChange(this)">
+                    <span>باقة 3 جلسات</span>
+                    <span class="price-tag" id="price-uclu"></span>
+                </label>
+             </div>
+          </div>
+
+          <div class="qa-area hidden" id="qaArea">
+            <div class="qa-group">
+                <label class="qa-label">ما هي الأعراض أو التحديات الرئيسية التي تواجهك حالياً؟</label>
+                <textarea id="q1" maxlength="500" oninput="updateCount(this, 'c1')" required></textarea>
+                <div class="char-count" id="c1">٠/٥٠٠</div>
+            </div>
+
+            <div class="qa-group"><label class="qa-label">متى بدأت هذه الأعراض أو التحديات لأول مرة؟</label><textarea id="q2" maxlength="500" oninput="updateCount(this, 'c2')" required></textarea><div class="char-count" id="c2">٠/٥٠٠</div></div>
+            <div class="qa-group"><label class="qa-label">ما هي المواقف أو الأوقات التي تشعر فيها بأنك تزداد سوءاً؟</label><textarea id="q3" maxlength="500" oninput="updateCount(this, 'c3')" required></textarea><div class="char-count" id="c3">٠/٥٠٠</div></div>
+            <div class="qa-group"><label class="qa-label">هل سبق وتم تشخيصك من قبل؟</label><div class="qa-radio-group"><label class="qa-radio-label"><input type="radio" name="q4" value="نعم" required> نعم</label><label class="qa-radio-label"><input type="radio" name="q4" value="لا" required> لا</label></div></div>
+            <div class="qa-group"><label class="qa-label">هل تتناول أي أدوية حالياً مرتبطة بالحالة النفسية؟</label><div class="qa-radio-group"><label class="qa-radio-label"><input type="radio" name="q5" value="نعم" required> نعم</label><label class="qa-radio-label"><input type="radio" name="q5" value="لا" required> لا</label></div></div>
+            <div class="qa-group"><label class="qa-label">هل سبق وخضعت لجلسات علاج نفسي أو إرشاد مع معالج أو كوتش؟</label><div class="qa-radio-group"><label class="qa-radio-label"><input type="radio" name="q6" value="نعم، كانت تجربة إيجابية" required> نعم، كانت تجربة إيجابية</label><label class="qa-radio-label"><input type="radio" name="q6" value="نعم، كانت تجربة غير مرضية" required> نعم، كانت تجربة غير مرضية</label><label class="qa-radio-label"><input type="radio" name="q6" value="لا، هذه هي المرة الأولى" required> لا، هذه هي المرة الأولى</label></div></div>
+            <div class="qa-group"><label class="qa-label">ما هي توقعاتك و أهدافك من الجلسات؟</label><textarea id="q7" maxlength="500" oninput="updateCount(this, 'c7')" required></textarea><div class="char-count" id="c7">٠/٥٠٠</div></div>
+            <div class="qa-group"><label class="qa-label">هل لديك الوقت والعزم لحضور الجلسات بشكل منتظم؟</label><textarea id="q8" maxlength="500" oninput="updateCount(this, 'c8')" required></textarea><div class="char-count" id="c8">٠/٥٠٠</div></div>
+
+            <div class="qa-group" style="margin-top:20px;">
+                <label class="qa-label">رسالة إضافية (اختياري)</label>
+                <textarea id="message" rows="3"></textarea>
+            </div>
+
+            <div class="consent-box">
+                <label class="check-item"><input type="checkbox" required><span>أوافق على تلقي رسائل معلوماتية عبر تطبيق واتساب.</span></label>
+                <label class="check-item"><input type="checkbox" required><span>أعلم أنه يمكنني الإلغاء في أي وقت بكتابة "STOP".</span></label>
+                <label class="check-item"><input type="checkbox" required><span>قرأت ووافقت على <a href="https://zindiary.com/legal.html" target="_blank" style="text-decoration:underline; color:var(--c2);">سياسة الخصوصية وحماية البيانات</a>.</span></label>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">إرسال</button>
+          </div>
+          
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- DARK MODE LOGIC ---
+    function toggleTheme() {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        
+        document.getElementById('icon-moon').style.display = isDark ? 'none' : 'block';
+        document.getElementById('icon-sun').style.display = isDark ? 'block' : 'none';
+
+        const metaThemeColor = document.getElementById('meta-theme-color');
+        metaThemeColor.setAttribute('content', isDark ? '#1a1b16' : '#FCFBF9');
+    }
+
+    // --- CAROUSEL LOGIC ---
+    const feedbacks = [
+        {name: "ز*** م***", text: "وضعي قبل الجلسات كان وايد مشتت وماعرف شنو ابي وماعرف شلون اخذ قرار وحيل كنت خايفه ومولاقيه نفسي من بعد الجلسه الاولى والثانيه عدلت واااايد قررارات مصيريه لو كنت ماخذتها جان تورطت بس الحمدلله تبينت الامور كلها عدل معاي بفضل الله ثم فضلج حبيبتي  والفرق الي حسيته واجهت مخاوفي عرفت منو الي مأثر علي وعلى حياتي وجودتها وقاعده اتخطاه والاهم من هذا كله دعمج المستمر لي ان بأي وقت احتاجج تكونين موجوده وتردين علي حبيبتي ❤️❤️❤️❤️"},
+        {name: "ش** ح**", text: "قبل الجلسات ما كنت واعية قديش في أشياء من الطفولة ممكن تترك أثر بحياتنا وإحساسنا وتصرفاتنا لما نكبر. كنت مفكرة إنو اللي بصير معي طبيعي أو مالو سبب واضح. خلال الجلسات، الأسئلة اللي بتسأليني ياها خلتني أوقف وأفكّر بحالي وبمشاعري بطريقة أعمق، وتخليني أربط أشياء ما كنت شايفتها من قبل. بعد الجلسة دايمًا بحس براحة، لأنّي عم شارك أحداث ومشاعر مع شخص بثق فيه، شخص ما بيحكم عليّ، وبنفس الوقت بيساعدني شوف الصح وأفهمه بدون ما يفرضه عليّ أو يقلي شو لازم أعمل. الفرق يمكن يكون بسيط، بس حقيقي ومريح"},
+        {name: "ه** ال**", text: "بعد كم جلسة بلشت أحس بقيمتي الحقيقية، وتعلّمت إني ما أستنى التقدير من اللي حواليني عشان أكون منيحة أو أصدق حالي. بلشت أشوف أثر هالتغيير بحياتي، وحتى طريقة تعامل الناس معي تغيّرت، وصاروا يعرفوا حدودهم معي. أكتر إشي بندم عليه هو إني ما بلشت جلسات من زمان، وخصوصًا معك. شخصيتك مريحة جدًا، ومعك حسّيت بالمعنى الحقيقي للأمان؛ ما بخاف أحكي ولا بخاف تحكمي علي. بحكي كل إشي بصراحة لأني متأكدة إنك راح تفهميني. للأسف، هالإحساس ما حسّيته مع أي حدا بحياتي، لا أهل، ولا صديق، ولا حتى شريك"},
+        {name: "ن** ال**", text: "الجلسات معك عطتني مساحة أمان اقدر أعبر فيها بدون قيود أو خوف و هالشي ساعدني أكون اهدا. و الشي الي بميزك بالنسبة الي حسيت معك شعور الصديقة مو بس الكوتش هالشي عطاني راحة أكتر. كتير افكار و مشاعر تقيلة علي بنقاشها معك خف أثرها علي و ما عادت مسيطرة علي متل قبل. و بدي اشكرك على التنظيم الي عندك بالتمارين جداً بتساعد و بتعمل فرق مع الإلتزام"},
+        {name: "ر** م**", text: "ما بعرف من وين بدّي بلش .. بس صدقاً كنتي مُنقذ بالنسبة إلي .. أخيراً لقيت مين أقتنع بحكيه .. لقيت إلي بخليني كون صادقة مع نفسي .. هي كانت أحلى صدفة أنه تعرفت عليك وبعتلك .. لأنه فعلاً صرت شوف الشغلات من منظور تاني بعد جلساتي معك .. صرت أهدى وصرت طبق كلّ كلامك .. وما صدق تبعتيلي تمرين كرمال أعمله وأعرف حالي من خلاله أكتر .. شكراً لوجودك 🫶🏻"},
+        {name: "س** ال**", text: "حابه احكيلك انك انتي كنتي افضل شي حصلي من سنه وشوي ، كنتي الك متل النور بنص العتمه، كيف بتسمعي متل اعز صديقه وبتطبطبي وبتنوري دربي متل افضل معلم.. صرت معك حقيقيه اكثر ، بقدر اميز صوتي الداخلي وبعرف كيف اصدقه ، وصرت قادره اطلع حالي من دوامة التفكير المفرط والاهم اني تعلمت معك كيف اطبطب ع حالي بحنيه واحتوي الطفل الصغير الي جواتي.. شكراً لكل شي ، ردك علي وتواصلك معي حتى ع الواتس اب كانّ دائمآ يطمني ويحسسني انك معي حتى خارج الجلسه"},
+        {name: "ب** ب**", text: "زييييين يا زييين يا حلوة الحلوين مبارح خلصت مراجعة ومشاهدة الورشة تبع الرجوع إلى الذات وانا كتير كتير عايشة شعور حلو مرتبط بهالورشة بظن انه انا اتخطيت مرحلة الشكر فيكي والثناء عليكي لانه هاد الموضوع صار مؤكد ومفروغ منه 💗 انا على طول ممنونة الك ولمحتواكي والفايدة يلي بتقدميها لانه عم توصل بصدق وعم تمس مطارح بقلبي وبحياتي بكون بحاجتها وانا مو حاسة وبتجي انتي متل البلسم والدواء وبتكوني انتي الجواب لأسئلتي ❤️"},
+        {name: "غ** ال**", text: "بعد ما خلصنا الباقة الأولى بفضل رب العالمين و فضل جهودنا سوا شفت تغييرات كتير حلوة بشخصيتي عم اتعلم كيف اتعامل مع المشاعر يلي ما بحبا و كيف كون متصالحة مع نقاط ضعفي و أخطائي الجلسات كانت ممتعة و بكل مرة كنت أتعلم شي جديد و صلح مفاهيم خاطئة أهم شي قدرت اتعلمو بعد ما خلصنا الجلسات هو كيف اتعاطف مع حالي و اتقبل الماضي"},
+        {name: "ل** ال**", text: "طريقة طرحك للأسئله بتخليني جاوب بشفافيه لدرجة الصدمة من حالي، واجه حالي. كنتي الملجأ الوحيد والداعم حرفيا اتعلمت معك كيف حدد هويتي الأصليه ، كيف اخدم خياراتي بطريقه اتناسبني ، كيف كون مسؤوله عن نفسي وحب حالي واهتم فيها وهاد عكس كتير ع عيلتي والاشخاص يلي حواليي وفجأه ابتدت الأمور تتمحور لصالحي اتعلمت كيف واسي حالي وطبطب عليها ومااستنى أي تعاطف من حدا ،كيف اعترف قدام نفسي بأشياء انا كنت ناسيتها أو بالاصح متجاهلتها"},
+        {name: "ل** ال**", text: "زين انتي الملاك يلي دايما كان بدعائي ، رب العالمين حطك بطريقي لتكوني الرحمه لحياتي اتعلمت منك كتير هدوئك وطريقه طرحك للأسئه ، محبتك النابعه من القلب هي يلي خلتني كمل ولامره حسيت اني مجرد عميل جايه لتلقي عليه محاضره وتتركيه يتصارع مع حاله بدون جدوى ‎شكرا من جوا القلب لوجودك ودعمك ، شكرا لانك مخلصه ومؤمنه بالرساله يلي عم اتقدميها. كلامك بيعطيني امل وأمان ودافع اني كمل شكراً من القلب انك موجوده وشكراً لدعمك ♥️♥️ بحمد ربي انو الله وقفك بطريقي بحبك من قلبي ♥️♥️"}
+    ];
+
+    let activeIndex = Math.floor(feedbacks.length / 2);
+    const track = document.getElementById('track');
+
+    function createCarouselItems() {
+        track.innerHTML = '';
+        feedbacks.forEach((fb, index) => {
+            const card = document.createElement('div');
+            card.className = 'feedback-card';
+            card.innerHTML = `<span class="feedback-name">${fb.name}</span><p class="feedback-quote">${fb.text}</p>`;
+            
+            card.onclick = () => {
+                activeIndex = index;
+                updateClasses();
+            };
+            
+            track.appendChild(card);
+        });
+        updateClasses();
+    }
+
+    function updateClasses() {
+        const cards = document.querySelectorAll('.feedback-card');
+        cards.forEach((card, index) => {
+            card.className = 'feedback-card'; 
+            
+            let diff = index - activeIndex;
+            if (diff > feedbacks.length / 2) diff -= feedbacks.length;
+            if (diff < -feedbacks.length / 2) diff += feedbacks.length;
+
+            if (diff === 0) card.classList.add('active');
+            else if (diff === 1) card.classList.add('next');
+            else if (diff === -1) card.classList.add('prev');
+            else card.classList.add('hidden');
+        });
+    }
+
+    function nextCard() {
+        activeIndex = (activeIndex + 1) % feedbacks.length;
+        updateClasses();
+    }
+
+    function prevCard() {
+        activeIndex = (activeIndex - 1 + feedbacks.length) % feedbacks.length;
+        updateClasses();
+    }
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+    track.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    }, {passive: false});
+
+    track.addEventListener('touchmove', e => {
+        let touchMoveX = e.changedTouches[0].screenX;
+        let touchMoveY = e.changedTouches[0].screenY;
+        if(Math.abs(touchMoveX - touchStartX) > Math.abs(touchMoveY - touchStartY)) {
+            e.preventDefault(); 
+        }
+    }, {passive: false});
+
+    track.addEventListener('touchend', e => {
+        let touchEndX = e.changedTouches[0].screenX;
+        if (touchEndX < touchStartX - 50) nextCard(); 
+        if (touchEndX > touchStartX + 50) prevCard();
     });
 
-    return res.status(200).json({ success: true, metaResponse: waData });
+    window.addEventListener('load', createCarouselItems);
+    window.addEventListener('resize', createCarouselItems);
 
-  } catch (error) {
-    console.error("SİSTEM HATASI:", error);
-    return res.status(500).json({ error: error.message });
-  }
-}
+    // --- POPUP & MODAL (BODY LOCK EKLENDİ) ---
+    function openInfoModal(id) { 
+        document.getElementById(id).classList.add('open'); 
+        document.body.classList.add('modal-open'); 
+    }
+    function closeInfoModal(id) { 
+        document.getElementById(id).classList.remove('open'); 
+        document.body.classList.remove('modal-open');
+    }
+    function openContactFromInfo(infoModalId, sessionKey) {
+        closeInfoModal(infoModalId);
+        openContactModal(); 
+    }
+    document.querySelectorAll('.info-modal').forEach(m => {
+        m.addEventListener('click', (e) => { 
+            if(e.target === m) {
+                m.classList.remove('open'); 
+                document.body.classList.remove('modal-open');
+            }
+        });
+    });
+
+    const modal = document.getElementById('contactModal');
+    function openContactModal(){ 
+        modal.classList.add('open'); 
+        document.body.classList.add('modal-open');
+    }
+    function closeContactModal(){ 
+        modal.classList.remove('open'); 
+        document.body.classList.remove('modal-open');
+        resetSelection(); 
+        document.getElementById('contactForm').reset(); 
+        document.getElementById('selectedCode').textContent = '+90';
+        document.getElementById('phonePrefix').value = '+90';
+    }
+    window.addEventListener('click', (e) => { 
+        if (e.target === modal) closeContactModal(); 
+    });
+
+    function showToast() {
+        const t = document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 4000);
+    }
+
+    const toEasternArabic = (n) => n.toString().replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
+    function updateCount(el, countId) { document.getElementById(countId).textContent = toEasternArabic(el.value.length) + "/٥٠٠"; }
+
+    const COUNTRIES_URL = "https://gist.githubusercontent.com/devhammed/78cfbee0c36dfdaa4fce7e79c0d39208/raw/449258552611926be9ee7a8b4acc2ed9b2243a97/countries.json";
+    
+    async function loadCountries(){
+       const res = await fetch(COUNTRIES_URL); const list = await res.json();
+       list.sort((a,b)=>a.name.localeCompare(b.name));
+       const pSel = document.getElementById('phonePrefix');
+       
+       list.forEach(c => {
+          pSel.innerHTML += `<option value="${c.dial_code}">${c.name} (${c.dial_code})</option>`;
+       });
+       pSel.value="+90";
+       updateSelectedCode(); 
+    }
+    loadCountries();
+
+    function updateSelectedCode() {
+        const select = document.getElementById('phonePrefix');
+        const display = document.getElementById('selectedCode');
+        display.textContent = select.value;
+    }
+
+    let selectedSession = null;
+    let selectedType = null;
+    const PRICES = { 'seans1': { tekli: 110, uclu: 295 }, 'seans2': { tekli: 147, uclu: 395 } };
+
+    function handleSessionChange(checkbox) {
+        document.querySelectorAll('input[name="main_session"]').forEach(cb => { if(cb !== checkbox) cb.checked = false; });
+        if(checkbox.checked) {
+            selectedSession = checkbox.value;
+            document.getElementById('typeSelection').classList.remove('hidden');
+            document.getElementById('price-tekli').textContent = PRICES[selectedSession].tekli + '$';
+            document.getElementById('price-uclu').textContent = PRICES[selectedSession].uclu + '$';
+            document.querySelectorAll('input[name="sub_type"]').forEach(cb => cb.checked = false);
+            selectedType = null;
+            document.getElementById('qaArea').classList.add('hidden');
+        } else { resetSelection(); }
+    }
+
+    function handleTypeChange(checkbox) {
+        document.querySelectorAll('input[name="sub_type"]').forEach(cb => { if(cb !== checkbox) cb.checked = false; });
+        selectedType = checkbox.checked ? checkbox.value : null;
+        if(selectedType) {
+            document.getElementById('qaArea').classList.remove('hidden');
+        } else { document.getElementById('qaArea').classList.add('hidden'); }
+    }
+
+    function resetSelection() {
+        selectedSession = null; selectedType = null;
+        document.getElementById('typeSelection').classList.add('hidden');
+        document.getElementById('qaArea').classList.add('hidden');
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    }
+
+    // --- FORM GÖNDERME KISMI (FETCH İLE) ---
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if(!selectedSession || !selectedType) { 
+            alert("الرجاء اختيار نوع الجلسة"); 
+            return; 
+        }
+
+        const btn = document.getElementById('submitBtn');
+        const originalText = btn.textContent;
+        btn.disabled = true; 
+        btn.textContent = "جاري الإرسال..."; 
+
+        const getRadio = (name) => { 
+            const el = document.querySelector(`input[name="${name}"]:checked`); 
+            return el ? el.value : 'Belirtilmedi'; 
+        };
+
+        const sKey = selectedSession === 'seans1' ? 'Sakina' : 'El-Abour';
+        const tKey = selectedType === 'tekli' ? 'Single' : 'Package (3)';
+
+        const formData = {
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            phone: document.getElementById('phonePrefix').value + " " + document.getElementById('phone').value,
+            email: document.getElementById('email').value,
+            session: `${sKey} - ${tKey}`,
+            q1: document.getElementById('q1').value,
+            q2: document.getElementById('q2').value,
+            q3: document.getElementById('q3').value,
+            q4: getRadio('q4'),
+            q5: getRadio('q5'),
+            q6: getRadio('q6'),
+            q7: document.getElementById('q7').value,
+            q8: document.getElementById('q8').value,
+            message: document.getElementById('message').value
+        };
+
+        try {
+            const response = await fetch('/api/lead', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                showToast(); 
+                closeContactModal();
+            } else {
+                alert("حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى."); 
+            }
+        } catch (err) {
+            console.error(err);
+            alert("خطأ في الاتصال.");
+        } finally {
+            btn.disabled = false; 
+            btn.textContent = originalText;
+        }
+    });
+  </script>
+</body>
+</html>
