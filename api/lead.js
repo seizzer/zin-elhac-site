@@ -8,35 +8,29 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 1. FRONTEND'DEN GELEN VERİYİ AL
-    // Dikkat: Artık "sessions" dizisi değil, tek "session" stringi geliyor.
+    // 1. FRONTEND'DEN GELEN VERİ (Senin logundaki yapı)
     const { 
-      firstName, 
-      lastName, 
-      phone,      
-      email, 
-      session,    // Örn: "Sakina - Single"
-      message,
+      firstName, lastName, phone, email, session, message,
       q1, q2, q3, q4, q5, q6, q7, q8
     } = req.body;
 
-    console.log("Gelen Veri (Backend):", req.body);
+    console.log("🟢 1. Veri Alındı:", req.body);
 
-    // 2. VERİ TEMİZLİĞİ
+    // 2. TEMİZLİK
     const fullName = `${firstName || ''} ${lastName || ''}`.trim();
-    const cleanPhone = (phone || '').replace(/\D/g, ''); 
+    const cleanPhone = (phone || '').replace(/\D/g, ''); // Sadece rakamlar
     const clientEmail = email || 'Belirtilmedi';
     const clientMessage = message || 'Mesaj bırakılmadı.';
 
     if (!cleanPhone) {
-      return res.status(400).json({ error: 'Telefon numarası zorunlu.' });
+      console.error("🔴 Hata: Telefon numarası yok.");
+      return res.status(400).json({ error: 'Telefon zorunlu.' });
     }
 
-    // 3. PAKET İSMİ VE FİYAT BELİRLEME (Yeni Yapı)
-    let arabicName = session || "غير محدد"; // Seçilmediyse
+    // 3. PAKET VE FİYAT BELİRLEME (Logundaki 'Sakina - Package (3)' verisine göre)
+    let arabicName = session || "غير محدد"; 
     let priceStr = "";
 
-    // Gelen string'i analiz edip Arapça karşılığını ve fiyatını bulalım
     if (session) {
         if (session.includes("Sakina")) {
             if (session.includes("Single")) {
@@ -57,6 +51,8 @@ export default async function handler(req, res) {
         }
     }
 
+    console.log(`🟡 2. WhatsApp Hazırlanıyor: Tel: ${cleanPhone}, Paket: ${arabicName}`);
+
     // 4. WHATSAPP GÖNDERİMİ
     let waData = null;
     try {
@@ -65,7 +61,7 @@ export default async function handler(req, res) {
           {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${process.env.WHATSAPP_TOKEN}`,
+              'Authorization': `Bearer ${process.env.WHATSAPP_TOKEN}`, // <-- BU TOKEN'I KONTROL ET
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -74,13 +70,13 @@ export default async function handler(req, res) {
               type: "template",
               template: {
                 name: process.env.WHATSAPP_TEMPLATE_NAME,
-                language: { code: "ar" },
+                language: { code: "ar" }, // Şablonun Arapça olduğundan emin ol
                 components: [
                   {
                     type: "body",
                     parameters: [
-                      { type: "text", text: arabicName }, // Değişken 1: Paket Adı
-                      { type: "text", text: priceStr }    // Değişken 2: Fiyat
+                      { type: "text", text: arabicName },
+                      { type: "text", text: priceStr }
                     ],
                   },
                 ],
@@ -88,10 +84,17 @@ export default async function handler(req, res) {
             }),
           }
         );
+
         waData = await waResponse.json();
-        console.log("Meta Yanıtı:", JSON.stringify(waData));
+        
+        if (!waResponse.ok) {
+            console.error("🔴 WhatsApp API Hatası (Token veya Şablon sorunu):", JSON.stringify(waData, null, 2));
+        } else {
+            console.log("🟢 WhatsApp Başarılı:", JSON.stringify(waData, null, 2));
+        }
+
     } catch (waError) {
-        console.error("WhatsApp Hatası:", waError);
+        console.error("🔴 WhatsApp Bağlantı Hatası:", waError);
     }
     
     // 5. MAIL GÖNDERİMİ
@@ -104,32 +107,33 @@ export default async function handler(req, res) {
             <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right;">
                 <h3>طلب استشارة جديد</h3>
                 <p><strong>الاسم:</strong> ${fullName}</p>
-                <p><strong>الهاتف:</strong> ${phone} (<a href="https://wa.me/${cleanPhone}">واتساب</a>)</p>
+                <p><strong>الهاتف:</strong> ${phone}</p>
                 <p><strong>الباقة:</strong> ${arabicName} - ${priceStr}</p>
                 <hr>
                 <p><strong>تفاصيل الحالة:</strong></p>
                 <ul>
-                    <li>الأعراض: ${q1}</li>
-                    <li>البداية: ${q2}</li>
-                    <li>التفاقم: ${q3}</li>
-                    <li>التشخيص: ${q4}</li>
-                    <li>الأدوية: ${q5}</li>
-                    <li>تجربة سابقة: ${q6}</li>
-                    <li>التوقعات: ${q7}</li>
-                    <li>الوقت: ${q8}</li>
+                    <li>1. الأعراض: ${q1}</li>
+                    <li>2. البداية: ${q2}</li>
+                    <li>3. التفاقم: ${q3}</li>
+                    <li>4. التشخيص: ${q4}</li>
+                    <li>5. الأدوية: ${q5}</li>
+                    <li>6. تجربة سابقة: ${q6}</li>
+                    <li>7. التوقعات: ${q7}</li>
+                    <li>8. الوقت: ${q8}</li>
                 </ul>
                 <p><strong>رسالة:</strong> ${clientMessage}</p>
             </div>
           `,
         });
+        console.log("🟢 Mail Gönderildi");
     } catch (mailError) {
-        console.error("Mail Hatası:", mailError);
+        console.error("🔴 Mail Hatası:", mailError);
     }
 
     return res.status(200).json({ success: true, metaResponse: waData });
 
   } catch (error) {
-    console.error("Sistem Hatası:", error);
+    console.error("🔴 SİSTEM ÇÖKME HATASI:", error);
     return res.status(500).json({ error: error.message });
   }
 }
