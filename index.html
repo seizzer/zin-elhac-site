@@ -185,12 +185,13 @@
     .feedback-name { font-weight: 700; color: var(--c3); margin-bottom: 15px; font-size: 18px; }
     .feedback-quote { font-size: 15px; line-height: 1.8; color: var(--text-main); }
     
+    /* DÜZELTME: OK TUŞLARI GÖRÜNÜR YAPILDI */
     .nav-arrow { 
         position: absolute; top: 50%; transform: translateY(-50%); 
         background: var(--bg-card); border: 1px solid var(--border-color); 
         width: 50px; height: 50px; border-radius: 50%; 
         display: flex; align-items: center; justify-content: center; 
-        cursor: pointer; z-index: 50; 
+        cursor: pointer; z-index: 50; /* Z-Index Yüksek */
         color: var(--c3); font-size: 20px; 
         box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
         transition: transform 0.2s, background 0.2s; 
@@ -275,12 +276,14 @@
         .info-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; transform: none !important;}
         header { height: var(--headerH); } 
         
+        /* HEADER DÜZENLEMESİ (TEK SATIR) */
         .header-inner { flex-direction: row; justify-content: space-between; align-items: center; padding: 0 15px; height: 100%; }
         .logo-block { margin: 0; transform: scale(0.9); }
         nav { display: flex; gap: 8px; margin: 0; justify-content: flex-end; flex-wrap: nowrap; flex: 1; }
         .nav-item { font-size: 11px; padding: 5px 2px; white-space: nowrap; }
         .scroll-btn { bottom: 160px !important; }
         
+        /* Carousel Mobil Ayarları */
         #feedback { padding-top: 60px; height: auto; min-height: 90vh; }
         .carousel-container { padding: 20px; max-width: 100%; height: 650px; overflow: visible; margin-top: 40px; }
         .feedback-card { width: 260px; } 
@@ -291,42 +294,19 @@
         
         .form-grid { grid-template-columns: 1fr; gap: 10px; } 
     }
-
-    /* --- YENİ EKLENEN: SADECE TELEFONLAR İÇİN ARKA PLAN DÜZELTMESİ --- */
- /* --- YENİ EKLENEN: SADECE TELEFONLAR İÇİN (ALTTAN KESİLME ÇÖZÜMÜ) --- */
-    @media (max-width: 768px) {
-        #hero {
-            /* 1. vh yerine dvh kullanıyoruz. Bu, adres çubuğunu hesaba katar */
-            height: 100dvh !important; 
-            min-height: 100dvh !important;
-            
-            /* 2. İçeriğin alttan sıkışmaması için padding ayarı */
-            padding-bottom: 0 !important;
-            margin-bottom: 0 !important;
-            
-            /* 3. Taşmayı engelle */
-            overflow: hidden !important;
-        }
-
-        .hero-bg {
-            background-image: url('motto-mobile.jpg') !important; 
-            background-position: center top !important; 
-            
-            /* Resmi ekrana tam yay ama orantıyı bozma */
-            background-size: 100% 100% !important; 
-            background-attachment: scroll !important;
-        }
-
-        /* 4. Alttaki bölümün Hero'nun içine girmesini engelleyen TAMPON */
-        #seanslar {
-            margin-top: -1px !important; /* Boşluk kalmasın diye hafif yukarı çekip */
-            padding-top: 60px !important; /* İçeriği aşağı itiyoruz */
-            position: relative;
-            z-index: 10; /* Hero'nun üstüne binmesini engeller */
-            background-color: var(--bg-body); /* Arkası şeffaf kalmasın */
-        }
+/* --- HERO MOBILE QUALITY / ZOOM FIX (ONLY MOBILE) --- */
+@media (max-width: 768px) {
+    /* iOS Safari: use small viewport units to avoid perceived zoom/crop when address bar shows/hides */
+    #hero { height: 100svh; }
+    /* Use dedicated 9:16 asset on mobile to reduce scaling + improve sharpness */
+    .hero-bg {
+        background-image: url('motto-mobile.jpg');
+        background-size: cover;
+        /* keep "fill screen" but show more of the subject (less crop from center-zoom) */
+        background-position: 50% 20%;
+        background-repeat: no-repeat;
     }
-    }
+}
   </style>
 </head>
 
