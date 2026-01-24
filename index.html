@@ -91,8 +91,7 @@
     }
 
     /* --- PROTECTED ELEMENTS --- */
-    /* Motto ve Scroll Btn özel olarak aşağıda tanımlandı */
-    button, input, select, textarea, .btn-submit, .info-cta-btn, .icon-btn, .info-close, .modal-head button, .theme-btn, .nav-arrow, .carousel-nav {
+    button, input, select, textarea, .btn-submit, .info-cta-btn, .scroll-btn, .icon-btn, .info-close, .modal-head button, .theme-btn, .nav-arrow, .carousel-nav {
         text-shadow: none !important; opacity: 1 !important;
     }
     .info-close, .modal-head button { color: #333333 !important; -webkit-text-fill-color: #333333 !important; }
@@ -101,6 +100,13 @@
     .info-cta-btn:hover, .btn-submit:hover { background-color: var(--c2) !important; background-image: none !important; }
     input[type="checkbox"], input[type="radio"] { -webkit-appearance: auto; appearance: auto; opacity: 1 !important; }
     
+    /* MOTTO RENGİ BEYAZ */
+    body:not(.dark-mode) .motto-text { 
+        color: #ffffff !important; 
+        -webkit-text-fill-color: #ffffff !important;
+        text-shadow: 0 2px 15px rgba(0,0,0,0.5) !important;
+    }
+
     body.modal-open { overflow: hidden; }
     a{color:inherit; text-decoration:none;}
     button{font-family:inherit; color:inherit;}
@@ -138,37 +144,26 @@
     /* HERO */
     #hero { padding: 0; align-items: center; justify-content: center; overflow: hidden; background-color: var(--c1); height: 100vh; margin-bottom: 0; padding-bottom: 11px; }
     .hero-bg { position: absolute; inset: 0; background-image: url('motto.jpg'); background-size: cover; background-position: center; z-index: 0; }
-    .hero-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.2); /* Biraz daha koyu overlay */ backdrop-filter: blur(2px); z-index: 1; }
+    .hero-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.2); backdrop-filter: blur(2px); z-index: 1; }
     .hero-content { position: relative; z-index: 2; text-align: center; color: #fff; max-width: 800px; padding: 20px; }
     .hero-content * { color: #fff !important; text-shadow: 0 2px 10px rgba(0,0,0,0.5) !important; }
+    .motto-text { font-size: clamp(28px, 5vw, 54px); font-weight: 600; line-height: 1.4; color: #ffffff !important; }
     
-    /* MOTTO RENGİ BEYAZ */
-    .motto-text { 
-        font-size: clamp(28px, 5vw, 54px); 
-        font-weight: 600; line-height: 1.4; 
-        color: #ffffff !important; 
-        -webkit-text-fill-color: #ffffff !important;
-        text-shadow: 0 2px 15px rgba(0,0,0,0.5) !important;
-    }
-
     /* BUTTON BEYAZ */
     .scroll-btn { 
         position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%); z-index: 10; 
         padding: 14px 32px; 
-        border: 1px solid #ffffff !important; /* Beyaz Çerçeve */
+        border: 1px solid #ffffff !important;
         font-size: 16px; 
         background: rgba(255,255,255,0.1); 
         backdrop-filter: blur(4px); border-radius: 50px; cursor: pointer; transition: all 0.3s ease;
-        
-        /* Metin Rengi Beyaz */
         color: #ffffff !important; 
         -webkit-text-fill-color: #ffffff !important; 
         text-shadow: none !important;
     }
-    
     .scroll-btn:hover { 
         background-color: #ffffff !important; 
-        color: var(--c3) !important; /* Hover olunca metin koyu */
+        color: var(--c3) !important; 
         -webkit-text-fill-color: var(--c3) !important; 
     }
 
@@ -232,7 +227,7 @@
         max-width: 1000px;
         margin: auto; 
         padding: 20px 0;
-        height: 600px; 
+        height: 650px; 
         display: flex;
         align-items: center;
         justify-content: center;
@@ -252,25 +247,23 @@
     .feedback-card {
         position: absolute;
         width: 320px;
-        min-height: 500px; 
-        max-height: 550px;
-        overflow-y: auto;
+        height: 600px; 
         padding: 40px 30px;
         background-color: var(--bg-card);
         background-image: var(--bg-img-main);
         border: 1px solid var(--border-color);
         border-radius: 12px;
         text-align: right; direction: rtl;
-        transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1); 
+        transition: all 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
         opacity: 0; 
         box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         user-select: none;
         cursor: pointer;
+        overflow-y: auto; 
         display: flex; flex-direction: column; justify-content: flex-start;
         scrollbar-width: thin;
         scrollbar-color: var(--c3) transparent;
     }
-    
     .feedback-card::-webkit-scrollbar { width: 4px; }
     .feedback-card::-webkit-scrollbar-thumb { background-color: var(--c3); border-radius: 4px; }
 
@@ -287,7 +280,7 @@
     .nav-prev { left: 20px; }
     .nav-next { right: 20px; }
 
-    /* MODAL VE DİĞERLERİ AYNI */
+    /* MODAL VE DİĞERLERİ */
     .modal{ position:fixed; inset:0; background: rgba(0, 0, 0, 0.4); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:100; opacity:0; pointer-events:none; transition: opacity .3s; padding: 20px; }
     .modal.open{opacity:1; pointer-events:auto;}
     .modal-card{ width: min(900px, 100%); background-color: var(--bg-card); background-image: var(--bg-img-main); border-radius: 8px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); transform: translateY(20px); transition: transform .3s; display: flex; flex-direction: column; max-height: 90vh; height: auto; color: var(--text-main); }
@@ -297,6 +290,40 @@
     .modal-body::-webkit-scrollbar { width: 8px; }
     .modal-body::-webkit-scrollbar-track { background: var(--bg-body); }
     .modal-body::-webkit-scrollbar-thumb { background-color: var(--c2); border-radius: 4px; }
+
+    /* --- FORM CSS DÜZELTMESİ (İLETİŞİM KUTUSU) --- */
+    .input-group { margin-bottom: 16px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 16px; }
+    
+    label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main); }
+    
+    input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+        width: 100%; padding: 0 12px; height: 48px; 
+        border: 1px solid #ddd; border-radius: 8px; 
+        font-family: inherit; text-align: right; font-size: 14px;
+        box-sizing: border-box; background: #fff; color: #333 !important; 
+        transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--c3); }
+    textarea { height: auto; min-height: 80px; resize: vertical; padding: 12px; }
+
+    /* TELEFON KISMI DÜZELTMESİ */
+    .phone-container { display: flex; gap: 10px; align-items: stretch; direction: ltr; } /* LTR yaparak kutuları sola yasladık */
+    .phone-container input { direction: rtl; flex: 1; text-align: right; } /* Numarayı sağa yasladık */
+    
+    .custom-select-wrapper {
+        width: 100px; flex-shrink: 0; position: relative;
+        height: 48px; border: 1px solid #ddd; border-radius: 8px; background: #fff;
+        display: flex; align-items: center; 
+    }
+    .selected-display {
+        width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+        font-size: 14px; direction: ltr; color: #333 !important; font-weight: 500;
+    }
+    #phonePrefix { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2; }
+    .select-arrow { position: absolute; right: 8px; font-size: 10px; color: #666; pointer-events: none; }
+
+    /* --- INFO POPUP --- */
     .info-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
     .info-modal.open { opacity: 1; pointer-events: auto; }
     .info-card { width: min(600px, 90%); background-color: var(--bg-card); background-image: var(--bg-img-main); border-radius: 12px; display: flex; flex-direction: column; position: relative; max-height: 85vh; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
@@ -358,6 +385,8 @@
         .feedback-card.prev { transform: translateX(-120px) scale(0.85); opacity: 0; } 
         .feedback-card.next { transform: translateX(120px) scale(0.85); opacity: 0; }
         .carousel-nav { display: none; }
+        
+        .form-grid { grid-template-columns: 1fr; gap: 10px; } /* Mobilde isim soyisim alt alta */
     }
   </style>
 </head>
@@ -476,21 +505,35 @@
       </div>
       <div class="modal-body">
         <form id="contactForm">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-             <div><label>الاسم</label><input id="firstName" required type="text"></div>
-             <div><label>الكنية</label><input id="lastName" required type="text"></div>
-          </div>
-          <label>الدولة & الهاتف</label>
-          <div style="display:flex; gap:10px;">
-             <div class="custom-select-wrapper">
-                 <div id="selectedCode" class="selected-display">+90</div>
-                 <select id="phonePrefix" required onchange="updateSelectedCode()"></select>
-                 <div class="select-arrow">▼</div>
+          
+          <div class="form-grid">
+             <div class="input-group">
+                 <label>الاسم</label>
+                 <input id="firstName" required type="text">
              </div>
-             <input id="phone" required type="tel" placeholder="5xx xxx xx xx">
+             <div class="input-group">
+                 <label>الكنية</label>
+                 <input id="lastName" required type="text">
+             </div>
           </div>
-          <label>البريد الإلكتروني</label>
-          <input id="email" required type="email">
+          
+          <div class="input-group">
+              <label>الدولة & الهاتف</label>
+              <div class="phone-container">
+                 <div class="custom-select-wrapper">
+                     <div id="selectedCode" class="selected-display">+90</div>
+                     <select id="phonePrefix" required onchange="updateSelectedCode()"></select>
+                     <div class="select-arrow">▼</div>
+                 </div>
+                 <input id="phone" required type="tel" placeholder="5xx xxx xx xx">
+              </div>
+          </div>
+          
+          <div class="input-group">
+              <label>البريد الإلكتروني</label>
+              <input id="email" required type="email">
+          </div>
+
           <div class="selection-area">
              <div class="step-1">
                 <div class="sel-group-title">1. اختر اللقاء</div>
@@ -584,7 +627,7 @@
     function updateClasses() {
         const cards = document.querySelectorAll('.feedback-card');
         cards.forEach((card, index) => {
-            card.className = 'feedback-card'; // Sınıfları sıfırla
+            card.className = 'feedback-card'; 
             
             let diff = index - activeIndex;
             if (diff > feedbacks.length / 2) diff -= feedbacks.length;
@@ -615,7 +658,6 @@
         if (touchEndX > touchStartX + 50) prevCard();
     });
 
-    // Başlat
     window.addEventListener('load', createCarouselItems);
     window.addEventListener('resize', createCarouselItems);
 
