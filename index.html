@@ -184,7 +184,7 @@
 
     .feedback-name { font-weight: 700; color: var(--c3); margin-bottom: 15px; font-size: 18px; }
     .feedback-quote { font-size: 15px; line-height: 1.8; color: var(--text-main); }
-    .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: var(--bg-card); border: 1px solid var(--border-color); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20; color: var(--c3); font-size: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s, background 0.2s; }
+    .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: var(--bg-card); border: 1px solid var(--border-color); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 50; color: var(--c3); font-size: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s, background 0.2s; }
     .nav-arrow:hover { background: var(--c3); color: #fff; transform: translateY(-50%) scale(1.1); }
     .nav-prev { left: 20px; }
     .nav-next { right: 20px; }
@@ -272,7 +272,7 @@
         .nav-item { font-size: 11px; padding: 5px 2px; white-space: nowrap; }
         .scroll-btn { bottom: 160px !important; }
         
-        /* Carousel Mobil Ayarları - PEEKING + NO ARROWS */
+        /* Carousel Mobil Ayarları */
         #feedback { padding-top: 60px; height: auto; min-height: 90vh; }
         .carousel-container { padding: 20px; max-width: 100%; height: 650px; overflow: visible; margin-top: 40px; }
         .feedback-card { width: 260px; } 
@@ -454,7 +454,7 @@
             <div class="carousel-track" id="track">
                 </div>
             
-            <button class="nav-arrow nav-next" onclick="nextCard()">&#10094;</button>
+            <button class="nav-arrow nav-next" onclick="moveCarousel(1)">&#10094;</button>
         </div>
     </section>
 
@@ -573,8 +573,8 @@
         {name: "س** ال**", text: "حابه احكيلك انك انتي كنتي افضل شي حصلي من سنه وشوي ، كنتي الك متل النور بنص العتمه، كيف بتسمعي متل اعز صديقه وبتطبطبي وبتنوري دربي متل افضل معلم.. صرت معك حقيقيه اكثر ، بقدر اميز صوتي الداخلي وبعرف كيف اصدقه ، وصرت قادره اطلع حالي من دوامة التفكير المفرط والاهم اني تعلمت معك كيف اطبطب ع حالي بحنيه واحتوي الطفل الصغير الي جواتي.. شكراً لكل شي ، ردك علي وتواصلك معي حتى ع الواتس اب كانّ دائمآ يطمني ويحسسني انك معي حتى خارج الجلسه"},
         {name: "ب** ب**", text: "زييييين يا زييين يا حلوة الحلوين مبارح خلصت مراجعة ومشاهدة الورشة تبع الرجوع إلى الذات وانا كتير كتير عايشة شعور حلو مرتبط بهالورشة بظن انه انا اتخطيت مرحلة الشكر فيكي والثناء عليكي لانه هاد الموضوع صار مؤكد ومفروغ منه 💗 انا على طول ممنونة الك ولمحتواكي والفايدة يلي بتقدميها لانه عم توصل بصدق وعم تمس مطارح بقلبي وبحياتي بكون بحاجتها وانا مو حاسة وبتجي انتي متل البلسم والدواء وبتكوني انتي الجواب لأسئلتي ❤️"},
         {name: "غ** ال**", text: "بعد ما خلصنا الباقة الأولى بفضل رب العالمين و فضل جهودنا سوا شفت تغييرات كتير حلوة بشخصيتي عم اتعلم كيف اتعامل مع المشاعر يلي ما بحبا و كيف كون متصالحة مع نقاط ضعفي و أخطائي الجلسات كانت ممتعة و بكل مرة كنت أتعلم شي جديد و صلح مفاهيم خاطئة أهم شي قدرت اتعلمو بعد ما خلصنا الجلسات هو كيف اتعاطف مع حالي و اتقبل الماضي"},
-        {name: "ل** ال**", text: "طريقة طرحك للأسئله بتخليني جاوب بشفافيه لدرجة الصدمة من حالي، واجه حالي. كنتي الملجأ الوحيد والداعم حرفيا اتعلمت معك كيف حدد هويتي الأصليه ، كيف اخدم خياراتي بطريقه اتناسبني ، كيف كون مسؤوله عن نفسي وحب حالي واهتم فيها وهاد عكس كتير ع عيلتي والاشخاص يلي حواليي وفجأه ابتدت الأمور تتمحور لصالحي اتعلمت كيف واسي حالي وطبطب عليها ومااستنى أي تعاطف من حدا  ،كيف اعترف قدام نفسي بأشياء انا كنت ناسيتها أو بالاصح متجاهلتها"},
-        {name: "ل** ال**", text: "زين  انتي الملاك يلي دايما كان بدعائي ، رب العالمين حطك بطريقي لتكوني الرحمه لحياتي اتعلمت منك كتير هدوئك وطريقه طرحك للأسئه ، محبتك النابعه من القلب هي يلي خلتني كمل ولامره حسيت اني مجرد عميل جايه لتلقي عليه محاضره وتتركيه يتصارع مع حاله بدون جدوى ‎شكرا من جوا القلب لوجودك ودعمك ، شكرا لانك مخلصه ومؤمنه بالرساله يلي عم اتقدميها. كلامك بيعطيني امل وأمان ودافع اني كمل شكراً من القلب انك موجوده وشكراً لدعمك ♥️♥️ بحمد ربي انو الله وقفك بطريقي بحبك من قلبي ♥️♥️"}
+        {name: "ل** ال**", text: "طريقة طرحك للأسئله بتخليني جاوب بشفافيه لدرجة الصدمة من حالي، واجه حالي. كنتي الملجأ الوحيد والداعم حرفيا اتعلمت معك كيف حدد هويتي الأصليه ، كيف اخدم خياراتي بطريقه اتناسبني ، كيف كون مسؤوله عن نفسي وحب حالي واهتم فيها وهاد عكس كتير ع عيلتي والاشخاص يلي حواليي وفجأه ابتدت الأمور تتمحور لصالحي اتعلمت كيف واسي حالي وطبطب عليها ومااستنى أي تعاطف من حدا ،كيف اعترف قدام نفسي بأشياء انا كنت ناسيتها أو بالاصح متجاهلتها"},
+        {name: "ل** ال**", text: "زين انتي الملاك يلي دايما كان بدعائي ، رب العالمين حطك بطريقي لتكوني الرحمه لحياتي اتعلمت منك كتير هدوئك وطريقه طرحك للأسئه ، محبتك النابعه من القلب هي يلي خلتني كمل ولامره حسيت اني مجرد عميل جايه لتلقي عليه محاضره وتتركيه يتصارع مع حاله بدون جدوى ‎شكرا من جوا القلب لوجودك ودعمك ، شكرا لانك مخلصه ومؤمنه بالرساله يلي عم اتقدميها. كلامك بيعطيني امل وأمان ودافع اني كمل شكراً من القلب انك موجوده وشكراً لدعمك ♥️♥️ بحمد ربي انو الله وقفك بطريقي بحبك من قلبي ♥️♥️"}
     ];
 
     let activeIndex = Math.floor(feedbacks.length / 2);
@@ -585,37 +585,15 @@
         feedbacks.forEach((fb, index) => {
             const card = document.createElement('div');
             card.className = 'feedback-card';
-            
-            let diff = index - activeIndex;
-            
-            if (diff > feedbacks.length / 2) diff -= feedbacks.length;
-            if (diff < -feedbacks.length / 2) diff += feedbacks.length;
-
-            if (diff === 0) card.classList.add('active');
-            else if (diff === 1) card.classList.add('next');
-            else if (diff === -1) card.classList.add('prev');
-            else card.classList.add('hidden');
-
-            card.innerHTML = `<span class="feedback-name">${fb.name}:</span><p class="feedback-quote">${fb.text}</p>`;
+            card.innerHTML = `<span class="feedback-name">${fb.name}</span><p class="feedback-quote">${fb.text}</p>`;
             
             card.onclick = () => {
-                if (diff !== 0) {
-                    activeIndex = index;
-                    renderCarousel();
-                }
+                activeIndex = index;
+                updateClasses();
             };
             
             track.appendChild(card);
         });
-    }
-
-    function nextCard() {
-        activeIndex = (activeIndex + 1) % feedbacks.length;
-        updateClasses();
-    }
-
-    function prevCard() {
-        activeIndex = (activeIndex - 1 + feedbacks.length) % feedbacks.length;
         updateClasses();
     }
 
@@ -635,10 +613,18 @@
         });
     }
 
-    // SCROLL LOCK LOGIC (SENSITIVITY)
+    function nextCard() {
+        activeIndex = (activeIndex + 1) % feedbacks.length;
+        updateClasses();
+    }
+
+    function prevCard() {
+        activeIndex = (activeIndex - 1 + feedbacks.length) % feedbacks.length;
+        updateClasses();
+    }
+
     let touchStartX = 0;
     let touchStartY = 0;
-
     track.addEventListener('touchstart', e => {
         touchStartX = e.changedTouches[0].screenX;
         touchStartY = e.changedTouches[0].screenY;
@@ -647,8 +633,6 @@
     track.addEventListener('touchmove', e => {
         let touchMoveX = e.changedTouches[0].screenX;
         let touchMoveY = e.changedTouches[0].screenY;
-        
-        // Eğer yatay hareket dikeyden fazlaysa, sayfanın scroll olmasını engelle (carousel kaysın)
         if(Math.abs(touchMoveX - touchStartX) > Math.abs(touchMoveY - touchStartY)) {
             e.preventDefault(); 
         }
@@ -663,7 +647,7 @@
     window.addEventListener('load', createCarouselItems);
     window.addEventListener('resize', createCarouselItems);
 
-    // --- JS ---
+    // --- POPUP & MODAL (BODY LOCK EKLENDİ) ---
     function openInfoModal(id) { 
         document.getElementById(id).classList.add('open'); 
         document.body.classList.add('modal-open'); 
@@ -676,7 +660,6 @@
         closeInfoModal(infoModalId);
         openContactModal(); 
     }
-
     document.querySelectorAll('.info-modal').forEach(m => {
         m.addEventListener('click', (e) => { 
             if(e.target === m) {
@@ -765,16 +748,65 @@
         document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     }
 
+    // --- FORM GÖNDERME KISMI (FETCH İLE) ---
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        if(!selectedSession || !selectedType) { alert("الرجاء اختيار نوع الجلسة"); return; }
+        
+        if(!selectedSession || !selectedType) { 
+            alert("الرجاء اختيار نوع الجلسة"); 
+            return; 
+        }
+
         const btn = document.getElementById('submitBtn');
-        btn.disabled = true; btn.textContent = "...";
-        setTimeout(() => {
-            showToast();
-            closeContactModal();
-            btn.disabled = false; btn.textContent = "إرسال";
-        }, 1000);
+        const originalText = btn.textContent;
+        btn.disabled = true; 
+        btn.textContent = "جاري الإرسال..."; 
+
+        const getRadio = (name) => { 
+            const el = document.querySelector(`input[name="${name}"]:checked`); 
+            return el ? el.value : 'Belirtilmedi'; 
+        };
+
+        const sKey = selectedSession === 'seans1' ? 'Sakina' : 'El-Abour';
+        const tKey = selectedType === 'tekli' ? 'Single' : 'Package (3)';
+
+        const formData = {
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            phone: document.getElementById('phonePrefix').value + " " + document.getElementById('phone').value,
+            email: document.getElementById('email').value,
+            session: `${sKey} - ${tKey}`,
+            q1: document.getElementById('q1').value,
+            q2: document.getElementById('q2').value,
+            q3: document.getElementById('q3').value,
+            q4: getRadio('q4'),
+            q5: getRadio('q5'),
+            q6: getRadio('q6'),
+            q7: document.getElementById('q7').value,
+            q8: document.getElementById('q8').value,
+            message: document.getElementById('message').value
+        };
+
+        try {
+            const response = await fetch('/api/lead', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                showToast(); 
+                closeContactModal();
+            } else {
+                alert("حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى."); 
+            }
+        } catch (err) {
+            console.error(err);
+            alert("خطأ في الاتصال.");
+        } finally {
+            btn.disabled = false; 
+            btn.textContent = originalText;
+        }
     });
   </script>
 </body>
